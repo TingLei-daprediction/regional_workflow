@@ -1,0 +1,51 @@
+  <task name="chgres_firstguess" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+  <cores>1</cores>
+    <command>&JOBS;/launch.ksh &JOBS;/JFV3CAM_SAR_CHGRES_FIRSTGUESS</command>
+    <jobname><cyclestr>chgres_firstguess_@H</cyclestr></jobname>
+    <join><cyclestr>&OUTDIR;/testlogs_hourly_rocoto/chgres_firstguess_@H.log</cyclestr></join>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>chgres_firstguess</value>
+    </envar>
+    <envar>
+      <name>envir</name>
+      <value>&envir;</value>
+    </envar>
+    <envar>
+      <name>envir</name>
+      <value>&envir;</value>
+    </envar>
+    <envar>
+      <name>machine</name>
+      <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+
+  </task>
