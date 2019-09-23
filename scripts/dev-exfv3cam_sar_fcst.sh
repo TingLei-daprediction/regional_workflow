@@ -14,12 +14,24 @@
 #                       Adapted for stand-alone regional configuration
 ############################################################################
 set -eux
+#set -ux
+
+export KMP_AFFINITY=scatter
+export OMP_NUM_THREADS=2
+export OMP_STACKSIZE=1024m
 
 ulimit -s unlimited
 ulimit -a
 
 mkdir -p INPUT RESTART
-cp ${COMOUT}/anl.${dom:+${dom}.}${tmmark}/*.nc INPUT
+if [ $tmmark = tm12 ] ; then
+FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
+else
+FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
+fi
+#cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
+cp $FcstInDir/*.nc INPUT
+#cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 let "numbndy_check=$NHRS/3+1"
@@ -30,6 +42,12 @@ if [ $tmmark = tm00 ] ; then
     echo "Don't have all BC files at tm00, abort run"
     err_exit "Don't have all BC files at tm00, abort run"
   fi
+  elif  [ $tmmark = tm12 ] ; then 
+   if [ $numbndy -ne 3 ] ; then
+    export err=4
+    echo "Don't have both BC files at ${tmmark}, abort run"
+    err_exit "Don't have all BC files at ${tmmark}, abort run"
+   fi
 else
   if [ $numbndy -ne 2 ] ; then
     export err=2
@@ -91,12 +109,19 @@ ln -sf ${CASE}_grid.tile7.halo4.nc grid.tile7.halo4.nc
 ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.nc
 ln -sf ${CASE}_oro_data.tile7.halo4.nc oro_data.tile7.halo4.nc
 # Initial Conditions are needed for SAR but not SAR-DA
-#clt if [ $model = fv3sar ] ; then
-if [ $tmmark = 'tm12' ] ; then
+if [ ${tmmark} = tm12 ] ; then
   ln -sf sfc_data.tile7.nc sfc_data.nc
   ln -sf gfs_data.tile7.nc gfs_data.nc
 fi
+
 cd ..
+#if [ $tmmark = tm12 ] ; then
+#cp ${CONFIGdir}/diag_table_tmp . #clt diag_table_mp.tmp
+#cp ${CONFIGdir}/data_table .
+#cp ${CONFIGdir}/field_table .
+#fi
+
+
 
 #-------------------------------------------------------------------
 # Copy or set up files data_table, diag_table, field_table,
@@ -113,31 +138,50 @@ if [ $tmmark = tm00 ] ; then
   fi
   cp ${PARMfv3}/model_configure_sar.tmp_${dom} model_configure.tmp
 
-if [ $dom = "conus" ]
-then
-  nodes=76 
-elif [ $dom = "ak" ]
-then
-  nodes=68
-elif [ $dom = "pr" ]
-then
-  nodes=10
-elif [ $dom = "hi" ]
-then
-  nodes=7
-elif [ $dom = "guam" ]
-then
-  nodes=7
-fi
+	if [ $dom = "conus" ]
+	then
+	  nodes=76 
+	elif [ $dom = "ak" ]
+	then
+	  nodes=68
+	elif [ $dom = "pr" ]
+	then
+	  nodes=10
+	elif [ $dom = "hi" ]
+	then
+	  nodes=7
+	elif [ $dom = "guam" ]
+	then
+	  nodes=7
+	fi
 
-ncnode=24
-let nctsk=ncnode/OMP_NUM_THREADS    # 12 tasks per node with 2 threads 
-let ntasks=nodes*nctsk
-echo nctsk = $nctsk and ntasks = $ntasks
+	ncnode=24
+	let nctsk=ncnode/OMP_NUM_THREADS    # 12 tasks per node with 2 threads 
+	let ntasks=nodes*nctsk
+	echo nctsk = $nctsk and ntasks = $ntasks
+     cp ${PARMfv3}/d* .
+     cp ${PARMfv3}/field_table .
+     cp ${PARMfv3}/nems.configure .
 
 # Submit post manager here
+elif [ $tmmark = tm12 ] ; then
+	cp ${PARMfv3}/input_sar_firstguess.nml input.nml
+	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
+	cp ${PARMfv3}/d* .
+	cp ${PARMfv3}/field_table .
+	cp ${PARMfv3}/nems.configure .
+
+	nodes=54
+	ncnode=24
+	let nctsk=ncnode/OMP_NUM_THREADS
+	let ntasks=nodes*nctsk
+	echo nctsk = $nctsk and ntasks = $ntasks
+
+
 
 else
+#clt for bblake  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
+#for bblake   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
   cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
   nodes=54
@@ -145,20 +189,34 @@ else
   let nctsk=ncnode/OMP_NUM_THREADS
   let ntasks=nodes*nctsk
   echo nctsk = $nctsk and ntasks = $ntasks
+  cp ${PARMfv3}/d* .
+  cp ${PARMfv3}/field_table .
+  cp ${PARMfv3}/nems.configure .
+
+
 fi
 
-cp ${PARMfv3}/d* .
-cp ${PARMfv3}/field_table .
-cp ${PARMfv3}/nems.configure .
+#cp diag_table_tmp diag_table.tmp
 
+if [ $tmmark = tm12 ] ; then
+CYCLEtm12=`$NDATE -12 $CYCLE`
+yr=`echo $CYCLEtm12 | cut -c1-4`
+mn=`echo $CYCLEtm12 | cut -c5-6`
+dy=`echo $CYCLEtm12 | cut -c7-8`
+hr=`echo $CYCLEtm12 | cut -c9-10`
+else
 yr=`echo $CYCLEanl | cut -c1-4`
 mn=`echo $CYCLEanl | cut -c5-6`
 dy=`echo $CYCLEanl | cut -c7-8`
 hr=`echo $CYCLEanl | cut -c9-10`
+fi
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
   NRST=12
+elif  [ $tmmark = tm12 ] ; then 
+  NFCSTHRS=$NHRSguess
+  NRST=6
 else
   NFCSTHRS=$NHRSda
   NRST=01
@@ -171,10 +229,18 @@ $yr $mn $dy $cyc 0 0
 
 cat temp diag_table.tmp > diag_table
 
+if [ $tmmark = tm12 ] ; then
+
+cat model_configure.tmp | sed s/NTASKS/$ntasks/ | sed s/YR/$yr/ | \
+    sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
+    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+    sed s/NCNODE/$ncnode/  >  model_configure
+else
 cat model_configure.tmp | sed s/NTASKS/$ntasks/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
     sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
     sed s/NCNODE/$ncnode/ | sed s/NRESTART/$NRST/  >  model_configure
+fi
 
 #----------------------------------------- 
 # Run the forecast
@@ -184,6 +250,7 @@ export pgm=regional_forecast.x
 
 startmsg
 mpirun -l -n ${ntasks} $EXECfv3/regional_forecast.x >$pgmout 2>err
+#cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
 export err=$?;err_chk
 
 # Copy files needed for next analysis
@@ -192,19 +259,19 @@ export err=$?;err_chk
 
 # GUESSdir, ANLdir set in J-job
 
+FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
-  cp grid_spec.nc $GUESSdir/.
+  cp grid_spec.nc $FcstOutDir/.
   cd RESTART
-  mv ${PDYfcst}.${CYCfcst}0000.coupler.res $GUESSdir/.
-  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $GUESSdir/.
-  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.tile1.nc $GUESSdir/.
-  mv ${PDYfcst}.${CYCfcst}0000.fv_tracer.res.tile1.nc $GUESSdir/.
-  mv ${PDYfcst}.${CYCfcst}0000.sfc_data.nc $GUESSdir/.
+  mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
+  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
+  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
+  mv ${PDYfcst}.${CYCfcst}0000.fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
+  mv ${PDYfcst}.${CYCfcst}0000.sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
-  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $ANLdir/phy_data.nc
-  mv ${PDYfcst}.${CYCfcst}0000.fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
 fi
 
 exit

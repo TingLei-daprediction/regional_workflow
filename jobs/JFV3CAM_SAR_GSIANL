@@ -35,7 +35,7 @@ export CYCrun=`echo $CDATE | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export DATA=${mainroot}/${tmpdir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
+export DATA=${mainroot}/${tmpdir}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
 mkdir -p $DATA
 cd $DATA
 
@@ -66,14 +66,14 @@ if [ $machine = THEIA ] ; then
   export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
   export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
 elif [ $machine = WCOSS ] ; then
-  export UTIL=$HOMEdir/util/ush
+  export UTIL=$HOMEfv3/util/ush
   export gsiexec=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
   export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
   export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
 elif [ $machine = DELL ] ; then
   export UTIL=${HOMEfv3}/util/ush
   export gsiexec=${EXECfv3}/regional_gsi.x
-  export fixgsi=${HOMEfv3}/sorc/gsi.fd/fix
+  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
   export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
 fi
 

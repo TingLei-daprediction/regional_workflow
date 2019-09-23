@@ -20,7 +20,8 @@ if [ ! -d "../exec" ]; then
 fi
 
 cd regional_gsi.fd/ush/
-./build_all_cmake.sh "PRODUCTION" "$cwd/regional_gsi.fd"
+#cltorg ./build_all_cmake.sh "PRODUCTION" "$cwd/regional_gsi.fd"
+./build_all_cmake.sh "DEBUG" "$cwd/regional_gsi.fd"
 
 exit
 

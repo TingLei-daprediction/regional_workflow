@@ -1,0 +1,156 @@
+#!/bin/ksh
+ 
+set -x
+
+# HOMEfv3 set in qsub job
+
+. $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+
+####################################
+# Specify Execution Areas
+####################################
+export CHGRESEXEC=$EXECfv3/regional_chgres.x
+#cltorg export CHGRESSH=$USHfv3/global_chgres.sh
+export CHGRESSH=$USHfv3/dev-ens-global_chgres_driver.sh
+export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
+
+export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/EXP${envir}_tmpnwprd_hourly/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
+mkdir -p $DATA 
+cd  $DATA
+
+machine=DELL  #clt for being now
+# WCOSS environment settings
+#####################################
+export CDUMP=gfs
+export CDAS=gfs
+export LEVS=65
+export LSOIL=4
+export REGIONAL=1		# REGIONAL=0 - uniform, stretch, or nest
+				# REGIONAL=1 - generate data and boundary (for regional case)
+				# REGIONAL=2 - generate boundaries only (for regional case)
+export HALO=4
+export ictype=pfv3gfs
+export nst_anl=.false.		# false or true to include NST analysis
+export KMP_AFFINITY=disabled
+export NTRAC=7			# output all gfdl mp tracers
+
+
+
+
+
+
+
+export pid=$$
+export pgmout="OUTPUT.${pid}"
+#some cycle related variables
+# CYCLE and PDY now come from rocoto script
+echo "DATEXX${CYCLE}" > ncepdate
+
+
+export CYCLEtm06=`$NDATE -06 $CYCLE`
+export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
+export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
+
+
+
+##export CYCLE=`cut -c 7-16 ncepdate`
+##export PDY=`cut -c 7-14 ncepdate`
+export CYCLEguess=`$NDATE -12 $CYCLE`
+export CDATE=$CYCLEguess
+export ymd=`echo $CDATE | cut -c 1-8`
+export hhcyc=`echo $CDATE | cut -c 9-10`
+
+if [ $machine = WCOSS_C ]; then
+ export KMP_AFFINITY=disabled
+ export FIXgsm=/gpfs/hps/emc/global/noscrub/emc.glopara/svn/fv3gfs/fix/fix_am
+ export DATA=/gpfs/hps/ptmp/${LOGNAME}/wrk.chgres
+ export APRUNC="aprun -n 1 -N 1 -j 1 -d $OMP_NUM_THREADS_CH -cc depth"
+ export INIDIR=/gpfs/hps/nco/ops/com/gfs/prod/gfs.$ymd
+ export HOMEgfs=$LS_SUBCWD/..
+  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
+elif [ $machine = WCOSS ]; then
+ export APRUNC="time"
+ export INIDIR=/ptmpp2/$USER/prfv3rt1/gfs.$ymd/$hhcyc
+
+  export UTIL=$HOMEfv3/util/ush
+#export INIDIR=/gpfs/dell3/ptmp/emc.glopara/ROTDIRS/prfv3rt1/gfs.$ymd/$hhcyc
+elif [ $machine = DELL ]; then
+#####################################
+# Define COM directories
+#####################################
+export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMgfs=${COMgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+ set +x
+  
+  export UTIL=$HOMEfv3/util/ush
+ set -x
+ export APRUNC="time"
+ export KMP_AFFINITY=disabled
+ export INIDIR=${COMgfs}/gfs.$ymd/$hhcyc
+ 
+elif [ $machine = THEIA ]; then
+ export CDUMP=${CDUMP:-gdas}                   # gfs or gdas
+ export APRUNC="time"
+ COMROOTp2=/scratch4/NCEPDEV/rstprod/com
+ export ymd=`echo $CDATE | cut -c 1-8`
+ export INIDIR=$COMROOTp2/gfs/prod/${CDUMP}.$ymd
+ ulimit -a
+ ulimit -s unlimited
+else
+ echo "$machine not supported, exit"
+ exit
+fi
+#
+
+# setup ensemble filelist03
+
+if [ $machine = THEIA ] ; then
+export   COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
+export   COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
+export   COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+   # bias correction files from prev cycle
+export   COMINbias=$COMOUTtm06
+fi
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+   # This is the FV3GDAS enkf I mirror to dev
+#  COMINgfspll=/gpfs/gp2/ptmp/$USER/prfv3rt1
+#clt   COMINgfspll=/gpfs/dell1/nco/ops/com/gfs/para
+export    COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+export   COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+export   COMINbias=$COMOUTtm06
+export   COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+export   MYGDASpll=$COMINgfspll/gdas.${PDYa}/${cya}
+export   GBGDASpll=/gpfs/dell1/nco/ops/com/gfs/para/gdas.${PDYa}/${cya}
+fi
+
+
+
+
+# this is the 1st job in the cycle so save date file
+# for all other J-jobs
+#cltold cp ncepdate $DATEdir/t${cyc}z
+
+#COMROOT and GESROOT are the same dirs
+export COMOUT=$COMROOT/${RUN}/EXP${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $COMOUT
+#cltorg mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export NWGES=$GESROOT/${RUN}/EXP${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $NWGES
+
+#mkdir -p $COMOUT/gfsanl.tm12
+#cltorg export INPdir=$COMOUT/gfsanl.tm12
+export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}
+mkdir -p $ensINPdir
+#
+#run script
+${HOMEfv3}/scripts/dev-exfv3cam_sar_chgres_ens_firstguess.sh
+
+#cltorg if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
+
+date
+
+exit

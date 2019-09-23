@@ -249,6 +249,7 @@ if [[ "$VERBOSE" = "YES" ]] ; then
    set -x
 fi
 #  Command line arguments.
+echo "Beginning global_chgres"
 APRUNC=${APRUNC:-""}
 SIGINP=${1:-${SIGINP:-NULL}}
 SFCINP=${2:-${SFCINP:-NULL}}
@@ -262,7 +263,7 @@ HOMEgfs=${HOMEgfs:-$BASEDIR/gfs.${gfs_ver}}
 EXECgfs=${EXECgfs:-$HOMEgfs/exec}
 FIXfv3=${FIXfv3:-/gpfs/dell2/emc/modeling/noscrub/${USER}/regional_workflow/fix}
 FIXsar=${FIXsar:-$FIXfv3/fix_sar}
-FIXnest=${FIXnest:-$FIXfv3/fix_nest}
+FIXnest=${FIXnest:-$FIXfv3/fix_sar}
 FIXam=${FIXam:-$FIXfv3/fix_am}
 
 DATA=${DATA:-$(pwd)}

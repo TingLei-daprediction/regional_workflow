@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -l
 set -x
 
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
@@ -12,11 +12,12 @@ set -x
 
 offset=`echo $tmmark | cut -c 3-4`
 export CYCLEanl=`$NDATE -${offset} $CDATE`
+export CYCLEtm12=`$NDATE -12  $CDATE`
 
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/$envir/${job}_${cyc}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi
@@ -29,11 +30,23 @@ export pgmout="OUTPUT.${pid}"
 #####################################
 # Define COM directories
 #####################################
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+#cltfor bblake export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=$COMROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $COMOUT
+export NWGES_ens=${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDY}/${cyc}
+mkdir -p $NWGES_ens
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
+if [ $tmmark = tm12 ] ; then
+export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}
+else
+export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/dirLBC/$tmmark
+fi
+
+if [ $tmmark = tm12 ] ; then
+  export tmmark_next=tm06
+fi
 if [ $tmmark = tm06 ] ; then
   export tmmark_next=tm05
 fi
@@ -55,13 +68,14 @@ fi
 
 # get valid time of forecast
 offset_fcst=`echo $tmmark_next | cut -c 3-4`
+
 export CYCLEfcst=`$NDATE -${offset_fcst} $CDATE`
 export PDYfcst=`echo $CYCLEfcst | cut -c 1-8`
 export CYCfcst=`echo $CYCLEfcst | cut -c 9-10`
 
 export GUESSdir=$COMOUT/guess.${tmmark_next}
 mkdir -p $GUESSdir
-export ANLdir=$COMOUT/anl.${dom}.${tmmark_next}
+export ANLdir=$COMOUT/anl.${tmmark}
 mkdir -p $ANLdir
 
 #####################################
@@ -76,11 +90,9 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/exfv3cam_sar_fcst.sh
+#ctl${HOMEfv3}/scripts/dev-exfv3cam_sar_enkf_fcst.sh
+${HOMEfv3}/scripts/dev-exfv3cam_sar_enkf_fcst.sh
 export err=$?
 #####################################
-
-cat err
-cat $pgmout
 
 exit $err

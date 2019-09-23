@@ -1,0 +1,123 @@
+#!/bin/ksh
+ 
+set -x
+
+# HOMEfv3 set in qsub job
+
+machine=DELL
+. $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+ 
+export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+rm -fr $DATA
+mkdir -p $DATA
+cd $DATA
+
+#cltorg  . /usrx/local/prod/lmod/lmod/init/ksh
+export pid=$$
+export pgmout="OUTPUT.${pid}"
+
+# Get my date file; cyc is tm00 date, comes from qsub script
+##cp $DATEdir/t${cyc}z ncepdate
+##export CYCLE=`cut -c 7-16 ncepdate`
+##export PDY=`cut -c 7-14 ncepdate`
+
+# CYCLE and PDY now come from rocoto script
+echo "DATEXX${CYCLE}" > ncepdate
+
+#COMROOT and GESROOT are the same dirs
+mkdir -p $COMROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export NWGES=$GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+
+mkdir -p $COMOUT/guess.${tmmark}
+mkdir -p $COMOUT/anl.${tmmark}
+export GUESSdir=$COMOUT/guess.${tmmark}
+export ensGUESSdir=$COMOUT/ens_guess.${tmmark}
+export ANLdir=$COMOUT/anl.${tmmark}
+export EnKFANLdir=$COMOUT/enkf_anl.${tmmark}
+export NWGES_ens=${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDY}/${cyc}
+mkdir -p $NWGES_ens
+# Set path/file for gsi executable
+
+if [ $machine = THEIA ] ; then
+  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
+  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
+  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+fi
+if [ $machine = WCOSS ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/meso/save/$USER/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
+  export fixgsi=/meso/save/$USER/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
+  export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
+fi
+if [ $machine = DELL ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/gpfs/dell2/emc/modeling/noscrub/$USER/fv3reg_oct2018/fv3gfs/sorc/gsi.fd/build/bin/gsi.x
+  export fixgsi=/gpfs/dell2/emc/modeling/noscrub/$USER/fv3reg_oct2018/fv3gfs/sorc/gsi.fd/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+fi
+# setup ensemble filelist03
+
+hostname > hname
+hl=`cut -c 1-1 hname`
+
+if [ hl = m ] ; then 
+  wcoss=tp
+fi
+if [ hl = m ] ; then 
+  wcoss=gp
+fi
+
+if [ $machine = THEIA ] ; then
+export   COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
+export   COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
+export   COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+   # bias correction files from prev cycle
+export   COMINbias=$COMOUT
+fi
+
+
+
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+export   COMINgfs=/gpfs/hps/nco/ops/com/gfs/prod
+   # This is the FV3GDAS enkf I mirror to dev
+#  COMINgfspll=/gpfs/${wcoss}2/ptmp/$USER/prfv3rt1
+export   COMINgfspll=/gpfs/dell1/nco/ops/com/gfs/para
+export   COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+export    COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+export    COMINbias=$COMOUT
+export    COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+fi
+if [ $machine = THEIA ] ; then
+  export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
+  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
+  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+elif [ $machine = WCOSS ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
+  export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
+  export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
+elif [ $machine = DELL ] ; then
+  export UTIL=${HOMEfv3}/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+fi
+
+export CDATE=${CDATE:-${PDY}${cyc}}
+export gsianlsh=${gsianlsh:-${HOMEfv3}/scripts/dev-exfv3cam_sar_gsianl.sh}
+
+#run script
+${HOMEfv3}/scripts/dev-exfv3cam_sar_enkf_ensmean_obs.sh
+
+cat $pgmout
+cat stderr
+
+#cltthink if [ ${RM_TMPDIR:-NO} = YES ] ; then rm -rf $DATA ; fi
+
+date
+
+exit
