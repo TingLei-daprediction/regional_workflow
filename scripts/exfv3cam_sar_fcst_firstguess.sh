@@ -19,7 +19,8 @@ ulimit -s unlimited
 ulimit -a
 
 mkdir -p INPUT RESTART
-cp ${NWGES}/gfsanl.tm12/*.nc INPUT
+#cltorg cp ${NWGES}/gfsanl.tm12/*.nc INPUT
+cp ${COMOUT}/gfsanl.tm12/*.nc INPUT
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 

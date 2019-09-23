@@ -19,7 +19,7 @@ export CHGRESSH=$USHfv3/global_chgres.sh
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd_nest/${job}_${cyc}}
+export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd_nest/${envir}/${job}_${cyc}}
 mkdir -p $DATA
 cd $DATA
 

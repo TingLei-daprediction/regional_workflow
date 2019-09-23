@@ -11,10 +11,16 @@
 # Script history log:
 # 2018-10-30  Eric Rogers - Modified based on original GSI script
 # 2018-11-09  Ben Blake   - Moved various settings into J-job script
-#
-###############################################################################
+# 2019-07-26  Ting Lei    - combine analysis scripts for tm 12 and others to one  
+#                         - modified to be used for the observation operator mode.and fv3sar ensemble based hybrid GSI
+#############################################################################
 
 set -x
+
+export NLN=${NLN:-"/bin/ln -sf"}
+
+
+offset=`echo $tmmark | cut -c 3-4`
 
 case $tmmark in
   tm06) export tmmark_prev=tm06;;
@@ -25,7 +31,14 @@ case $tmmark in
   tm01) export tmmark_prev=tm02;;
   tm00) export tmmark_prev=tm01;;
 esac
+if [ $tmmark = tm06 ] ; then
+  ens_nstarthr="06"  # from tm12 to tm06
+else
+  ens_nstarthr="01"  # from tm06 to tm05 and so on
+fi
 
+
+gsiexec=${gsiexec:-$gsiexec0}
 # Set runtime and save directories
 export endianness=Big_Endian
 
@@ -33,32 +46,75 @@ export endianness=Big_Endian
 #   ncp is cp replacement, currently keep as /bin/cp
 ncp=/bin/cp
 
+# setup ensemble filelist03
+
+# Run gsi under Parallel Operating Environment (poe) on NCEP IBM
+
+
 export HYB_ENS=".true."
+export HX_ONLY=${HX_ONLY:-FALSE}
 
-# We expect 81 total files to be present (80 enkf + 1 mean)
-export nens=81
+DOHYBVAR=${DOHYBVAR:-"YES"}
+#DOHYBVAR="NO"  #thinkdeb ${DOHYBVAR:-"YES"}
+#export HYB_ENS=".false." #cltthink
+if [[ ${HX_ONLY} = "TRUE" ]]; then
+DOHYBVAR=NO
+export HYB_ENS=".false."
 
-# Not using FGAT or 4DEnVar, so hardwire nhr_assimilation to 3
-export nhr_assimilation=03
-##typeset -Z2 nhr_assimilation
-python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
-
-#Check to see if ensembles were found 
-numfiles=`cat filelist03 | wc -l`
-cp filelist03 $COMOUT/${RUN}.t${CYCrun}z.filelist03.${tmmark}
-
-if [ $numfiles -ne 81 ]; then
-  echo "Ensembles not found - turning off HYBENS!"
-  export HYB_ENS=".false."
-else
-  # we have 81 files, figure out if they are all the right size
-  # if not, set HYB_ENS=false
-  . $UTIL/check_enkf_size.sh
 fi
+regional_ensemble_option=${regional_ensemble_option:-5}
+export nens=${nens:-81}
+export nens_gfs=${nens_gfs:-$nens}
+export nens_fv3sar=${nens_fv3sar:-$nens}
+export l_both_fv3sar_gfs_ens=${l_both_fv3sar_gfs_ens:-.false.}
+if [[ $DOHYBVAR = "YES" ]]; then 
 
-echo "HYB_ENS=$HYB_ENS" > $COMOUT/${RUN}.t${CYCrun}z.hybens.${tmmark}
+ if [[ $regional_ensemble_option -eq 1 ||  $l_both_fv3sar_gfs_ens = '.true.' ]]; then
+# We expect 81 total files to be present (80 enkf + 1 mean)
 
-nens=`cat filelist03 | wc -l`
+    # Not using FGAT or 4DEnVar, so hardwire nhr_assimilation to 3
+    export nhr_assimilation=03
+    ##typeset -Z2 nhr_assimilation
+
+
+    python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+#cltthink      if [[ $l_both_fv3sar_gfs_ens = ".true."  ]]; then
+#cltthink        sed '1d;$d' filelist${nhr_assimilation} > d.txt  #don't use the ensemble mean
+#cltthink        cp d.txt filelist${nhr_assimilation}
+#cltthink      fi
+    ####python $UTIL/getbest_EnKF.py -v $vlddate --exact=no --minsize=${nens} -d ${COMINgfs}/enkf -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+
+    #Check to see if ensembles were found
+    numfiles=`cat filelist03 | wc -l`
+    cp filelist03 $COMOUT/${RUN}.t${CYCrun}z.filelist03.${tmmark}
+
+       if [[ $regional_ensemble_option -eq 1  ]]; then
+        if [ $numfiles -ne $nens_gfs ]; then
+          echo "Ensembles not found - turning off HYBENS!"
+          export HYB_ENS=".false."
+        else
+          # we have 81 files, figure out if they are all the right size
+          # if not, set HYB_ENS=false
+          . $UTIL/check_enkf_size.sh
+        fi
+          nens_gfs=`cat filelist03 | wc -l`
+          nens=$nens_gfs
+        fi
+
+        echo "HYB_ENS=$HYB_ENS" > $COMOUT/${RUN}.t${CYCrun}z.hybens.${tmmark}
+     fi
+     if [[ $regional_ensemble_option -eq 5 ]]; then
+       for imem in $(seq 1 $nens_fv3sar ); do
+             memchar="mem"$(printf %03i $imem)
+#        cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc fv3SAR01_${memchar}-fv3_dynvars
+         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_dynvars
+         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_tracer.res.tile1.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_tracer
+         done
+
+     fi
+
+ 
+fi  # DO_HYB_ENS
 
 # Set parameters
 export USEGFSO3=.false.
@@ -68,11 +124,22 @@ export fstat=.false.
 export i_gsdcldanal_type=0
 use_gfs_nemsio=.true.,
 
+export SETUP_part1=${SETUP_part1:-"miter=2,niter(1)=50,niter(2)=50"}
+if [ ${l_both_fv3sar_gfs_ens:-.false.} = ".true." ]; then  #regular  run
+export HybParam_part2="l_both_fv3sar_gfs_ens=$l_both_fv3sar_gfs_ens,n_ens_gfs=$nens_gfs,n_ens_fv3sar=$nens_fv3sar,"
+else
+export HybParam_part2=" "
+
+fi
+
+
 # Make gsi namelist
+echo "current dir is" 
+pwd 
 cat << EOF > gsiparm.anl
 
  &SETUP
-   miter=2,niter(1)=50,niter(2)=50,niter_no_qc(1)=20,
+   $SETUP_part1,niter_no_qc(1)=20,
    write_diag(1)=.true.,write_diag(2)=.false.,write_diag(3)=.true.,
    gencode=78,qoption=2,
    factqmin=0.0,factqmax=0.0,
@@ -85,6 +152,10 @@ cat << EOF > gsiparm.anl
    newpc4pred=.true., adp_anglebc=.true., angord=4,
    passive_bc=.true., use_edges=.false., emiss_bc=.true.,
    diag_precon=.true., step_start=1.e-3,
+   lread_obs_save=${lread_obs_save:-".true."}, 
+   lread_obs_skip=${lread_obs_skip:-".false."}, 
+   ens_nstarthr=$ens_nstarthr,
+   $SETUP
  /
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=3.0,nvege_type=20,
@@ -126,7 +197,6 @@ OBS_INPUT::
    prepbufr       sst         null        sst                 0.0     0     0
    nsstbufr       sst         nsst        sst                 0.0     0     0
    gpsrobufr      gps_bnd     null        gps                 0.0     0     0
-   hirs3bufr      hirs3       n17         hirs3_n17           0.0     1     0
    hirs4bufr      hirs4       metop-a     hirs4_metop-a       0.0     1     1
    gimgrbufr      goes_img    g11         imgr_g11            0.0     1     0
    gimgrbufr      goes_img    g12         imgr_g12            0.0     1     0
@@ -135,7 +205,6 @@ OBS_INPUT::
    amsuabufr      amsua       n18         amsua_n18           0.0     1     1
    amsuabufr      amsua       metop-a     amsua_metop-a       0.0     1     1
    airsbufr       amsua       aqua        amsua_aqua          0.0     1     1
-   amsubbufr      amsub       n17         amsub_n17           0.0     1     1
    mhsbufr        mhs         n18         mhs_n18             0.0     1     1
    mhsbufr        mhs         metop-a     mhs_metop-a         0.0     1     1
    ssmitbufr      ssmi        f14         ssmi_f14            0.0     1     0
@@ -205,7 +274,7 @@ OBS_INPUT::
    s_ens_h=300,
    s_ens_v=5,
    generate_ens=.false.,
-   regional_ensemble_option=1,
+   regional_ensemble_option=${regional_ensemble_option},
    aniso_a_en=.false.,
    nlon_ens=0,
    nlat_ens=0,
@@ -214,6 +283,7 @@ OBS_INPUT::
    jcap_ens_test=0,
    full_ensemble=.true.,pwgtflg=.true.,
    ensemble_path="",
+   ${HybParam_part2}
  /
  &RAPIDREFRESH_CLDSURF
    i_gsdcldanal_type=${i_gsdcldanal_type},
@@ -306,16 +376,40 @@ $ncp $mesonetuselist ./mesonetuselist
 $ncp $stnuselist ./mesonet_stnuselist
 $ncp $fixgsi/prepobs_prep.bufrtable ./prepobs_prep.bufrtable
 
+
+
 # Copy CRTM coefficient files based on entries in satinfo file
 for file in `awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq` ;do
     $ncp $fixcrtm/${file}.SpcCoeff.bin ./
     $ncp $fixcrtm/${file}.TauCoeff.bin ./
 done
 
+# If requested, link (and if tarred, de-tar obsinput.tar) into obs_input.* files
+if [ ${USE_SELECT:-NO} = "YES" ]; then
+   rm obs_input.*
+   nl=$(file $SELECT_OBS | cut -d: -f2 | grep tar | wc -l)
+   if [ $nl -eq 1 ]; then
+      rm obsinput.tar
+      $NLN $SELECT_OBS obsinput.tar
+      tar -xvf obsinput.tar
+      rm obsinput.tar
+   else
+      for filetop in $(ls $SELECT_OBS/obs_input.*); do
+         fileloc=$(basename $filetop)
+         $NLN $filetop $fileloc
+      done
+   fi
+fi
+
+
+
+
+
 ###export nmmb_nems_obs=${COMINnam}/nam.${PDYrun}
 export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
 export nmmb_nems_bias=${COMINbias}
 
+if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 # Copy observational data to $tmpdir
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
@@ -334,38 +428,68 @@ $ncp $nmmb_nems_obs/rap.t${cya}z.atms.tm00.bufr_d ./atmsbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.sevcsr.tm00.bufr_d ./seviribufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.radwnd.tm00.bufr_d ./radarbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.nexrad.tm00.bufr_d ./l2rwbufr
+fi
 
 export GDAS_SATBIAS=NO
 
 if [ $GDAS_SATBIAS = NO ] ; then
 
-$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias.${tmmark_prev} ./satbias_in
-err1=$?
-if [ $err1 -ne 0 ] ; then
-  cp $GESROOT_HOLD/satbias_in ./satbias_in
-fi
-$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias_pc.${tmmark_prev} ./satbias_pc
-err2=$?
-if [ $err2 -ne 0 ] ; then
-  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
-fi
-$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.radstat.${tmmark_prev}    ./radstat.gdas
-err3=$?
-if [ $err3 -ne 0 ] ; then
-  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
-fi
+  if [ $tmmark = "tm06" ]; then  #regular  run
+       $ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.satbias.tm01 ./satbias_in
+       err1=$?
+       if [ $err1 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/satbias_in ./satbias_in
+	fi
 
+	$ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.satbias_pc.tm01 ./satbias_pc
+	err2=$?
+	if [ $err2 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
+	fi
+
+	$ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.radstat.tm01    ./radstat.gdas
+	err3=$?
+	if [ $err3 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
+	fi
+
+  else
+	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias.${tmmark_prev} ./satbias_in
+	err1=$?
+	if [ $err1 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/satbias_in ./satbias_in
+	fi
+	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias_pc.${tmmark_prev} ./satbias_pc
+	err2=$?
+	if [ $err2 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
+	fi
+	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.radstat.${tmmark_prev}    ./radstat.gdas
+	err3=$?
+	if [ $err3 -ne 0 ] ; then
+	  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
+	fi
+   fi
 else
 
 cp $GESROOT_HOLD/gdas.satbias_out ./satbias_in
 cp $GESROOT_HOLD/gdas.satbias_pc ./satbias_pc
 cp $GESROOT_HOLD/gdas.radstat_out ./radstat.gdas
 
+
 fi
 
 #Aircraft bias corrections always cycled through 6-h DA
+ if [ $tmmark = "tm06" ]; then  #regular  run
+   $ncp $MYGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
+    err4=$?
+    if [ $err4 -ne 0 ] ; then
+       $ncp $GBGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
+     fi
 
-$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.abias_air.${tmmark_prev} ./aircftbias_in
+  else
+    $ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.abias_air.${tmmark_prev} ./aircftbias_in
+  fi
 err1=$?
 if [ $err1 -ne 0 ] ; then
   cp $GESROOT_HOLD/gdas.airbias ./aircftbias_in
@@ -375,6 +499,7 @@ cp $COMINrtma/rtma2p5.${PDYa}/rtma2p5.t${cya}z.w_rejectlist ./w_rejectlist
 cp $COMINrtma/rtma2p5.${PDYa}/rtma2p5.t${cya}z.t_rejectlist ./t_rejectlist
 cp $COMINrtma/rtma2p5.${PDYa}/rtma2p5.t${cya}z.p_rejectlist ./p_rejectlist
 cp $COMINrtma/rtma2p5.${PDYa}/rtma2p5.t${cya}z.q_rejectlist ./q_rejectlist
+#clt export ctrlstr=${ctrlstr:-control}
 
 export fv3_case=$GUESSdir
 
@@ -386,21 +511,39 @@ cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
 cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.nc fv3_akbk
 #   This file contains horizontal grid information
 cp $fv3_case/grid_spec.nc fv3_grid_spec
-#   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
-cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.tile1.nc fv3_dynvars
-#   This file contains 3d tracer fields sphum, liq_wat, o3mr
-cp $fv3_case/${PDY}.${CYC}0000.fv_tracer.res.tile1.nc fv3_tracer
-#   This file contains surface fields (vert dims of 3, 4, and 63)
 cp $fv3_case/${PDY}.${CYC}0000.sfc_data.nc fv3_sfcdata
+#   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
+ctrlstrname=${ctrlstr:+_${ctrlstr}_}
+   BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
+   BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
+cp $BgFile4dynvar fv3_dynvars
+#   This file contains 3d tracer fields sphum, liq_wat, o3mr
+cp $BgFile4tracer fv3_tracer
+#   This file contains surface fields (vert dims of 3, 4, and 63)
 
-# Run gsi under Parallel Operating Environment (poe) on NCEP IBM
-
-export pgm=regional_gsi.x
+export pgm=`basename $gsiexec`
 . prep_step
 
 startmsg
-mpirun -l -n 240 ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
+#mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
+mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
+
+
+# If requested, create obsinput tarball from obs_input.* files
+if [ ${RUN_SELECT:-NO} = "YES" ]; then
+  echo $(date) START tar obs_input >&2
+  rm obsinput.tar
+  $NLN $SELECT_OBS obsinput.tar
+  tar -cvf obsinput.tar obs_input.*
+  chmod 750 $SELECT_OBS
+#cltthink   ${CHGRP_CMD} $SELECT_OBS
+  rm obsinput.tar
+  echo $(date) END tar obs_input >&2
+fi
+
+
 
 mv fort.201 fit_p1
 mv fort.202 fit_w1
@@ -409,9 +552,9 @@ mv fort.204 fit_q1
 mv fort.205 fit_pw1
 mv fort.207 fit_rad1
 mv fort.209 fit_rw1
-
-cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/${RUN}.t${CYCrun}z.fits.${tmmark}
-cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/${RUN}.t${CYCrun}z.fits2.${tmmark}
+if [[ $HX_ONLY} != TRUE ]];then
+cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits.${tmmark}
+cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits2.${tmmark}
 
 cp satbias_out $GESROOT_HOLD/satbias_in
 cp satbias_out $COMOUT/${RUN}.t${CYCrun}z.satbias.${tmmark}
@@ -420,9 +563,10 @@ cp satbias_pc.out $COMOUT/${RUN}.t${CYCrun}z.satbias_pc.${tmmark}
 
 cp aircftbias_out $COMOUT/${RUN}.t${CYCrun}z.abias_air.${tmmark}
 cp aircftbias_out $GESROOT_HOLD/gdas.airbias
+fi 
 
-RADSTAT=${COMOUT}/${RUN}.t${CYCrun}z.radstat.${tmmark}
-CNVSTAT=${COMOUT}/${RUN}.t${CYCrun}z.cnvstat.${tmmark}
+RADSTAT=${COMOUT}/${RUN}.t${CYCrun}z.${ctrlstr+${ctrlstr}_}radstat.${tmmark}
+CNVSTAT=${COMOUT}/${RUN}.t${CYCrun}z.${ctrlstr+${ctrlstr}_}cnvstat.${tmmark}
 
 # Set up lists and variables for various types of diagnostic files.
 ntype=1
@@ -443,8 +587,11 @@ numfile[1]=0
    prefix="pe*"
 
 # Compress and tar diagnostic files.
-
+if [[ $HX_ONLY != TRUE ]];then
 loops="01 03"
+else
+loops="01 "
+fi
 for loop in $loops; do
    case $loop in
      01) string=ges;;
@@ -456,8 +603,8 @@ for loop in $loops; do
       for type in `echo ${diagtype[n]}`; do
          count=`ls ${prefix}${type}_${loop}* | wc -l`
          if [ $count -gt 0 ]; then
-            cat ${prefix}${type}_${loop}* > diag_${type}_${string}.${SDATE}
-            echo "diag_${type}_${string}.${SDATE}*" >> ${diaglist[n]}
+            cat ${prefix}${type}_${loop}* > diag_${type}${ctrlstr+_${ctrlstr}_}${string}.${SDATE}
+            echo "diag_${type}${ctrlstr+_${ctrlstr}_}${string}.${SDATE}*" >> ${diaglist[n]}
             numfile[n]=`expr ${numfile[n]} + 1`
          fi
       done
@@ -486,16 +633,20 @@ done
    chmod 750 $CNVSTAT
    chgrp rstprod $CNVSTAT
 
+if [[ $HX_ONLY != TRUE ]];then
 if [ $tmmark != tm00 ] ; then 
-  cp $RADSTAT ${GESROOT_HOLD}/radstat.nam
+echo 'do nothing for being now'
+#  cp $RADSTAT ${GESROOT_HOLD}/radstat.nam
 fi
 
 # Put analysis files in ANLdir (defined in J-job)
-mv fv3_akbk $ANLdir/fv_core.res.nc
-mv coupler.res $ANLdir/coupler.res
-mv fv3_dynvars $ANLdir/fv_core.res.tile1.nc
-mv fv3_tracer $ANLdir/fv_tracer.res.tile1.nc
-mv fv3_sfcdata $ANLdir/sfc_data.nc
-cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.
+mv fv3_akbk $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.nc
+mv coupler.res $ANLdir/${ctrlstr+_${ctrlstr}_}coupler.res
+mv fv3_dynvars $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc
+mv fv3_tracer $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc
+mv fv3_sfcdata $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data.nc
+cp fv3_grid_spec $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc
+cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+fi
 
 exit
