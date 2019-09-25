@@ -25,10 +25,11 @@ export pgmout="OUTPUT.${pid}"
 
 # CYCLE and PDY now come from rocoto script
 echo "DATEXX${CYCLE}" > ncepdate
+export PDYrun=`echo $CDATE | cut -c 1-8`
+export CYCrun=`echo $CDATE | cut -c 9-10`
 
 #COMROOT and GESROOT are the same dirs
-mkdir -p $COMROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
-export COMOUT=$COMROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
 export NWGES=$GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
 

@@ -135,7 +135,7 @@ fi
 #cltold cp ncepdate $DATEdir/t${cyc}z
 
 #COMROOT and GESROOT are the same dirs
-export COMOUT=$COMROOT/${RUN}/EXP${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $COMOUT
 #cltorg mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
 export NWGES=$GESROOT/${RUN}/EXP${envir}/${RUN}.${PDY}/${cyc}
