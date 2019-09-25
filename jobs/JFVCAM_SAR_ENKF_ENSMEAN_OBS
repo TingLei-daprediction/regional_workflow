@@ -70,26 +70,28 @@ if [ hl = m ] ; then
   wcoss=gp
 fi
 
-if [ $machine = THEIA ] ; then
-export   COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-export   COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
-export   COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
-   # bias correction files from prev cycle
-export   COMINbias=$COMOUT
-fi
-
-
-
+if [ $tmmark = tm06 ] ; then
 if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
-export   COMINgfs=/gpfs/hps/nco/ops/com/gfs/prod
-   # This is the FV3GDAS enkf I mirror to dev
-#  COMINgfspll=/gpfs/${wcoss}2/ptmp/$USER/prfv3rt1
-export   COMINgfspll=/gpfs/dell1/nco/ops/com/gfs/para
-export   COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
-export    COMINrap=/gpfs/hps/nco/ops/com/rap/prod
-export    COMINbias=$COMOUT
-export    COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+   export COMOUTtm06=${COMROOT}/${NET}/${envir}/${RUN}.${PDYtm06}/${cyctm06}
+   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+   export COMINbias=$COMOUTtm06
+   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+   export MYGDAS=$COMINgfs/gdas.${PDYa}/${cya}
+   export GBGDAS=$COMINgfs/gdas.${PDYa}/${cya}
 fi
+else
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+   export COMINbias=$COMOUT
+   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+fi
+fi
+
+
 if [ $machine = THEIA ] ; then
   export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
   export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x

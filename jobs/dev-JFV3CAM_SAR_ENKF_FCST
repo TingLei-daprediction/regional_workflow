@@ -13,6 +13,8 @@ set -x
 offset=`echo $tmmark | cut -c 3-4`
 export CYCLEanl=`$NDATE -${offset} $CDATE`
 export CYCLEtm12=`$NDATE -12  $CDATE`
+export PDYrun=`echo $CDATE | cut -c 1-8`
+export CYCrun=`echo $CDATE | cut -c 9-10`
 
 #####################################
 # Working directories
@@ -31,7 +33,7 @@ export pgmout="OUTPUT.${pid}"
 # Define COM directories
 #####################################
 #cltfor bblake export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
-export COMOUT=$COMROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $COMOUT
 export NWGES_ens=${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDY}/${cyc}
 mkdir -p $NWGES_ens

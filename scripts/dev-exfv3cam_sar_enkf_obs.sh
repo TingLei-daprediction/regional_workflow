@@ -54,7 +54,7 @@ ncp=/bin/cp
 ################################################################################
 ## ObsInput file from ensemble mean
 rm -f obs_input*
-export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_ensmean}
+export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_tm${tmmark}_ensmean}
 $NLN $SELECT_OBS obs_input.tar
 export USE_SELECT=YES
 export RUN_SELECT=NO
@@ -66,7 +66,7 @@ elif [ $RUN_SELECT = "NO" -a $USE_SELECT = "YES" ]; then
   export  lread_obs_skip=".true."
 fi
 export SETUP_part1="miter=0,niter=1"
-export lread_obs_part="lread_obs_save=$lread_obs_save,lread_obs_skip=$lread_obs_skip=,"
+export lread_obs_part="lread_obs_save=$lread_obs_save,lread_obs_skip=$lread_obs_skip,"
 ################################################################################
 ## Innovation Specific setup for ANALYSISSH
 #export DIAG_SUFFIX=${DIAG_SUFFIX:-""}

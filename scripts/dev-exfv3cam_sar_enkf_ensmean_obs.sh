@@ -51,7 +51,7 @@ ncp=/bin/cp
 ################################################################################
 ## ObsInput file from ensemble mean
 rm -f obs_input*
-export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_ensmean}
+export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_tm${tmmark}_ensmean}
 rm -fr $SELECT_OBS
 export USE_SELECT=NO
 export RUN_SELECT=YES
