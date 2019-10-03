@@ -5,12 +5,12 @@
 <!ENTITY EXPenvir "EXP2region">
 <!ENTITY STARTYEAR "2019">
 <!ENTITY STARTMONTH "09">
-<!ENTITY STARTDAY "20">
+<!ENTITY STARTDAY "30">
 <!ENTITY STARTHOUR "00">
 
 <!ENTITY ENDYEAR "2019">
 <!ENTITY ENDMONTH "09">
-<!ENTITY ENDDAY "20">
+<!ENTITY ENDDAY "30">
 <!ENTITY ENDHOUR "00">
 
 <!ENTITY USER "Ting.Lei">
@@ -45,10 +45,10 @@
 <!ENTITY ENKFEXEC '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-enkf_fv3native_t2/ProdGSI/build/bin/enkf_fv3reg.x'>
 <!ENTITY gsiexec ' /gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-EXP-GSI_fv3_reg_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
 <!ENTITY gsianlsh ''> 
-<!ENTITY nens '4'> 
+<!ENTITY nens '22'> 
 <!ENTITY l_both_fv3sar_gfs_ens '.true.'> 
 <!ENTITY nens_gfs '2'> 
-<!ENTITY nens_fv3sar '2'> 
+<!ENTITY nens_fv3sar '20'> 
 
 ]>
 
@@ -418,6 +418,10 @@
        <name>machine</name>
          <value>&machine;</value>
     </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
 
     <envar>
       <name>HOMEfv3</name>
@@ -701,7 +705,7 @@
     </envar>
     <envar>
       <name>job</name>
-      <value>gsianl_tm06</value>
+      <value>emean_obs_tm06</value>
     </envar>
     <envar>
       <name>tmmark</name>
@@ -825,6 +829,10 @@
        <name>machine</name>
          <value>&machine;</value>
     </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
      <envar>
       <name>ldo_enscalc_option</name>
       <value>0</value>
@@ -840,7 +848,7 @@
     </envar>
     <envar>
       <name>job</name>
-      <value>epos2mean_tm06</value>
+      <value>eupd_tm06</value>
     </envar>
     <envar>
       <name>tmmark</name>
@@ -1170,6 +1178,10 @@
       <name>nens_fv3sar </name>
       <value>&nens_fv3sar; </value>
      </envar>
+
+
+
+
       <envar>
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
@@ -1523,7 +1535,7 @@
 <!--  ********** Run the post jobs for tm06-tm01 *****************************  -->
 <!--  ***********************************************************************  -->
 
-  <metatask>
+   <metatask name="post_tm06-01" >
    <var name="mark">06 05 04 03 02 01</var>
    <metatask>
     <var name="fhr">00 01</var>
@@ -2189,6 +2201,10 @@
       <value>tm00</value>
     </envar>
     <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
       <name>USER</name>
       <value>&USER;</value>
     </envar>
@@ -2313,6 +2329,10 @@
       <envar>
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
 
     <dependency>

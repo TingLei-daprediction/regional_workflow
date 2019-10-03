@@ -53,7 +53,7 @@ mkdir -p $NWGES
 
 export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}
 mkdir -p ${INPdir}
-
+export FIXsar=/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_oct2018/fv3gfs/fix/fix_fv3/C768 #clt temperary work-around
 #####################################
 # WCOSS environment settings
 #####################################
@@ -85,7 +85,7 @@ fi
 # NHRS = length of free forecast
 # NHRSda = length of DA cycle forecast (always 1-h)
 if [ $tmmark = tm00 ] ; then
-  hour=3
+  hour=0
   end_hour=$NHRS
   hour_inc=3
 else
