@@ -24,7 +24,8 @@ export WGRIB2=${EXECfv3}/wgrib2new
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA=${INPUT_DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/forecast_${tmmark}_${dom}_${PDY}_${cyc}}
+export INPUT_DATA=${INPUT_DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/forecast_${tmmark}_${dom:+${dom}_}${cyc}}
+echo "thinkdeb INPUT_DATA Is "$INPUT_DATA
 export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
 if [ -d $DATA ]; then
   rm -rf $DATA
