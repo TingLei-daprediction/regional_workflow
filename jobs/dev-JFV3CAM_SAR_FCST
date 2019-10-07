@@ -27,6 +27,7 @@ cd $DATA
 export pid=$$
 export pgmout="OUTPUT.${pid}"
 
+export FIXsar=/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_oct2018/fv3gfs/fix/fix_fv3/C768 #clt temperary work-around
 #####################################
 # Define COM directories
 #####################################
