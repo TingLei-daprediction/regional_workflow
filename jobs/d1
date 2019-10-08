@@ -1,0 +1,185 @@
+On branch origin/regional-workflow-fv3sar_ens
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Changes to be committed:
+
+	modified:   ../Externals.cfg
+	modified:   ../README.md
+	deleted:    JFV3CAM_NEST_CHGRES
+	deleted:    JFV3CAM_NEST_CLEANUP
+	deleted:    JFV3CAM_NEST_ENVIR
+	deleted:    JFV3CAM_NEST_FCST
+	deleted:    JFV3CAM_NEST_POST
+	deleted:    JFV3CAM_NEST_POST_GOES
+	deleted:    JFV3CAM_NEST_RHIST
+	deleted:    JFV3CAM_NEST_SENDPOST_FFAIR
+	deleted:    JFV3CAM_NEST_SENDPOST_GOES
+	deleted:    JFV3CAM_SAR_CHGRES_FIRSTGUESS
+	deleted:    JFV3CAM_SAR_CLEANUP
+	deleted:    JFV3CAM_SAR_FCST
+	deleted:    JFV3CAM_SAR_GSIANL
+	deleted:    JFV3CAM_SAR_GSIANL_FIRSTGUESS
+	deleted:    JFV3CAM_SAR_POST_FIRSTGUESS
+	deleted:    JFV3CAM_SAR_POST_GOES
+	deleted:    JFV3CAM_SAR_RHIST
+	deleted:    JFV3CAM_SAR_SENDINIBC
+	deleted:    JFV3CAM_SAR_SENDPOST
+	deleted:    JFV3CAM_SAR_SENDPOST_GOES
+	new file:   JREGIONAL_ENVIR
+	renamed:    JFV3CAM_SAR_FCST_FIRSTGUESS -> JREGIONAL_FORECAST_FIRSTGUESS
+	new file:   JREGIONAL_MAKE_BC
+	new file:   JREGIONAL_MAKE_SFC_CLIMO
+	renamed:    JFV3CAM_SAR_POST -> JREGIONAL_POST
+	new file:   ../modulefiles/hera/fv3
+	new file:   ../modulefiles/hera/regional
+	new file:   ../modulefiles/jet/fv3
+	new file:   ../modulefiles/jet/regional
+	deleted:    ../modulefiles/theia/fre-nctools
+	deleted:    ../modulefiles/theia/fv3
+	deleted:    ../modulefiles/theia/global_chgres
+	deleted:    ../modulefiles/theia/orog
+	new file:   ../modulefiles/wcoss_cray/fv3
+	new file:   ../modulefiles/wcoss_cray/regional
+	deleted:    ../modulefiles/wcoss_dell_p3/fre-nctools
+	modified:   ../modulefiles/wcoss_dell_p3/fv3
+	deleted:    ../modulefiles/wcoss_dell_p3/global_chgres
+	deleted:    ../modulefiles/wcoss_dell_p3/orog
+	new file:   ../modulefiles/wcoss_dell_p3/regional
+	new file:   ../parm/input_sar_ak.nml
+	new file:   ../parm/input_sar_conus.nml
+	new file:   ../parm/input_sar_conus_ccpp.nml
+	renamed:    ../parm/input_sar.nml -> ../parm/input_sar_guam.nml
+	new file:   ../parm/input_sar_hi.nml
+	new file:   ../parm/input_sar_pr.nml
+	new file:   ../parm/model_configure_sar.tmp_ak
+	new file:   ../parm/model_configure_sar.tmp_conus
+	new file:   ../parm/model_configure_sar.tmp_guam
+	new file:   ../parm/model_configure_sar.tmp_hi
+	new file:   ../parm/model_configure_sar.tmp_pr
+	modified:   ../parm/nam_nests.hiresf_nn.txt
+	new file:   ../parm/suite_FV3_GFS_2017_gfdlmp_regional.xml
+	new file:   ../parm/templates/FV3SAR_wflow.xml
+	new file:   ../parm/templates/data_table
+	new file:   ../parm/templates/diag_table
+	new file:   ../parm/templates/diag_table_ccpp_gsd
+	new file:   ../parm/templates/field_table
+	new file:   ../parm/templates/field_table_ccpp_gsd
+	new file:   ../parm/templates/input.nml
+	new file:   ../parm/templates/input_ccpp_gfs.nml
+	new file:   ../parm/templates/input_ccpp_gsd.nml
+	new file:   ../parm/templates/model_configure
+	new file:   ../parm/templates/nems.configure
+	new file:   ../parm/templates/regional_grid.nml
+	new file:   ../parm/templates/wrtcmp_linlin_13km
+	new file:   ../parm/templates/wrtcomp_EMCCONUS
+	new file:   ../parm/templates/wrtcomp_HRRR
+	new file:   ../parm/templates/wrtcomp_NSSL
+	new file:   ../parm/templates/wrtcomp_RAP
+	new file:   ../rocoto/compare_config_scripts.sh
+	new file:   ../rocoto/config.workflow.defaults
+	new file:   ../rocoto/config_defaults.sh
+	new file:   ../rocoto/cronjob_regional.sh
+	deleted:    ../rocoto/drive_fv3sar_template.xml
+	new file:   ../rocoto/env_vars.ent
+	new file:   ../rocoto/generate_FV3SAR_wflow.sh
+	new file:   ../rocoto/machine-setup.sh
+	renamed:    ../rocoto/build_rocoto_and_namelist.sh -> ../rocoto/old/build_rocoto_and_namelist.sh
+	renamed:    ../rocoto/drive_fv3nest.xml -> ../rocoto/old/drive_fv3nest.xml
+	renamed:    ../rocoto/drive_fv3nest_retro.xml -> ../rocoto/old/drive_fv3nest_retro.xml
+	renamed:    ../rocoto/drive_fv3sar.xml -> ../rocoto/old/drive_fv3sar.xml
+	renamed:    ../rocoto/drive_fv3sar_da.xml -> ../rocoto/old/drive_fv3sar_da.xml
+	renamed:    ../rocoto/drive_fv3sar_da_retro.xml -> ../rocoto/old/drive_fv3sar_da_retro.xml
+	renamed:    ../rocoto/drive_fv3sar_retro.xml -> ../rocoto/old/drive_fv3sar_retro.xml
+	new file:   ../rocoto/old/drive_fv3sar_template.xml
+	renamed:    ../rocoto/run_fv3nest.sh -> ../rocoto/old/run_fv3nest.sh
+	renamed:    ../rocoto/run_fv3nest_retro.sh -> ../rocoto/old/run_fv3nest_retro.sh
+	renamed:    ../rocoto/run_fv3sar.sh -> ../rocoto/old/run_fv3sar.sh
+	renamed:    ../rocoto/run_fv3sar_da.sh -> ../rocoto/old/run_fv3sar_da.sh
+	renamed:    ../rocoto/run_fv3sar_da_retro.sh -> ../rocoto/old/run_fv3sar_da_retro.sh
+	renamed:    ../rocoto/run_fv3sar_multi.sh -> ../rocoto/old/run_fv3sar_multi.sh
+	renamed:    ../rocoto/run_fv3sar_retro.sh -> ../rocoto/old/run_fv3sar_retro.sh
+	new file:   ../rocoto/old/run_template.sh
+	new file:   ../rocoto/regional_workflow.xml.in
+	new file:   ../rocoto/rocoto_pre_job.sh
+	new file:   ../rocoto/run_regional_hera.sh
+	new file:   ../rocoto/run_regional_wcoss_cray.sh
+	new file:   ../rocoto/run_regional_wcoss_dell_p3.sh
+	new file:   ../rocoto/setup.sh
+	new file:   ../rocoto/sites/hera.ent
+	new file:   ../rocoto/sites/wcoss_cray.ent
+	new file:   ../rocoto/sites/wcoss_dell_p3.ent
+	new file:   ../rocoto/sites/xjet.ent
+	new file:   ../rocoto/valid_param_vals.sh
+	renamed:    ../scripts/exfv3cam_nest_fcst.sh -> ../scripts/exnest_forecast.sh
+	renamed:    ../scripts/exfv3cam_nest_chgres.sh -> ../scripts/exnest_make_ic.sh
+	renamed:    ../scripts/exfv3cam_rhist.sh -> ../scripts/exregional_archive.sh
+	renamed:    ../scripts/exfv3cam_cleanup.sh -> ../scripts/exregional_cleanup.sh
+	renamed:    ../scripts/exfv3cam_sar_fcst.sh -> ../scripts/exregional_forecast.sh
+	renamed:    ../scripts/exfv3cam_sar_fcst_firstguess.sh -> ../scripts/exregional_forecast_firstguess.sh
+	renamed:    ../scripts/exfv3cam_sar_gsianl.sh -> ../scripts/exregional_gsianl.sh
+	renamed:    ../scripts/exfv3cam_sar_gsianl_firstguess.sh -> ../scripts/exregional_gsianl_firstguess.sh
+	new file:   ../scripts/exregional_make_bc.sh
+	new file:   ../scripts/exregional_make_ic.sh
+	renamed:    ../scripts/exfv3cam_sar_chgres.sh -> ../scripts/exregional_make_ic_bc_old.sh
+	renamed:    ../scripts/exfv3cam_post.sh -> ../scripts/exregional_post.sh
+	renamed:    ../scripts/exfv3cam_post_firstguess.sh -> ../scripts/exregional_post_firstguess.sh
+	renamed:    ../scripts/exfv3cam_post_goes.sh -> ../scripts/exregional_post_goes.sh
+	modified:   ../sorc/build_all.sh
+	modified:   ../sorc/build_forecast.sh
+	modified:   ../sorc/checkout.sh
+	modified:   ../sorc/link_fix.sh
+	modified:   ../sorc/machine-setup.sh
+	modified:   ../sorc/partial_build.sh
+	modified:   ../sorc/regional_build.cfg
+	new file:   ../ush/check_for_preexist_dir.sh
+	new file:   ../ush/constants.sh
+	new file:   ../ush/filesys_cmds_vrfy.sh
+	new file:   ../ush/fv3gfs_filter_topo.sh
+	new file:   ../ush/fv3gfs_make_grid.sh
+	new file:   ../ush/fv3gfs_make_orog.sh
+	new file:   ../ush/interpol_to_arbit_CRES.sh
+	new file:   ../ush/iselementof.sh
+	new file:   ../ush/print_msg.sh
+	new file:   ../ush/run_commands_bc.sh
+	new file:   ../ush/run_commands_forecast.sh
+	new file:   ../ush/save_restore_shell_opts.sh
+	new file:   ../ush/set_file_param.sh
+	new file:   ../ush/set_gridparams_GFDLgrid.sh
+	new file:   ../ush/set_gridparams_JPgrid.sh
+	new file:   ../ush/source_funcs.sh
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+	both modified:   JNEST_ARCHIVE
+	both modified:   JNEST_CLEANUP
+	both modified:   JNEST_ENVIR
+	both modified:   JNEST_FORECAST
+	both modified:   JNEST_MAKE_IC
+	both modified:   JNEST_POST
+	both modified:   JNEST_POST_GOES
+	both modified:   JREGIONAL_ARCHIVE
+	both modified:   JREGIONAL_CLEANUP
+	both modified:   JREGIONAL_FORECAST
+	both modified:   JREGIONAL_GSIANL
+	both modified:   JREGIONAL_GSIANL_FIRSTGUESS
+	both modified:   JREGIONAL_MAKE_IC
+	both modified:   JREGIONAL_POST_FIRSTGUESS
+	both modified:   JREGIONAL_POST_GOES
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	d1
+	../sorc/checkout-forecast.log
+	../sorc/checkout-gsi.log
+	../sorc/checkout-post.log
+	../sorc/checkout-utils.log
+	../sorc/logs/
+	../sorc/regional_forecast.fd/
+	../sorc/regional_gsi.fd/
+	../sorc/regional_post.fd/
+	../sorc/regional_utils.fd/
+
