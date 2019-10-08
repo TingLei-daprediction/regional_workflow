@@ -16,11 +16,16 @@ if [ ! -d "../exec" ]; then
   mkdir ../exec
 fi
 
-if [ $target = theia ]; then target=theia.intel ; fi
+if [ $target = hera ]; then target=hera.intel ; fi
 
 cd regional_forecast.fd/
 FV3=$( pwd -P )/FV3
+CCPP=${CCPP:-"false"}
 cd tests/
-./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y" 1
+if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
+  ./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y CCPP=Y STATIC=Y SUITES=FV3_GFS_2017_gfdlmp_regional" 1
+else
+  ./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y" 1
+fi
 ##mv -f fv3_1.exe ../NEMS/exe/fv3_gfs_nh.prod.32bit.x
-mv -f fv3_1.exe ../NEMS/exe/fv3_gfs.x
+mv -f fv3_1.exe ../NEMS/exe/NEMS.x
