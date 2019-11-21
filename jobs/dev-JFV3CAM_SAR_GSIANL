@@ -4,6 +4,7 @@ set -x
 
 
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+. $USHfv3/run_commands_forecast.sh
 # Determine which WCOSS platform we are on
 hostname > hname
 hl=`cut -c 1-1 hname`
@@ -43,7 +44,7 @@ export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export DATA=${mainroot}/${tmpdir}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
+export DATA=${STMP}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
 mkdir -p $DATA
 cd $DATA
 
@@ -78,7 +79,7 @@ if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
    export COMOUTtm06=${COMROOT}/${NET}/${envir}/${RUN}.${PDYtm06}/${cyctm06}
    export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
    export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
-   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
    export COMINbias=$COMOUTtm06
    export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
    export MYGDAS=$COMINgfs/gdas.${PDYa}/${cya}
@@ -95,11 +96,12 @@ fi
 fi
 
 
-if [ $machine = THEIA ] ; then
-  export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
-  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+if [ $machine = hera -o $machine = HERA ] ; then
+#clthinkdeb are the bloak needed? 
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 elif [ $machine = WCOSS ] ; then
   export UTIL=$HOMEfv3/util/ush
   export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
@@ -119,10 +121,11 @@ gsiexec=${gsiexec:-$gsiexec0}
 
 # setup ensemble filelist03
 
-if [ $machine = THEIA ] ; then
-   export COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-   export COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
-   export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+if [ $machine = hera -o $machine = HERA ] ; then
+   export COMINgfs=${COMINgfs:-/scratch2/NCEPDEV/rstprod/com/gfs/prod}
+   export COMINnam=/scratch2/NCEPDEV/rstprod/com/nam/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
+   COMINrtma=/scratch2/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
    export COMINbias=$COMOUT
 fi

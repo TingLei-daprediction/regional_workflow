@@ -28,7 +28,7 @@ export cycguess=`echo $CYCLEguess | cut -c 9-10`
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
 mkdir -p $DATA
 cd $DATA
 
@@ -51,9 +51,9 @@ export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
 if [ $tmmark = tm12 ] ; then	# SAR-DA
-  export INPdir=$NWGES/gfsanl.$tmmark
+  export INPdir=$COMOUT/gfsanl.$tmmark
 elif [ $tmmark = tm00 ] ; then	# SAR without DA
-  export INPdir=$NWGES/anl.${dom}.$tmmark
+  export INPdir=$COMOUT/anl.${dom:+${dom}.}$tmmark
 fi
 mkdir -p $INPdir
 
@@ -82,7 +82,7 @@ ${HOMEfv3}/scripts/exregional_make_ic.sh
 export err=$?
 #####################################
 
-
+exit #clthinkdeb
 #####################################
 # Generate BCs for NHRSguess for SAR-DA
 #####################################

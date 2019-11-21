@@ -61,11 +61,11 @@ mkdir -p $ANLdir
 ##############################################
 # Set path/file for gsi executable
 
-if [ $machine = theia ] ; then
+if [ $machine = Hera -o $machine = hera  ] ; then
   export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
   export gsiexec=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 elif [ $machine = wcoss ] ; then
   export UTIL=$HOMEdir/util/ush
   export gsiexec=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
@@ -80,12 +80,13 @@ fi
 
 # setup ensemble filelist03
 
-if [ $machine = theia ] ; then
+if [ $machine = Hera -o $machine = hera  ] ; then
    export COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-   export COMINrap=/scratch4/NCEPDEV/rstprod/com/rap/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
    export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
    export COMINbias=$COMOUT
+   export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 fi
 if [ $machine = wcoss_cray -o $machine = wcoss -o $machine = wcoss_dell_p3 ] ; then
    export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod

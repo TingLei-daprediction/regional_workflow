@@ -34,7 +34,11 @@ elif [[ -d /scratch1/NCEPDEV ]] ; then
     # We are on NOAA Hera
     if ( ! eval module help > /dev/null 2>&1 ) ; then
 	echo load the module command 1>&2
+      echo "xxx"
+      echo
         source /apps/lmod/lmod/init/$__ms_shell
+      echo "xxx2"
+      echo
     fi
     target=hera
     module purge

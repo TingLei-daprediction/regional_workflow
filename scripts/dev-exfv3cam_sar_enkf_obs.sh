@@ -14,8 +14,6 @@ set -x
 export ldo_enscalc_option=${ldo_enscalc_option:-1}
 machine=DELL
 
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
 
 offset=`echo $tmmark | cut -c 3-4`
 
@@ -46,7 +44,8 @@ export endianness=Big_Endian
 
 # Set variables used in script
 #   ncp is cp replacement, currently keep as /bin/cp
-ncp=/bin/cp
+export ncp=/bin/cp
+export NLN=${NLN:-"/bin/ln -sf"}
 
 # setup ensemble filelist03
 
@@ -54,7 +53,7 @@ ncp=/bin/cp
 ################################################################################
 ## ObsInput file from ensemble mean
 rm -f obs_input*
-export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_tm${tmmark}_ensmean}
+export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_${tmmark}_ensmean}
 $NLN $SELECT_OBS obs_input.tar
 export USE_SELECT=YES
 export RUN_SELECT=NO
@@ -142,7 +141,7 @@ export DATA=$DATATOP/$memstr
 rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
-anavinfo=$fixgsi/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
 cp $anavinfo ./anavinfo
 $gsianlsh
 done

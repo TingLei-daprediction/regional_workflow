@@ -8,6 +8,7 @@ set -xe
 # Specify Execution Areas
 ####################################
 export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
+export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
 
 ####################################
 # Run setpdy and initialize PDY variables
@@ -20,15 +21,15 @@ export month=`echo $CDATE | cut -c 5-6`
 export day=`echo $CDATE | cut -c 7-8`
 
 offset=`echo $tmmark | cut -c 3-4`
-export CYCLEGUESS=`$NDATE -${offset} $CDATE`
-export CDATE=$CYCLEGUESS
+export CYCLEguess=`$NDATE -${offset} $CDATE`
+export CDATE=$CYCLEguess
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
 
 #####################################
 # Obtain unique process id (pid) and make temp directory
 #####################################
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
+export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}_${cyc}}
 mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA
@@ -44,13 +45,18 @@ export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
+export INIDIRtm12=${COMINgfs}/gfs.$PDYtm12/$cycguess
 
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-export INPdir=${NWGES}/anl.${dom}.${tmmark}
+if [ $tmmark = tm12 ] ; then    # SAR-DA
+  export INPdir=$COMOUT/gfsanl.$tmmark
+else
+  export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}
+fi
 mkdir -p ${INPdir}
 
 #####################################

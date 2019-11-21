@@ -39,7 +39,7 @@ export CYCrun=`echo $CDATE | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export DATA=${mainroot}/${tmpdir}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
+export DATA=${STMP}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
 mkdir -p $DATA
 cd $DATA
 
@@ -66,11 +66,11 @@ mkdir -p $ANLdir
 ##############################################
 # Set path/file for gsi executable
 
-if [ $machine = theia ] ; then
+if [ $machine = Hera -o $machine = hera  ] ; then
   export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
   export gsiexec=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 fi
 if [ $machine = wcoss ] ; then
   export UTIL=$HOMEdir/util/ush
@@ -87,9 +87,10 @@ fi
 
 # setup ensemble filelist03
 
-if [ $machine = theia ] ; then
+if [ $machine = Hera -o $machine = hera  ] ; then
+#cltthinkdeb
    export COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-   export COMINrap=/scratch4/NCEPDEV/rstprod/com/rap/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
    export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
    export COMINbias=$COMOUTtm06

@@ -13,8 +13,6 @@ set -x
 #
 machine=DELL
 
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
 
 offset=`echo $tmmark | cut -c 3-4`
 
@@ -51,7 +49,7 @@ ncp=/bin/cp
 ################################################################################
 ## ObsInput file from ensemble mean
 rm -f obs_input*
-export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_tm${tmmark}_ensmean}
+export SELECT_OBS=${SELECT_OBS:-${COMOUT}/obsinput_${CDATE}_${tmmark}_ensmean}
 rm -fr $SELECT_OBS
 export USE_SELECT=NO
 export RUN_SELECT=YES
@@ -117,7 +115,7 @@ export nhr_assimilation=03
 export DOHYBVAR=NO
 export HX_ONLY=TRUE
 #cltthinkdeb nens=`cat filelist03 | wc -l`
-anavinfo=$fixgsi/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
 cp $anavinfo ./anavinfo
 
 # Set parameters
