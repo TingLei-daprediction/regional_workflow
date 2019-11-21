@@ -30,8 +30,6 @@ export ictype=pfv3gfs              # opsgfs for q3fy17 gfs with new land dataset
 export nst_anl=.false.             # false or true to include NST analysis
 
 
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
 
 offset=`echo $tmmark | cut -c 3-4`
 
@@ -80,8 +78,8 @@ if [ $gtype = regional ] ; then
 # these are necessary for creating the boundary data
 # no need to do this every time it runs!
 #
-ln -sf $FIXfv3/$CASE/${CASE}_grid.tile7.halo4.nc $FIXfv3/$CASE/${CASE}_grid.tile7.nc
-ln -sf $FIXfv3/$CASE/${CASE}_oro_data.tile7.halo4.nc $FIXfv3/$CASE/${CASE}_oro_data.tile7.nc
+#cltln -sf $FIXfv3/$CASE/${CASE}_grid.tile7.halo4.nc $FIXfv3/$CASE/${CASE}_grid.tile7.nc
+#clt ln -sf $FIXfv3/$CASE/${CASE}_oro_data.tile7.halo4.nc $FIXfv3/$CASE/${CASE}_oro_data.tile7.nc
 else
 #
 # for gtype = uniform, stretch or nest
@@ -120,11 +118,11 @@ fi
 while (test "$hour" -le "$end_hour")
  do
   if [ $hour -lt 10 ]; then
-   hour_name='00'$hour
+   export hour_name='00'$hour
   elif [ $hour -lt 100 ]; then
-   hour_name='0'$hour
+   export hour_name='0'$hour
   else
-   hour_name=$hour
+   export hour_name=$hour
   fi
 offset=`echo $tmmark | cut -c 3-4`
 
@@ -215,14 +213,14 @@ do
  elif [ $machine = DELL -a $tmmark = tm00 ]; then
   BC_DATA=$DATA/wrk.chgres.$hour_name
   echo "env REGIONAL=2 HALO=4 bchour=$hour_name DATA=$BC_DATA $USHfv3/dev-global_chgres_driver_dacycle_hourly.sh >&out.chgres.$hour_name" >>bcfile.input
- elif [ $machine = THEIA -o $machine = WCOSS -o $tmmark != tm00 ]; then
+ elif [ $machine = hera -o $machine = HERA -o $machine = WCOSS -o $tmmark != tm00 ]; then
 #
 #for now on theia run the BC creation sequentially
 #
   export REGIONAL=2
   export HALO=4
   export bchour=$hour_name
-  $USHfv3/dev-global_chgres_driver_dacycle_hourly.sh
+  $HOMEfv3/scripts/dev-make_ic.sh</dev/null
   mv $OUTDIR/gfs_bndy.tile7.${bchour}.nc $ensmemINPdir/.
   err=$?
   if [ $err -ne 0 ] ; then

@@ -19,7 +19,6 @@ export NODES=1
 # the following exports can all be set or just will default to what is in global_chgres_driver.sh
 #
 export OMP_NUM_THREADS_CH=24       # default for openMP threads
-export machine=DELL                # WCOSS_C,WCOSS,THEIA
 export CASE=C768                   # resolution of tile: 48, 96, 192, 384, 768, 1152, 3072
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
@@ -31,8 +30,6 @@ export ictype=pfv3gfs              # opsgfs for q3fy17 gfs with new land dataset
 export nst_anl=.false.             # false or true to include NST analysis
 
 
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
 offset=`echo $tmmark | cut -c 3-4`
 
 export vlddate=`$NDATE -${offset} $CYCLE`
@@ -212,7 +209,7 @@ while (test "$hour" -le "$end_hour")
 #
   BC_DATA=/gpfs/hps3/ptmp/${LOGNAME}/${chg_memstr}wrk.chgres.$hour_name
   echo "env REGIONAL=2 bchour=$hour_name DATA=$BC_DATA $USHfv3/global_chgres_driver.sh >&out.chgres.$hour_name" >>bcfile.input
- elif [ $machine = THEIA -o $machine = WCOSS -o $machine = DELL ]; then
+ elif [ $machine = HERA -o  $machine = hera  -o $machine = WCOSS -o $machine = DELL ]; then
 #
 #for now on theia run the BC creation sequentially
 #

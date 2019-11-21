@@ -15,8 +15,6 @@ set -x
 export ldo_enscalc_option=${ldo_enscalc_option:-1}
 machine=DELL
 
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
 
 offset=`echo $tmmark | cut -c 3-4`
 
@@ -57,7 +55,7 @@ ncp=/bin/cp
 export HYB_ENS=".true."
 
 # We expect 81 total files to be present (80 enkf + 1 mean)
-export nens=${nens:-20}  #tothink
+export nens=${nens:-8}  #tothink
 
 # Not using FGAT or 4DEnVar, so hardwire nhr_assimilation to 3
 export nhr_assimilation=03
@@ -181,7 +179,7 @@ fi
 
 
 #cltthinkdeb nens=`cat filelist03 | wc -l`
-anavinfo=$fixgsi/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
 cp $anavinfo ./anavinfo
 
 # Set parameters
@@ -198,7 +196,7 @@ cat > enkf.nml << EOFnml
    datestring="$vlddate",datapath="$DATA/",
    analpertwtnh=0.85,analpertwtsh=0.85,analpertwttr=0.85,
    covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
-   corrlengthnh=2000,corrlengthsh=2000,corrlengthtr=2000,
+   corrlengthnh=200,corrlengthsh=200,corrlengthtr=200,
    lnsigcutoffnh=2.0,lnsigcutoffsh=2.0,lnsigcutofftr=2.0,
    lnsigcutoffpsnh=2.0,lnsigcutoffpssh=2.0,lnsigcutoffpstr=2.0,
    lnsigcutoffsatnh=2.0,lnsigcutoffsatsh=2.0,lnsigcutoffsattr=2.0,
@@ -326,7 +324,8 @@ cd $DATA
 ENKFEXEC=${ENKFEXEC:-$HOMEgsi/exec/global_enkf}
 
 cp $ENKFEXEC $DATA/enkf.x
-mpirun -l -n  240  $DATA/enkf.x < enkf.nml 1>stdout 2>stderr
+#cltorg mpirun -l -n  240  $DATA/enkf.x < enkf.nml 1>stdout 2>stderr
+${APRUNC2}  $DATA/enkf.x < enkf.nml 1>stdout 2>stderr
 rc=$?
 
 export ERR=$rc

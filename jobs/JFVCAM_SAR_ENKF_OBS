@@ -3,11 +3,12 @@
 set -x
 
 # HOMEfv3 set in qsub job
-machine=DELL
+machine=${machine:-hera}
 
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+. $USHfv3/run_commands_forecast.sh
  
-export DATATOP=${DATATOP:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATATOP=${DATATOP:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
 
 #cltorg  . /usrx/local/prod/lmod/lmod/init/ksh
 #replaced ty two following lines according to Chris at WCOSS help. 
@@ -44,11 +45,12 @@ CDATE=${CDATE:-${PDY}${cyc}}
 
 # Set path/file for gsi executable
 
-if [ $machine = THEIA ] ; then
-  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
-  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+if [ $machine = HERA -o $machine = hera ] ; then
+  export UTIL=$HOMEfv3/util/ush
+#cltthinkdeb if the following block is needed? 
+  export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 fi
 if [ $machine = WCOSS ] ; then
   export UTIL=$HOMEfv3/util/ush
@@ -73,44 +75,23 @@ if [ hl = m ] ; then
   wcoss=gp
 fi
 
-if [ $tmmark = tm06 ] ; then
-if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
-   export COMOUTtm06=${COMROOT}/${NET}/${envir}/${RUN}.${PDYtm06}/${cyctm06}
-   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
-   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
-   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
-   export COMINbias=$COMOUTtm06
-   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
-   export MYGDAS=$COMINgfs/gdas.${PDYa}/${cya}
-   export GBGDAS=$COMINgfs/gdas.${PDYa}/${cya}
-fi
-else
-if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
-   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
-   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
-   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+
+if [ $machine = hera ] ; then
+   export COMINgfs=${COMINgfs:-/scratch4/NCEPDEV/rstprod/com/gfs/prod}
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
+   export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+   # bias correction files from prev cycle
    export COMINbias=$COMOUT
-   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
 fi
+if [ $machine = wcoss_cray -o $machine = wcoss -o $machine = wcoss_dell_p3 ] ; then
+   export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+   export COMINrap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/prod}
+   export COMINrtma=/gpfs/dell2/nco/ops/com/rtma/prod
+   # bias correction files from prev cycle
+   export COMINbias=$COMOUT
 fi
 
 
-if [ $machine = THEIA ] ; then
-  export UTIL=/scratch4/NCEPDEV/meso/save/${USER}/run_it_regional/exec
-  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
-elif [ $machine = WCOSS ] ; then
-  export UTIL=$HOMEfv3/util/ush
-  export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
-  export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
-  export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
-elif [ $machine = DELL ] ; then
-  export UTIL=${HOMEfv3}/util/ush
-  export gsiexec0=${EXECfv3}/regional_gsi.x
-  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
-  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
-fi
 
 #run script
 export gsianlsh=${gsianlsh:-${HOMEfv3}/scripts/dev-exfv3cam_sar_gsianl.sh}

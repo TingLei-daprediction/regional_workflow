@@ -1,32 +1,156 @@
 #!/bin/bash -l
-set +x
-. /usrx/local/prod/lmod/lmod/init/sh
 set -x
 
-module load impi/18.0.1
-module load lsf/10.1
 
-module use /gpfs/dell3/usrx/local/dev/emc_rocoto/modulefiles/
-module load ruby/2.5.1 rocoto/1.2.4
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -m enkf_obs_tm06 
+module load  rocoto/1.3.1
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t analysis_tm05  
 exit
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t emean_obs_tm06 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t epost2mean_tm05  
 exit
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t epost2mean_tm06 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m forecast_ens_tm06   
 exit
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t analysis_tm06 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t recenter_tm06  
 exit
-exit
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t recenter_tm06 
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t enkf_eupd_tm06 
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t enkf_obs_tm06_grp01 
-rocotorewind -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t epost2mean_tm06 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t forecast_tm06   
 exit
 exit
 exit
 exit
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t chgres_ens01_fcstbndy_tm06 
-exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m chgres_fcstbndy_da   
 
-rocotoboot -v 10 -w /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /gpfs/dell2/emc/modeling/noscrub/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201909200000 -t chgres_ens_tm12_grp01
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m chgres_ens_fcstbndy_da   
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m forecast_ens_tm06   
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m da_fcst_analysis_set   
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t analysis_tm06  
+exit
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t enkf_eupd_tm06  
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t enkf_eupd_tm06  
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t epost2mean_tm06  
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t emean_obs_tm06  
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m enkf_obs_tm06  
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t enkf_obs_tm06_grp01  
+exit
+exit
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t emean_obs_tm06  
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t emean_obs_tm06  
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t forecast_firstguess 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_firstguess 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_fcstbndy_tm12  
+exit
+exit
+rocotostat -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c all  
+exit
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t epost2mean_tm06  
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t analysis_tm06  
+exit
+exit
+exit
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t  forecast_ens_firstguess_grp03  
+exit
+exit
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t epost2mean_tm06  
+exit
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t forecast_firstguess 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m EnKF_analysis_tm06 
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_firstguess 
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m forecast_ens_firstguess 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t forecast_ens_firstguess_grp01
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m chgres_ens_firstguess 
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_fcstbndy_tm12 
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -m chgres_ens_fcstbndy_da 
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_ens_tm12_grp01 
+exit
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_ens01_fcstbndy_tm06
+exit
+exit
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dd.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910300000 -t chgres_fcstbndy_tm06 
+exit
+exit
+exit
+exit
+exit
+exit
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dd.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910300000 -t chgres_fcstbndy_tm06 
+exit
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t  chgres_fcstbndy_tm12 
+exit
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t recenter_tm06 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t enkf_eupd_tm06 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t enkf_obs_tm06_grp01 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t  emean_obs_tm06 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t epost2mean_tm06 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t analysis_tm06 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t forecast_ens_firstguess_grp01 
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_ens01_fcstbndy_tm06
+exit
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db -c 201910030000 -t chgres_ens_tm12_grp01
+exit
+rocotorun -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp2Rocoto/dev.db
 

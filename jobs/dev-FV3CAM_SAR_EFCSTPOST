@@ -5,8 +5,9 @@ set -x
 # HOMEfv3 set in qsub job
 
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+. $USHfv3/run_commands_forecast.sh
  
-export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
 rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
@@ -46,11 +47,12 @@ mkdir -p $NWGES_ens
 CDATE=${CDATE:-${PDY}${cyc}}
 
 
-if [ $machine = THEIA ] ; then
-  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
-  export gsiexec0=/scratch4/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
-  export fixgsi=/scratch4/NCEPDEV/meso/save/Wanshu.Wu/Code/ProdGSI/fix
-  export fixcrtm=/scratch4/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update
+if [ $machine = HERA -o $machine = hera ] ; then
+#cltthinkdeb are this block needed?
+  export UTIL=${UTIL:-$HOMEfv3/util/ush}
+  export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
 fi
 if [ $machine = WCOSS ] ; then
   export UTIL=$HOMEfv3/util/ush
@@ -78,12 +80,13 @@ if [ hl = m ] ; then
   wcoss=gp
 fi
 
-if [ $machine = THEIA ] ; then
-   COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-   COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
-   COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+if [ $machine = hera -o $machine = HERA ] ; then
+   export COMINgfs=${COMINgfs:-/scratch2/NCEPDEV/rstprod/com/gfs/prod}
+   export COMINnam=/scratch2/NCEPDEV/rstprod/com/nam/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
+   COMINrtma=/scratch2/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
-   COMINbias=$COMOUT
+   export COMINbias=$COMOUT
 fi
 if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
    COMINgfs=/gpfs/hps/nco/ops/com/gfs/prod

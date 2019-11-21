@@ -25,7 +25,7 @@ ENSEND=${ENSEND:-2}
 
 ################################################################################
 # Run forecast for ensemble member
-   export DATATOP=${DATATOP:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/EXP${envir}/${job}_${cyc}_efcst}
+   export DATATOP=${DATATOP:-${STMP}/${USER}/tmpnwprd/EXP${envir}/${job}_${cyc}_efcst}
 rc=0
 for imem in $(seq $ENSBEG $ENSEND); do
 

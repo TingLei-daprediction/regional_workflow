@@ -22,6 +22,9 @@ if [ "${jobpre}" = "regional_forecast" ]; then
 else
   module load regional
 fi
+module load nco
+echo "thinkdeb show module list"
+module list
 module list
 
 exec "$@"

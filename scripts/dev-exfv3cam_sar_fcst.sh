@@ -30,6 +30,7 @@ else
 FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
 fi
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
+ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
 #cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
 
@@ -131,14 +132,32 @@ cd ..
 if [ $tmmark = tm00 ] ; then
 # Free forecast with DA (warm start)
   if [ $model = fv3sar_da ] ; then
-    cp ${PARMfv3}/input_sar_da.nml input.nml 
+    cp ${PARMfv3}/input_sar_da.nml input.nml.tmp 
+    cat input.nml.tmp | \
+        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+
+    
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
-    cp ${PARMfv3}/input_sar_${dom}.nml input.nml
-  fi
-  cp ${PARMfv3}/model_configure_sar.tmp_${dom} model_configure.tmp
+   if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
+      cp ${PARMfv3}/input_sar_${dom}_ccpp.nml input.nml.tmp
+      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
+      cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+    else
+      cp ${PARMfv3}/input_sar_${dom}.nml input.nml
+      if [ $dom = conus ] ; then
+        mv input.nml input.nml.tmp
+        cat input.nml.tmp | \
+            sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+      elif [ ! -e input.nml ] ; then
+         echo "FATAL ERROR: no input_sar_${dom}.nml in PARMfv3 directory.  Create one!"
+      fi
+    fi
 
-	if [ $dom = "conus" ]
+  fi
+  cp ${PARMfv3}/model_configure_sar.tmp_${dom:-conus} model_configure.tmp
+
+	if [ ${dom:-conus} = "conus" ]
 	then
 	  nodes=76 
 	elif [ $dom = "ak" ]
@@ -165,34 +184,36 @@ if [ $tmmark = tm00 ] ; then
 
 # Submit post manager here
 elif [ $tmmark = tm12 ] ; then
-	cp ${PARMfv3}/input_sar_firstguess.nml input.nml
+
+  cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
+  cat input.nml.tmp | \
+     sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+
+
+
 	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
 	cp ${PARMfv3}/d* .
 	cp ${PARMfv3}/field_table .
 	cp ${PARMfv3}/nems.configure .
-
-	nodes=54
-	ncnode=24
-	let nctsk=ncnode/OMP_NUM_THREADS
-	let ntasks=nodes*nctsk
-	echo nctsk = $nctsk and ntasks = $ntasks
-
-
+#thinkdeb do we need consider  if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
 
 else
 #clt for bblake  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
 #for bblake   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
-  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
+  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml.tmp
+  cat input.nml.tmp | \
+        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+
   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
-  nodes=54
-  ncnode=24
-  let nctsk=ncnode/OMP_NUM_THREADS
-  let ntasks=nodes*nctsk
-  echo nctsk = $nctsk and ntasks = $ntasks
+
   cp ${PARMfv3}/d* .
   cp ${PARMfv3}/field_table .
   cp ${PARMfv3}/nems.configure .
-
+ if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
+   if [ -f "${PARMfv3}/field_table_ccpp" ] ; then
+    cp -f ${PARMfv3}/field_table_ccpp field_table
+   fi
+ fi
 
 fi
 
@@ -230,16 +251,17 @@ $yr $mn $dy $cyc 0 0
 cat temp diag_table.tmp > diag_table
 
 if [ $tmmark = tm12 ] ; then
+    cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
+    sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
+    sed s/NHRS/$NHRSguess/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+    sed s/NCNODE/$NCNODE/  >  model_configure
 
-cat model_configure.tmp | sed s/NTASKS/$ntasks/ | sed s/YR/$yr/ | \
-    sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
-    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
-    sed s/NCNODE/$ncnode/  >  model_configure
 else
-cat model_configure.tmp | sed s/NTASKS/$ntasks/ | sed s/YR/$yr/ | \
+  cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
     sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
-    sed s/NCNODE/$ncnode/ | sed s/NRESTART/$NRST/  >  model_configure
+    sed s/NCNODE/$NCNODE/ | sed s/NRESTART/$NRST/ | \
+    sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  >  model_configure
 fi
 
 #----------------------------------------- 
@@ -249,7 +271,7 @@ export pgm=regional_forecast.x
 . prep_step
 
 startmsg
-mpirun -l -n ${ntasks} $EXECfv3/regional_forecast.x >$pgmout 2>err
+${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
 export err=$?;err_chk
 

@@ -398,7 +398,8 @@ export pgm=regional_gsi.x
 . prep_step
 
 startmsg
-mpirun -l -n 240 ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+#cltmpirun -l -n 240 ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
 
 mv fort.201 fit_p1

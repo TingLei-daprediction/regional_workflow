@@ -323,7 +323,7 @@ OBS_INPUT::
 
 EOF
 
-anavinfo=$fixgsi/anavinfo_fv3_64
+anavinfo=$PARMfv3/anavinfo_fv3_64
 berror=$fixgsi/$endianness/nam_glb_berror.f77.gcv
 emiscoef_IRwater=$fixcrtm/Nalli.IRwater.EmisCoeff.bin
 emiscoef_IRice=$fixcrtm/NPOESS.IRice.EmisCoeff.bin
@@ -527,7 +527,7 @@ export pgm=`basename $gsiexec`
 startmsg
 ###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
-mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
+${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
 
 

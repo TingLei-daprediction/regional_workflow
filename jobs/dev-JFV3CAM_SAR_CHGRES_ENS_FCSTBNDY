@@ -1,16 +1,17 @@
 #!/bin/ksh
  
 set -x
-machine="DELL"
+machine=${machine:-DELL}
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
-export CHGRESEXEC=$EXECfv3/regional_chgres.x
+. $USHfv3/run_commands_bc.sh
+export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
 #cltorg export CHGRESSH=$USHfv3/global_chgres.sh
 export CHGRESSH=$USHfv3/dev-global_chgres_driver_dacycle_hourly.sh
 export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
 # HOMEdir set in qsub job
 
 
-export DATA=${DATA:-${mainroot}/${tmpdir}/${LOGNAME}/EXP${envir}_tmpnwprd_hourly/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
+export DATA=${DATA:-${STMP}/${LOGNAME}/EXP${envir}_tmpnwprd_hourly/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
 mkdir -p $DATA 
 cd  $DATA
 
@@ -21,11 +22,6 @@ export pgmout="OUTPUT.${pid}"
 # CYCLE and PDY now come from rocoto script
 
 
-export CYCLEtm06=`$NDATE -06 $CYCLE`
-export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
-export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
-echo "DATEXX${CYCLE}" > ncepdate
-export PDY=`cut -c 7-14 ncepdate`
 
 
 
@@ -33,15 +29,29 @@ export PDY=`cut -c 7-14 ncepdate`
 ##export CYCLE=`cut -c 7-16 ncepdate`
 ##export PDY=`cut -c 7-14 ncepdate`
 offset=`echo $tmmark | cut -c 3-4`
+export month=`echo $CDATE | cut -c 5-6`
+export day=`echo $CDATE | cut -c 7-8`
 
-export CYCLEguess=`$NDATE  -${offset} $CYCLE`
-export CDATE=$CYCLEguess
+export CYCLEguess=`$NDATE -12 $CDATE`
+export ymd=`echo $CDATE | cut -c 1-8`
+export hhcyc=`echo $CDATE | cut -c 9-10`
+export PDYtm12=`echo $CYCLEguess | cut -c 1-8`
+export cycguess=`echo $CYCLEguess | cut -c 9-10`
 
-# this is the 1st job in the cycle so save date file
-# for all other J-jobs
-#cltold cp ncepdate $DATEdir/t${cyc}z
+export CYCLEtm06=`$NDATE -06 $CYCLE`
 export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
 export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
+export PDYrun=`echo $CDATE | cut -c 1-8`
+
+
+
+##export CYCLE=`cut -c 7-16 ncepdate`
+##export PDY=`cut -c 7-14 ncepdate`
+export CYCLEguess=`$NDATE -12 $CYCLE`
+export CDATE=$CYCLEguess
+export ymd=`echo $CDATE | cut -c 1-8`
+export hhcyc=`echo $CDATE | cut -c 9-10`
+
 
 
 
@@ -57,7 +67,7 @@ if [ $machine = WCOSS_C ]; then
  export APRUNC="aprun -n 1 -N 1 -j 1 -d $OMP_NUM_THREADS_CH -cc depth"
  export INIDIR=/gpfs/hps/nco/ops/com/gfs/prod/gfs.$ymd
  export HOMEgfs=$LS_SUBCWD/..
-  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
+  export UTIL=/scratch2/NCEPDEV/meso/save/$USER/run_it_regional/exec
 elif [ $machine = WCOSS ]; then
  export APRUNC="time"
  export INIDIR=/ptmpp2/$USER/prfv3rt1/gfs.$ymd/$hhcyc
@@ -78,12 +88,12 @@ export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
  export KMP_AFFINITY=disabled
  export INIDIR=${COMgfs}/gfs.$ymd/$hhcyc
  
-elif [ $machine = THEIA ]; then
+elif [ $machine = HERA -o $machine = hera ]; then
+ export UTIL=$HOMEfv3/util/ush
  export CDUMP=${CDUMP:-gdas}                   # gfs or gdas
- export APRUNC="time"
- COMROOTp2=/scratch4/NCEPDEV/rstprod/com
+ COMROOTp2=/scratch1/NCEPDEV/rstprod/com
  export ymd=`echo $CDATE | cut -c 1-8`
- export INIDIR=$COMROOTp2/gfs/prod/${CDUMP}.$ymd
+ export INIDIR=$COMgfs/gfs/prod/${CDUMP}.$ymd
  ulimit -a
  ulimit -s unlimited
 else
@@ -94,10 +104,10 @@ fi
 
 # setup ensemble filelist03
 
-if [ $machine = THEIA ] ; then
-export   COMINgfs=/scratch4/NCEPDEV/rstprod/com/gfs/prod
-export   COMINnam=/scratch4/NCEPDEV/rstprod/com/nam/prod
-export   COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
+if [ $machine = HERA -o machine = hera  ] ; then
+export   COMINgfs=${COMINgfs:-/scratch1/NCEPDEV/rstprod/com/gfs/prod}
+export   COMINnam=${COMINnam:-/scratch1/NCEPDEV/rstprod/com/nam/prod}
+export   COMINrtma=${COMINrtma:-/scratch2/NCEPDEV/rstprod/com/rtma2p5/prod}
    # bias correction files from prev cycle
 export   COMINbias=$COMOUTtm06
 fi
@@ -125,7 +135,7 @@ mkdir -p $NWGES
 
 #mkdir -p $COMOUT/gfsanl.tm12
 #cltorg export INPdir=$COMOUT/gfsanl.tm12
-export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/dirLBC/$tmmark
+export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDYrun}/${cyc}/dirLBC/$tmmark
 mkdir -p $ensINPdir
 #
 #run script

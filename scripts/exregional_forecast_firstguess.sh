@@ -19,7 +19,7 @@ ulimit -s unlimited
 ulimit -a
 
 mkdir -p INPUT RESTART
-#cltorg cp ${NWGES}/gfsanl.tm12/*.nc INPUT
+#clt cp ${NWGES}/gfsanl.tm12/*.nc INPUT
 cp ${COMOUT}/gfsanl.tm12/*.nc INPUT
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
@@ -91,7 +91,12 @@ cd ..
 #   input.nml, input_nest02.nml, model_configure, and nems.configure
 #-------------------------------------------------------------------
 
-cp ${PARMfv3}/input_sar_firstguess.nml input.nml
+cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
+cat input.nml.tmp | \
+     sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+
+
+
 cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
 cp ${PARMfv3}/d* .
 cp ${PARMfv3}/field_table .

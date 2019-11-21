@@ -2,6 +2,7 @@
 set -x
 
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+. $USHfv3/run_commands_forecast.sh
 
 ####################################
 # Run setpdy and initialize PDY variables
@@ -19,7 +20,7 @@ export CYCrun=`echo $CDATE | cut -c 9-10`
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${mainroot}/${tmpdir}/${USER}/tmpnwprd/$envir/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/${USER}/tmpnwprd/$envir/${job}_${cyc}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi

@@ -92,7 +92,7 @@ ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.nc
 ln -sf ${CASE}_oro_data.tile7.halo4.nc oro_data.tile7.halo4.nc
 # Initial Conditions are needed for SAR but not SAR-DA
 #clt if [ $model = fv3sar ] ; then
-if [ $tmmark = 'tm12' ] ; then
+if [ $tmmark = 'tm12']  || [ $model = fv3sar  ] ; then
   ln -sf sfc_data.tile7.nc sfc_data.nc
   ln -sf gfs_data.tile7.nc gfs_data.nc
 fi
@@ -108,7 +108,10 @@ CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
 if [ $tmmark = tm00 ] ; then
 # Free forecast with DA (warm start)
   if [ $model = fv3sar_da ] ; then
-    cp ${PARMfv3}/input_sar_da.nml input.nml 
+   cp ${PARMfv3}/input_sar_da.nml input.nml.tmp
+    cat input.nml.tmp | \
+        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
     if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
@@ -129,8 +132,13 @@ if [ $tmmark = tm00 ] ; then
   cp ${PARMfv3}/model_configure_sar.tmp_${dom} model_configure.tmp
 
 else
-  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
+  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml.tmp
+  cat input.nml.tmp | \
+        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
+
+
+
 fi
 
 cp ${PARMfv3}/d* .

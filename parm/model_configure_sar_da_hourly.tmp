@@ -1,3 +1,4 @@
+print_esmf:              .false.
 total_member:            1
 PE_MEMBER01:             NTASKS
 start_year:              YR
@@ -18,10 +19,11 @@ use_hyper_thread:        .false.
 ncores_per_node:         NCNODE
 debug_affinity:          .true.
 restart_interval:        NRESTART
+output_1st_tstep_rst:    .false.
 
 quilting:                .true.
 write_groups:            2
-write_tasks_per_group:   36
+write_tasks_per_group:   54
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf'
