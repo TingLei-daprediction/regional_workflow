@@ -1574,6 +1574,10 @@
       <name>PDY</name>
       <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>
@@ -2209,6 +2213,10 @@
       <name>PDY</name>
       <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>

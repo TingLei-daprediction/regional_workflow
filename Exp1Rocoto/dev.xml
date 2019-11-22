@@ -1521,7 +1521,7 @@
   
   <task name="enkf_eupd_tm#next_mark#" cycledefs="regional" maxtries="6">
   &RESERVATION;
-  &ANL2_RESOURCES;
+  &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>enkf_eupd_tm#next_mark#_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
@@ -1574,6 +1574,10 @@
       <name>PDY</name>
       <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>
@@ -1961,7 +1965,7 @@
     <var name="None">None</var>
   <task name="epost2mean_tm#next_mark#" cycledefs="regional" maxtries="6">
   &RESERVATION;
-  &ANL2_RESOURCES;
+  &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>epost2mean_tm#next_mark#_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
@@ -2209,6 +2213,10 @@
       <name>PDY</name>
       <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>
