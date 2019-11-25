@@ -70,6 +70,7 @@
 <!ENTITY ANL_RESOURCES '<walltime>02:30:00</walltime>'>
 <!ENTITY ANL2_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">
 <!ENTITY ENKF_RESOURCES "<nodes>10:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>20</value></envar>&ENKF_EXTRA;">
+<!ENTITY RECENTER_RESOURCES "<nodes>11:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>21</value></envar>&ENKF_EXTRA;">
 
 
 <!ENTITY HIST_RESOURCES '<walltime>00:30:00</walltime><memory>5G</memory>'>
@@ -992,7 +993,7 @@
 
   <task name="recenter_tm06" cycledefs="regional" maxtries="6">
   &RESERVATION;
-  &ENKF_RESOURCES;
+  &RECENTER_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>recenter_tm06_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm06_@H.log</cyclestr></join>
@@ -1590,7 +1591,7 @@
 
   <task name="recenter_tm#next_mark#" cycledefs="regional" maxtries="6">
   &RESERVATION;
-  &ENKF_RESOURCES;
+  &RECENTER_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>recenter_tm#next_mark#_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm#next_mark#_@H.log</cyclestr></join>
