@@ -15,12 +15,12 @@ export SENDCOM=${SENDCOM:-YES}
 #  PDY and CDATE are passed in through Rocoto xml
 #setpdy.sh
 #. ./PDY
-
+export PDY=`echo $CDATE | cut -c 1-8`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export INPUT_DATA=${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/forecast_firstguess_${cyc}
-export DATA=${mainroot}/${tmpdir}/${USER}/tmpnwprd/${envir}/${job}_${cyc}
+export INPUT_DATA=${STMP}/tmpnwprd-${CDATE}/${envir}/forecast_firstguess_${cyc}
+export DATA=${STMP}/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
 mkdir -p $DATA
 cd $DATA
 
@@ -55,8 +55,8 @@ if [ -e $pgmout ] ; then
 cat $pgmout
 fi
 
-if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $INPUT_DATA ; fi
-if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
+#clt if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $INPUT_DATA ; fi
+#clt if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
 
 date
 

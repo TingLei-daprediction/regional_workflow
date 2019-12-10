@@ -44,7 +44,7 @@ export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export DATA=${STMP}/${USER}/${envir}/${LOGNAME}/tmpnwprd/${job}_${CYCrun}
+export DATA=${STMP}/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
 mkdir -p $DATA
 cd $DATA
 
@@ -60,7 +60,11 @@ export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $NWGES
-export NWGES_ens=${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDYrun}/${CYCrun}
+if [ ${l_twoway_hybrid_opt:-.true.} = ".true". ] ; then 
+export NWGES_ens=${NWGES_ens:-${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDYrun}/${CYCrun}}
+else
+export NWGES_ens=${NWGES_ens:-${GESROOT}/${NET}/${envir4ens}/${RUN}_ens.${PDYrun}/${CYCrun}}
+fi
 export COMIN_GES_ENS=${NWGES_ens}/$tmmark
 mkdir -p $NWGES
 
@@ -148,7 +152,7 @@ cat $pgmout
 cat stderr
 
 #cltorg if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
-if [ ${RM_TMPDIR:-YES} = YES ] ; then mv  $DATA ${DATA}_bak ; fi
+#cltif [ ${RM_TMPDIR:-YES} = YES ] ; then mv  $DATA ${DATA}_bak ; fi
 
 date
 

@@ -7,7 +7,7 @@ set -x
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
 . $USHfv3/run_commands_forecast.sh
  
-export DATA=${DATA:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
 rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
