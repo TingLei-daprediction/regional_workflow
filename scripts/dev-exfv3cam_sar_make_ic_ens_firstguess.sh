@@ -93,10 +93,10 @@ cp filelist${nhr_assimilation}_tmp_ens$ENSGRP $COMOUT/${RUN}.t${CYCrun}z.ens_chg
 #head -${nens} filelist03>thinkdebfilelist03
     if [ $ENSGRP -eq 1 ]; then
        let "line1 = $ENSBEG   "
-       let "line2 = $ENSEND + 1 "
+       let "line2 = $ENSEND  "
      else
-       let "line1 = $ENSBEG + 1  "
-       let "line2 = $ENSEND + 1 "
+       let "line1 = $ENSBEG   "
+       let "line2 = $ENSEND "
     fi
 #head -${nens} filelist03>filelist03_ensgrp$ENSGRP
     ls -l filelist${nhr_assimilation}_tmp_ens$ENSGRP
@@ -216,7 +216,15 @@ while (test "$hour" -le "$end_hour")
 #cltthink  else
     export vlddateLbcHr=`$NDATE +$hour $vlddate` 
       python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddateLbcHr --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
-
+numfiles=`cat  filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} | wc -l`
+L_USE_CONTROL_LBC=.false.
+if [ $numfiles -lt ${nens:-20} ]; then
+  echo "Ensembles not found - turning off HYBENS!"
+  export L_USE_CONTROL_LBC=".true."
+fi
+  
+  export bchour=$hour_name
+if [ $L_USE_CONTROL_LBC != ".true." ]; then
    export ATMANL=`grep $memstr filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour}` 
    echo   'ATMANL for lbc '$hour 'is ' $ATMANL
    export  SFCANL="NULL"
@@ -238,9 +246,10 @@ while (test "$hour" -le "$end_hour")
 #
   export REGIONAL=2
   export HALO=4
-  export bchour=$hour_name
 #cltthinkdeb tothink now, the ATMAL is unset, the same global file (for control run ) will be used to get the fake ensemble lbc files
   $HOMEfv3/scripts/dev-make_ic.sh</dev/null
+  unset ATMANL 
+  unset SFCANL
   mv $OUTDIR/gfs_bndy.tile7.${bchour}.nc $ensmemINPdir/gfs_bndy.tile7.${bchour}.nc
   err=$?
   if [ $err -ne 0 ] ; then
@@ -248,14 +257,17 @@ while (test "$hour" -le "$end_hour")
     exit 10
   fi
  fi
+else  # use a single control lbc
+   /bin/cp   $INPdir/gfs_bndy.tile7.${bchour}.nc $ensmemINPdir/gfs_bndy.tile7.${bchour}.nc
+fi   
    hour=`expr $hour + 3`
-done
 unset bchour
-unset hour_name
+done
 #
 # for WCOSS_C we now run BC creation for all hours simultaneously
 #
   echo "eob of the block for"  $line
+unset hour_name
 done <"filelist03_ensgrp$ENSGRP"
 
 exit

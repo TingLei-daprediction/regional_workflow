@@ -27,6 +27,7 @@ elif [ "$machine" = hera ]; then
   #export APRUNF=${APRUNF:-"source"}
   export APRUNF=${APRUNF:-"time"}
   export APRUNC=${APRUNC:-"srun --ntasks=${TOTAL_TASKS} --ntasks-per-node=${NCTSK} --cpus-per-task=${OMP_NUM_THREADS}"}
+  export APRUN_EPOS=${APRUN_EPOS:-"srun --export=ALL"}
   export APRUNO=${APRUNO:-"srun --exclusive --ntasks=1 --nodes=1 --ntasks-per-node=${NCTSK} --cpus-per-task=${OMP_NUM_THREADS}"}
   export BACKGROUND="&"
 elif [ "$machine" = jet ]; then

@@ -271,8 +271,8 @@ OBS_INPUT::
    n_ens=$nens,
    uv_hyb_ens=.true.,
    beta_s0=0.25,
-   s_ens_h=300,
-   s_ens_v=5,
+   s_ens_h=110,
+   s_ens_v=3,
    generate_ens=.false.,
    regional_ensemble_option=${regional_ensemble_option},
    aniso_a_en=.false.,
@@ -407,9 +407,18 @@ fi
 
 ###export nmmb_nems_obs=${COMINnam}/nam.${PDYrun}
 export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+
 export nmmb_nems_bias=${COMINbias}
 
 if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
+   if [ ! -d $nmmb_nems_obs  ]; then
+     export nmmb_nems_obs=${COMINrap_user}/rap.${PDYa}
+     if [ ! -d $nmmb_nems_obs  ]; then
+       echo "there are no obs needed, exit"
+       exit 250
+     fi
+   fi
+     
 # Copy observational data to $tmpdir
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
@@ -529,6 +538,9 @@ startmsg
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
 ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
+if [ $err -ne 0 ]; then
+ exit 999
+fi
 
 
 # If requested, create obsinput tarball from obs_input.* files
@@ -552,17 +564,17 @@ mv fort.204 fit_q1
 mv fort.205 fit_pw1
 mv fort.207 fit_rad1
 mv fort.209 fit_rw1
-if [[ $HX_ONLY} != TRUE ]];then
+if [[ $HX_ONLY != TRUE ]];then
 cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits.${tmmark}
 cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits2.${tmmark}
 
-cp satbias_out $GESROOT_HOLD/satbias_in
-cp satbias_out $COMOUT/${RUN}.t${CYCrun}z.satbias.${tmmark}
-cp satbias_pc.out $GESROOT_HOLD/satbias_pc
-cp satbias_pc.out $COMOUT/${RUN}.t${CYCrun}z.satbias_pc.${tmmark}
+ cp satbias_out $GESROOT_HOLD/satbias_in
+ cp satbias_out $COMOUT/${RUN}.t${CYCrun}z.satbias.${tmmark}
+#cltthink cp satbias_pc.out $GESROOT_HOLD/satbias_pc
+ cp satbias_pc.out $COMOUT/${RUN}.t${CYCrun}z.satbias_pc.${tmmark}
 
-cp aircftbias_out $COMOUT/${RUN}.t${CYCrun}z.abias_air.${tmmark}
-cp aircftbias_out $GESROOT_HOLD/gdas.airbias
+ cp aircftbias_out $COMOUT/${RUN}.t${CYCrun}z.abias_air.${tmmark}
+#cp aircftbias_out $GESROOT_HOLD/gdas.airbias
 fi 
 
 RADSTAT=${COMOUT}/${RUN}.t${CYCrun}z.${ctrlstr+${ctrlstr}_}radstat.${tmmark}

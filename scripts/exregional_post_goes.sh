@@ -70,6 +70,7 @@ export pgm=regional_post.x
 . prep_step
 
 startmsg
+export POSTGPEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-wen/EMC_post/sorc/ncep_post.fd/ncep_post
 ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2>err
 export err=$?; err_chk
 

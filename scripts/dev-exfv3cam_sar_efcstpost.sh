@@ -11,6 +11,9 @@ set -x
 # Script history log:
 # 2018-10-30  $USER - Modified based on original GSI script
 #
+export  HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
+
+
    EnKFTracerVars=${EnKFTracerVar:-"sphum,o3mr"}
 export ldo_enscalc_option=${ldo_enscalc_option:-1}
 machine=DELL
@@ -177,10 +180,24 @@ fi
 
 
 
-
 #cltthinkdeb nens=`cat filelist03 | wc -l`
 anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
-cp $anavinfo ./anavinfo
+satinfo=$PARMfv3/fv3sar_satinfo.txt
+scaninfo=$fixgsi/global_scaninfo.txt
+satangl=$fixgsi/nam_global_satangbias.txt
+ozinfo=$fixgsi/nam_global_ozinfo.txt
+convinfo=$fixgsi/nam_regional_convinfo.txt
+
+ln -sf  $anavinfo ./anavinfo
+# Copy executable and fixed files to $DATA
+
+ln -sf  $satangl  ./satbias_angle
+ln -sf  $satinfo  ./satinfo
+ln -sf  $scaninfo ./scaninfo
+ln -sf  $ozinfo   ./ozinfo
+ln -sf  $convinfo ./convinfo
+
+cp $GESROOT_HOLD/satbias_in ./satbias_in
 
 # Set parameters
 export USEGFSO3=.false.
@@ -196,21 +213,21 @@ cat > enkf.nml << EOFnml
    datestring="$vlddate",datapath="$DATA/",
    analpertwtnh=0.85,analpertwtsh=0.85,analpertwttr=0.85,
    covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
-   corrlengthnh=200,corrlengthsh=200,corrlengthtr=200,
-   lnsigcutoffnh=2.0,lnsigcutoffsh=2.0,lnsigcutofftr=2.0,
-   lnsigcutoffpsnh=2.0,lnsigcutoffpssh=2.0,lnsigcutoffpstr=2.0,
-   lnsigcutoffsatnh=2.0,lnsigcutoffsatsh=2.0,lnsigcutoffsattr=2.0,
+   corrlengthnh=400,corrlengthsh=400,corrlengthtr=400,
+   lnsigcutoffnh=0.5,lnsigcutoffsh=0.5,lnsigcutofftr=0.5,
+   lnsigcutoffpsnh=0.5,lnsigcutoffpssh=0.5,lnsigcutoffpstr=0.5,
+   lnsigcutoffsatnh=0.5,lnsigcutoffsatsh=0.5,lnsigcutoffsattr=0.5,
    obtimelnh=1.e30,obtimelsh=1.e30,obtimeltr=1.e30,
    saterrfact=1.0,numiter=1,
    sprd_tol=1.e30,paoverpb_thresh=0.98,
    nlons=1920,nlats=1296,nlevs=64,nanals=$nens,
    deterministic=.true.,sortinc=.true.,lupd_satbiasc=.false.,
    reducedgrid=.true.,readin_localization=.false.,
-   use_gfs_nemsio=.true.,imp_physics=$imp_physics,lupp=$lupp,
+   use_gfs_nemsio=.true.,imp_physics=99,lupp=.false.,
    univaroz=.false.,adp_anglebc=.true.,angord=4,use_edges=.false.,emiss_bc=.true.,
-   lobsdiag_forenkf=$lobsdiag_forenkf,
-   write_spread_diag=$write_spread_diag,
-   netcdf_diag=$netcdf_diag,
+   lobsdiag_forenkf=.false.,
+   write_spread_diag=.false.,
+   netcdf_diag=.false.,
    ldo_enscalc_option=${ldo_enscalc_option},
    $NAM_ENKF
 /
@@ -334,6 +351,9 @@ export err=$ERR
 
 
 export err=$?;err_chk
+if [ $err -ne 0 ]; then
+ exit 999
+fi
 #export ldo_enscalc_option=${ldo_enscalc_option:-0}
 if [ $ldo_enscalc_option -eq 0 ] ; then
 for imem in $(seq 1 $nens); do
@@ -358,6 +378,7 @@ elif  [ $ldo_enscalc_option -eq 1 ] ; then
          cp fv3sar_tile1_${memstr}_tracer   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype}_${memstr}_fv_tracer.res.tile1.nc 
 
 else
+         cp fv3sar_tile1_mem001_dynvartracer $NWGES_ens/${tmmark}/${PDY}.${CYC}0000.anl_ensmean_dynvartracer
 for imem in $(seq 2 $nens); do
              memstr="mem"$(printf %03i $imem)
          let "memout = $imem - 1"

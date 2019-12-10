@@ -14,11 +14,13 @@ set -x
 
 offset=`echo $tmmark | cut -c 3-4`
 export CYCLEanl=`$NDATE -${offset} $CDATE`
+export PDY=`echo $CDATE | cut -c 1-8`
+export cyc=`echo $CDATE | cut -c 9-10`
 
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}_${cyc}_${PDY}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi
@@ -33,6 +35,9 @@ export pgmout="OUTPUT.${pid}"
 #####################################
 echo "PDY is " $PDY
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+if [ ${l_use_other_ctrlb_opt:-.false.} = .true. ] ; then
+    export COMOUT_CTRLBC=${COMROOT}/${NET}/${envirlbctm00}/${RUN}.${PDY}/${cyc}
+fi
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES

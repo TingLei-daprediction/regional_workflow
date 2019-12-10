@@ -70,7 +70,7 @@ export nhr_assimilation=03
 ##typeset -Z2 nhr_assimilation
 export nens=20
 rm -f filelist${nhr_assimilation}_tmp_ens$ENSGRP 
-python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
 
 cat filelist${nhr_assimilation}_tmp_ens$ENSGRP
 #Check to see if ensembles were found 
@@ -192,7 +192,7 @@ while (test "$hour" -le "$end_hour")
     unset SFCANL
   else
     export vlddateLbcHr=`$NDATE +$hour $vlddate` 
-      python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddateLbcHr --exact=no --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+      python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddateLbcHr --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
    memstr="mem"${inum}
 
    export ATMANL=`grep $memstr filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour}` 

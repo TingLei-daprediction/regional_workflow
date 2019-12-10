@@ -13,8 +13,8 @@
 #   4) 2018-06-19       Ben Blake
 #                       Adapted for stand-alone regional configuration
 ############################################################################
-set -eux
-#set -ux
+#set -eux
+set -ux
 
 export KMP_AFFINITY=scatter
 export OMP_NUM_THREADS=2
@@ -32,6 +32,12 @@ fi
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
 ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
+if [ $tmmark = tm00 ] ; then
+   if [ ${l_use_other_ctrlb_op:-.false.} = .true. ] ; then
+      OtherDirLbc=${COMOUT_CTRLBC}/anl.${tmmark}
+      cp $OtherDirLbc/*bndy*tile7.nc INPUT 
+   fi
+fi 
 #cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
@@ -274,6 +280,9 @@ startmsg
 ${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
 export err=$?;err_chk
+if [ $err -ne 0 ]; then
+ exit 999
+fi
 
 # Copy files needed for next analysis
 # use grid_spec.nc file output from model in working directory,

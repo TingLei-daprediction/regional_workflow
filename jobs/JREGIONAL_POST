@@ -21,12 +21,14 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 # PDY and CDATE are passed in through Rocoto xml
 #setpdy.sh
 #. ./PDY
+export PDY=`echo $CDATE | cut -c 1-8`
+export cyc=`echo $CDATE | cut -c 9-10`
 
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/regional_forecast_${tmmark}_${dom}_${PDY}${cyc}}
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
+export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/${envir}/forecast_${tmmark}_${dom:+${dom}_}${cyc}_${PDY}}
+export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi

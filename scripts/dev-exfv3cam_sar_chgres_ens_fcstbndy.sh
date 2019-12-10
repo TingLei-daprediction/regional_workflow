@@ -100,6 +100,7 @@ export RUN=${RES}_nest_$CDATE
 #ctlorg mv $OUTDIR/gfs*nc $INPdir/.
 #cltorg mv $OUTDIR/sfc*nc $INPdir/.
 export REGIONAL=2
+export CONVERT_SFC=.false.
 unset ATMANL
 unset SFCANL
 
@@ -136,22 +137,21 @@ export PDY=`echo $vlddate | cut -c 1-8`
 export PDYrun=`echo $CYCLE | cut -c 1-8`
 export PDYa=`echo $vlddate | cut -c 1-8`
 export CYCrun=`echo $CYCLE | cut -c 9-10`
+rm -f filelist${nhr_assimilation}_tmp0_ens$ENSGRP
+python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
 
-python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
-
+sed '/ensmean/d'  filelist${nhr_assimilation}_tmp0_ens$ENSGRP> filelist${nhr_assimilation}_tmp_ens$ENSGRP 
 cat  filelist${nhr_assimilation}_tmp_ens$ENSGRP 
 #Check to see if ensembles were found 
 numfiles=`cat  filelist${nhr_assimilation}_tmp_ens$ENSGRP | wc -l`
-
-if [ $numfiles -ne ${nens:-21} ]; then
+L_USE_CONTROL_LBC=.false.
+if [ $numfiles -lt ${nens:-20} ]; then
   echo "Ensembles not found - turning off HYBENS!"
-  export HYB_ENS=".false."
-else
-  # we have 81 files, figure out if they are all the right size
-  # if not, set HYB_ENS=false
-  . $UTIL/check_enkf_size.sh
+  export L_USE_CONTROL_LBC=".true."
 fi
 
+export bchour=$hour_name
+if [ $L_USE_CONTROL_LBC != ".true." ]; then
 ENSGRP=${ENSGRP:-1}
 ENSBEG=${ENSBEG:-1}
 ENSEND=${ENSEND:-2}
@@ -162,10 +162,10 @@ cp filelist${nhr_assimilation}_tmp_ens$ENSGRP $COMOUT/${RUN}.t${CYCrun}z.ens_chg
 #cltorg head -${nens} filelist03>filelist03_ensgrp$ENSGRP
  if [ $ENSGRP -eq 1 ]; then
     let "line1 = $ENSBEG  " 
-    let "line2 = $ENSEND + 1  " 
+    let "line2 = $ENSEND   " 
  else
-    let "line1 = $ENSBEG + 1  " 
-    let "line2 = $ENSEND + 1  " 
+    let "line1 = $ENSBEG   " 
+    let "line2 = $ENSEND   " 
  fi
 #head -${nens} filelist03>filelist03_ensgrp$ENSGRP
     sed -n -e "$line1,${line2}p"   filelist${nhr_assimilation}_tmp_ens$ENSGRP >filelist03_ensgrp$ENSGRP
@@ -219,7 +219,6 @@ do
 #
   export REGIONAL=2
   export HALO=4
-  export bchour=$hour_name
   $HOMEfv3/scripts/dev-make_ic.sh</dev/null
   mv $OUTDIR/gfs_bndy.tile7.${bchour}.nc $ensmemINPdir/.
   err=$?
@@ -243,6 +242,26 @@ do
   rm -f bcfile.input
  fi
 done <"filelist03_ensgrp$ENSGRP"
+else  # use a single control lbc
+for imem in $(seq $ENSBEG $ENSEND); do
+
+   echo "begin forecast for member ",$imem
+
+
+
+   cmem=$(printf %03i $imem)
+   memchar="mem$cmem"
+  
+   echo "Processing MEMBER: $cmem"
+   if [ $tmmark = tm12 ] ; then 
+   export ensmemINPdir=${ensINPdir}/${memchar} 
+   else
+   export ensmemINPdir=${ensINPdir}/$memchar
+   fi
+   mkdir -p $ensmemINPdir
+   /bin/cp   $INPdir/gfs_bndy.tile7.${bchour}.nc $ensmemINPdir/gfs_bndy.tile7.${bchour}.nc
+done 
+fi
    hour=`expr $hour + $hour_inc`
 done
 exit

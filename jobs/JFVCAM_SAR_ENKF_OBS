@@ -8,7 +8,7 @@ machine=${machine:-hera}
 . $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
 . $USHfv3/run_commands_forecast.sh
  
-export DATATOP=${DATATOP:-${STMP}/${USER}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATATOP=${DATATOP:-${STMP}/tmpnwprd/${envir}/${job}_${cyc}}
 
 #cltorg  . /usrx/local/prod/lmod/lmod/init/ksh
 #replaced ty two following lines according to Chris at WCOSS help. 

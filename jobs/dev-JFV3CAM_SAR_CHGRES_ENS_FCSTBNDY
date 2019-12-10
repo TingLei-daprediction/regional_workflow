@@ -11,7 +11,7 @@ export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
 # HOMEdir set in qsub job
 
 
-export DATA=${DATA:-${STMP}/${LOGNAME}/EXP${envir}_tmpnwprd_hourly/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
 mkdir -p $DATA 
 cd  $DATA
 
@@ -42,13 +42,13 @@ export CYCLEtm06=`$NDATE -06 $CYCLE`
 export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
 export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
 export PDYrun=`echo $CDATE | cut -c 1-8`
+export cyc=`echo $CDATE | cut -c 9-10`
 
 
 
 ##export CYCLE=`cut -c 7-16 ncepdate`
 ##export PDY=`cut -c 7-14 ncepdate`
 export CYCLEguess=`$NDATE -12 $CYCLE`
-export CDATE=$CYCLEguess
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
 
@@ -127,7 +127,7 @@ fi
 
 
 #COMROOT and GESROOT are the same dirs
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${cyc}
 mkdir -p $COMOUT
 #cltorg mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
 export NWGES=$GESROOT/${RUN}/EXP${envir}/${RUN}.${PDY}/${cyc}
@@ -136,6 +136,11 @@ mkdir -p $NWGES
 #mkdir -p $COMOUT/gfsanl.tm12
 #cltorg export INPdir=$COMOUT/gfsanl.tm12
 export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDYrun}/${cyc}/dirLBC/$tmmark
+if [ $tmmark = tm12 ] ; then    # SAR-DA
+  export INPdir=$COMOUT/gfsanl.$tmmark
+else
+  export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}
+fi
 mkdir -p $ensINPdir
 #
 #run script

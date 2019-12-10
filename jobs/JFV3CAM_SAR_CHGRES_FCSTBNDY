@@ -26,7 +26,7 @@ export hhcyc=`echo $CDATE | cut -c 9-10`
 #####################################
 # Obtain unique process id (pid) and make temp directory
 #####################################
-export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATA}/${envir}/${job}_${cyc}}
 mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA
@@ -113,7 +113,7 @@ while (test "$hour" -le "$end_hour")
     BC_DATA=${DATA}/wrk.chgres.$hour_name
     rm -rf $BC_DATA
     mkdir -p $BC_DATA
-    echo "env REGIONAL=2 HALO=4 bchour=$hour_name DATA=$BC_DATA $HOMEfv3/scripts/exfv3cam_sar_chgres.sh >&out.chgres.$hour_name" >> bcfile.input
+    echo "env REGIONAL=2 HALO=4 bchour=$hour_name DATA=$BC_DATA $HOMEfv3/scripts/exregional_make_bc.sh >&out.chgres.$hour_name" >> bcfile.input
   elif [ $tmmark != tm00 ] ; then
 # Run the BC creation sequentially
     export HALO=4

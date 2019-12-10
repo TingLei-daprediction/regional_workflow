@@ -48,6 +48,7 @@ export pgm=regional_post.x
 . prep_step
 
 startmsg
+export POSTGPEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-wen/EMC_post/sorc/ncep_post.fd/ncep_post
 ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2> err
 export err=$?; err_chk
 
@@ -121,14 +122,14 @@ export err=$?; err_chk
 if [ $SENDCOM = YES ]
 then
   if [ $tmmark = tm00 ] ; then
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
+    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain:+${domain}.}f${fhr}.grib2
 #    mv ${domain}${RUN}.f${fhr}.${tmmark}.ffair ${COMOUT}/${RUN}.t${cyc}z.${domain}.ffair.f${fhr}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.grib2
+    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}.grib2
+    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}.grib2
   else
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.${tmmark}.grib2
+    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}f${fhr}.${tmmark}.grib2
+    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}.${tmmark}.grib2
+    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}.${tmmark}.grib2
   fi
 fi
 
