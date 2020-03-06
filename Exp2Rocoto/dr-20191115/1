@@ -1,0 +1,16 @@
+66,70c66
+< 
+< <!ENTITY ANL_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
+< <!ENTITY ANL_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">
+< 
+< 
+---
+> <!ENTITY ANL_RESOURCES '<walltime>02:30:00</walltime>'>
+614a611,613
+>   &RESERVATION;
+>   &ANL_RESOURCES;
+>   <nodes>10:ppn=24</nodes>
+618,620d616
+<      &RESERVATION;
+<     <walltime>02:30:00</walltime>
+<     <nodes>10:ppn=24</nodes>

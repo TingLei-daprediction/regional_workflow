@@ -1,0 +1,12 @@
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>

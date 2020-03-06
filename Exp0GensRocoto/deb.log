@@ -1,0 +1,89 @@
++ module load rocoto/1.3.1
+++ /apps/lmod/7.7.18/libexec/lmod bash load rocoto/1.3.1
++ eval '__LMOD_REF_COUNT_LOADEDMODULES="rocoto/1.3.1:1";' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES="rocoto/1.3.1";' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH="/apps/rocoto/1.3.1/man:1;/apps/lmod/lmod/share/man:1;/apps/local/man:1;/apps/slurm/default/share/man:1;/apps/slurm/tools/sbank/share/man:1";' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH="/apps/rocoto/1.3.1/man:/apps/lmod/lmod/share/man::/apps/local/man:/apps/slurm/default/share/man:/apps/slurm/tools/sbank/share/man";' export 'MANPATH;' '__LMOD_REF_COUNT_MODULEPATH="/apps/lmod/lmod/modulefiles/Core:1;/apps/modules/modulefiles/Linux:1;/apps/modules/modulefiles:1;/opt/cray/modulefiles:1;/opt/cray/craype/default/modulefiles:1";' export '__LMOD_REF_COUNT_MODULEPATH;' 'MODULEPATH="/apps/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles/Linux:/apps/modules/modulefiles:/opt/cray/modulefiles:/opt/cray/craype/default/modulefiles";' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH="/apps/rocoto/1.3.1/bin:1;/usr/lib64/qt-3.3/bin:1;/usr/bin:1;/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/ibutils/bin:1;/apps/local/bin:1;/apps/local/sbin:1;/apps/slurm/default/tools:1;/apps/slurm/default/bin:1;/apps/slurm/default/sbin:1;/apps/slurm/tools/sbank/bin:1";' export '__LMOD_REF_COUNT_PATH;' 'PATH="/apps/rocoto/1.3.1/bin:/usr/lib64/qt-3.3/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/apps/local/bin:/apps/local/sbin:/apps/slurm/default/tools:/apps/slurm/default/bin:/apps/slurm/default/sbin:/apps/slurm/tools/sbank/bin";' export 'PATH;' '__LMOD_REF_COUNT__LMFILES_="/apps/modules/modulefiles/rocoto/1.3.1:1";' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_="/apps/modules/modulefiles/rocoto/1.3.1";' export '_LMFILES_;' '_ModuleTable001_="X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXtyb2NvdG89e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcy9yb2NvdG8vMS4zLjEiLFsiZnVsbE5hbWUiXT0icm9jb3RvLzEuMy4xIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icm9jb3RvLzEuMy4xIix9LH0sbXBhdGhBPXsiL2FwcHMvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLCIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL0xpbnV4IiwiL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcyIs";' export '_ModuleTable001_;' '_ModuleTable002_="Ii9vcHQvY3JheS9tb2R1bGVmaWxlcyIsIi9vcHQvY3JheS9jcmF5cGUvZGVmYXVsdC9tb2R1bGVmaWxlcyIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvYXBwcy9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZTovYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL0xpbnV4Oi9hcHBzL21vZHVsZXMvbW9kdWxlZmlsZXM6L29wdC9jcmF5L21vZHVsZWZpbGVzOi9vcHQvY3JheS9jcmF5cGUvZGVmYXVsdC9tb2R1bGVmaWxlcyIsfQ==";' export '_ModuleTable002_;' '_ModuleTable_Sz_="2";' export '_ModuleTable_Sz_;'
+++ __LMOD_REF_COUNT_LOADEDMODULES=rocoto/1.3.1:1
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=rocoto/1.3.1
+++ export LOADEDMODULES
+++ __LMOD_REF_COUNT_MANPATH='/apps/rocoto/1.3.1/man:1;/apps/lmod/lmod/share/man:1;/apps/local/man:1;/apps/slurm/default/share/man:1;/apps/slurm/tools/sbank/share/man:1'
+++ export __LMOD_REF_COUNT_MANPATH
+++ MANPATH=/apps/rocoto/1.3.1/man:/apps/lmod/lmod/share/man::/apps/local/man:/apps/slurm/default/share/man:/apps/slurm/tools/sbank/share/man
+++ export MANPATH
+++ __LMOD_REF_COUNT_MODULEPATH='/apps/lmod/lmod/modulefiles/Core:1;/apps/modules/modulefiles/Linux:1;/apps/modules/modulefiles:1;/opt/cray/modulefiles:1;/opt/cray/craype/default/modulefiles:1'
+++ export __LMOD_REF_COUNT_MODULEPATH
+++ MODULEPATH=/apps/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles/Linux:/apps/modules/modulefiles:/opt/cray/modulefiles:/opt/cray/craype/default/modulefiles
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/apps/rocoto/1.3.1/bin:1;/usr/lib64/qt-3.3/bin:1;/usr/bin:1;/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/ibutils/bin:1;/apps/local/bin:1;/apps/local/sbin:1;/apps/slurm/default/tools:1;/apps/slurm/default/bin:1;/apps/slurm/default/sbin:1;/apps/slurm/tools/sbank/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/apps/rocoto/1.3.1/bin:/usr/lib64/qt-3.3/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/apps/local/bin:/apps/local/sbin:/apps/slurm/default/tools:/apps/slurm/default/bin:/apps/slurm/default/sbin:/apps/slurm/tools/sbank/bin
+++ export PATH
+++ __LMOD_REF_COUNT__LMFILES_=/apps/modules/modulefiles/rocoto/1.3.1:1
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/apps/modules/modulefiles/rocoto/1.3.1
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXtyb2NvdG89e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcy9yb2NvdG8vMS4zLjEiLFsiZnVsbE5hbWUiXT0icm9jb3RvLzEuMy4xIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icm9jb3RvLzEuMy4xIix9LH0sbXBhdGhBPXsiL2FwcHMvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLCIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL0xpbnV4IiwiL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcyIs
+++ export _ModuleTable001_
+++ _ModuleTable002_=Ii9vcHQvY3JheS9tb2R1bGVmaWxlcyIsIi9vcHQvY3JheS9jcmF5cGUvZGVmYXVsdC9tb2R1bGVmaWxlcyIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvYXBwcy9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZTovYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL0xpbnV4Oi9hcHBzL21vZHVsZXMvbW9kdWxlZmlsZXM6L29wdC9jcmF5L21vZHVsZWZpbGVzOi9vcHQvY3JheS9jcmF5cGUvZGVmYXVsdC9tb2R1bGVmaWxlcyIsfQ==
+++ export _ModuleTable002_
+++ _ModuleTable_Sz_=2
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ rocotorun -v 10 -w /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db
+12/31/19 21:30:37 UTC :: dev-Gens.xml :: Cycle 201912281200, Task forecast_tm00, jobid=2158980, in state FAILED (FAILED), ran for 46.0 seconds, exit status=59136, try=4 (of 6)
+12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submitting sendinibc using sbatch < /tmp/sbatch.in20191231-377662-3mcwuy with input
+{{
+#! /bin/sh
+#SBATCH --qos=dev_transfer
+#SBATCH --account=fv3-cam
+#SBATCH -t 00:30:00
+#SBATCH --mem=1024
+#SBATCH --ntasks=1
+#SBATCH --job-name=sendinibc_12
+#SBATCH -o /scratch2/NCEPDEV/stmp3/Ting.Lei/EXP0Gensregion/dr2019122812.log/sendinibc_12.log
+#SBATCH --comment=557d3220cdcf56b4d658563764c5cd5b
+export envir='EXP0Gensregion'
+export machine='hera'
+export HOMEfv3='/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow'
+export job='sendinibc'
+export tmmark='tm00'
+export USER='Ting.Lei'
+export CYCLE='2019122812'
+export cyc='12'
+export CDATE='2019122812'
+/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/rocoto/rocoto_pre_job.sh /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/jobs/JFV3CAM_SAR_SENDINIBC
+}}
+12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submitting forecast_tm00 using sbatch < /tmp/sbatch.in20191231-377662-lmvpij with input
+{{
+#! /bin/sh
+#SBATCH --job-name=forecast_tm00_12
+#SBATCH -o /scratch2/NCEPDEV/stmp3/Ting.Lei/EXP0Gensregion/dr2019122812.log/forecast_tm00_12.log
+#SBATCH --qos=batch
+#SBATCH --account=fv3-cam
+#SBATCH --nodes=71-71
+#SBATCH --tasks-per-node=20
+#SBATCH --cpus-per-task=2
+#SBATCH -t 04:00:00
+#SBATCH --comment=1d8009c04ec9261d2e757fbc1db7aa51
+export TOTAL_TASKS='1404'
+export TASK_X='24'
+export TASK_Y='54'
+export WG='2'
+export WTPG='54'
+export NCTSK='20'
+export NCNODE='40'
+export OMP_THREADS='2'
+export envir='EXP0Gensregion'
+export machine='hera'
+export HOMEfv3='/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow'
+export job='forecast_tm00'
+export tmmark='tm00'
+export USER='Ting.Lei'
+export CYCLE='2019122812'
+export cyc='12'
+export CDATE='2019122812'
+export PDY='20191228'
+/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/rocoto/rocoto_pre_job.sh /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/jobs/dev-JFV3CAM_SAR_FCST
+}}
+12/31/19 21:30:37 UTC :: dev-Gens.xml :: WARNING: job submission failed: sbatch: error: Batch job submission failed: Invalid qos specification
+12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submission of sendinibc failed!  sbatch: error: Batch job submission failed: Invalid qos specification

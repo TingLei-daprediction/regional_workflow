@@ -1,0 +1,43 @@
+ 0: slurmstepd: error: execve(): /scratch2/NCEPDEV/stmp3/Ting.Lei/tmpnwprd-2020021912/EXP0region/epos2mean_tm06_12/enkf.x: No such file or directory
+srun: error: h1c05: task 0: Exited with exit code 2
+srun: Terminating job step 3844061.0
+srun: error: h4c52: task 8: Terminated
+srun: error: h4c05: task 7: Terminated
+srun: error: h21c29: task 29: Terminated
+srun: error: h18c44: task 28: Terminated
+srun: error: h14c18: task 20: Terminated
+srun: error: h15c35: task 23: Terminated
+srun: error: h25c15: task 33: Terminated
+srun: error: h12c43: task 18: Terminated
+srun: error: h5c22: task 10: Terminated
+srun: error: h9c05: task 14: Terminated
+srun: error: h35m33: task 38: Terminated
+srun: error: h23c09: task 30: Terminated
+srun: error: h16c44: task 24: Terminated
+srun: error: h9c50: task 17: Terminated
+srun: error: h14c25: task 21: Terminated
+srun: error: h18c43: task 27: Terminated
+srun: error: h36m32: task 39: Terminated
+srun: error: h9c44: task 16: Terminated
+srun: error: h15c06: task 22: Terminated
+srun: error: h17c02: task 25: Terminated
+srun: error: h1c20: task 2: Terminated
+srun: error: h3c56: task 6: Terminated
+srun: error: h17c37: task 26: Terminated
+srun: error: h24c30: task 31: Terminated
+srun: error: h25c27: task 34: Terminated
+srun: error: h6c01: task 12: Terminated
+srun: error: h32m27: task 36: Terminated
+srun: error: h1c46: task 4: Terminated
+srun: error: h3c55: task 5: Terminated
+srun: error: h9c35: task 15: Terminated
+srun: error: h13c12: task 19: Terminated
+srun: error: h25c28: task 35: Terminated
+srun: error: h1c28: task 3: Terminated
+srun: error: h35m01: task 37: Terminated
+srun: error: h6c04: task 13: Terminated
+srun: error: h5c41: task 11: Terminated
+srun: error: h24c47: task 32: Terminated
+srun: error: h5c17: task 9: Terminated
+srun: error: h1c15: task 1: Terminated
+srun: Force Terminated job step 3844061.0

@@ -1,0 +1,53 @@
+85,90c85,90
+< <!ENTITY oneobtestname 'mix_ens'> 
+< <!ENTITY nens '100'> 
+< <!ENTITY l_both_fv3sar_gfs_ens '.true.'> 
+< <!ENTITY nens_gfs '80'> 
+< <!ENTITY nens_fv3sar '20'> 
+< <!ENTITY l_use_other_ctrlb_opt '.false.'> 
+---
+> <!ENTITY oneobtestname 'glb_ens'> 
+> <!ENTITY nens '81'> 
+> <!ENTITY l_both_fv3sar_gfs_ens '.false.'> 
+> <!ENTITY nens_gfs '81'> 
+> <!ENTITY nens_fv3sar '0'> 
+> <!ENTITY l_use_other_ctrlb_opt '.true.'> 
+92,94c92
+< <!ENTITY l_twoway_hybrid_opt  '.false.'>
+< <!ENTITY envir4ens 'EXP0region'>
+< 
+---
+> <!ENTITY regional_ensemble_option '1'>
+1900c1898
+<     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/oneob-mixens-gsianl_tm#next_mark#_@H.log</cyclestr></join>
+---
+>     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/oneob-glb-gsianl_tm#next_mark#_@H.log</cyclestr></join>
+1943a1942,1945
+>      <name>regional_ensemble_option</name>
+>     <value>&regional_ensemble_option;</value>
+>     </envar>
+> 
+1958c1960,1962
+<         <envar>
+---
+> 
+>     
+>     <envar>
+1961c1965
+<     </envar>
+---
+>      </envar>
+1966,1978d1969
+<     <envar>
+<       <name>l_use_own_glb_ensemble</name>
+<       <value>&l_use_own_glb_ensemble;</value>
+<     </envar>
+< 
+< 
+< 
+<    <envar>
+<       <name>envir4ens</name>
+<       <value>&envir4ens;</value>
+<     </envar>
+< 
+<     
