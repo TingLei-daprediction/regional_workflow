@@ -1,0 +1,149 @@
+8c8
+< <!ENTITY STARTDAY "03">
+---
+> <!ENTITY STARTDAY "09">
+13c13
+< <!ENTITY ENDDAY "03">
+---
+> <!ENTITY ENDDAY "09">
+26d25
+< <!ENTITY COMINgfs "/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-global-data/gpfs/dell1/nco/ops/com/gfs/prod/">
+30,39d28
+< <!ENTITY QUEUE_PE        "batch">
+<  <!-- queue for PE (parallel environment) jobs -->
+< <!ENTITY PE_EXTRA        "">
+< <!ENTITY QUEUE_SERIAL    "batch"> 
+< <!-- queue for serial jobs -->
+< <!ENTITY SERIAL_EXTRA    "">
+< <!ENTITY QUEUE_SHARED    "batch">
+< <!ENTITY SHARED_EXTRA    "">
+< <!ENTITY QUEUE_SERVICE   "service">
+< <!ENTITY SERVICE_EXTRA   "">
+45,48d33
+< 
+< 
+< 
+< 
+51,52c36
+< <!ENTITY CHGRES_IC_RESOURCES "<nodes>4:ppn=3</nodes><envar><name>TOTAL_TASKS</name><value>12</value></envar><envar><name>NCTSK</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
+< 
+---
+> <!ENTITY CHGRES_IC_RESOURCES '<walltime>00:30:00</walltime>'>
+98,99c82
+< 
+<   <task name="chgres_firstguess" cycledefs="regional" maxtries="3">
+---
+>   <task name="chgres_firstguess" cycledefs="regional" maxtries="6">
+101a85
+>   <cores>1</cores>
+104c88,97
+<     <join><cyclestr>&LOGDIR;/chgres_firstguess_@H.log</cyclestr></join>
+---
+>     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_firstguess_@H.log</cyclestr></join>
+>     <envar>
+>       <name>envir</name>
+>       <value>&EXPenvir;</value>
+>     </envar>
+>       <envar>
+>        <name>machine</name>
+>          <value>&machine;</value>
+>     </envar>
+> 
+115,118d107
+<       <name>machine</name>
+<       <value>&machine;</value>
+<     </envar>
+<     <envar>
+122a112,115
+>       <name>CYCLE</name>
+>       <value><cyclestr>@Y@m@d@H</cyclestr></value>
+>     </envar>
+>       <envar>
+139,140d131
+<   </task>
+< <!-- Create the boundary conditions for the tm12 6-h forecast -->
+142,183d132
+<   <task name="chgres_fcstbndy_tm12" cycledefs="regional" maxtries="6">
+<   &RESERVATION;
+<   &CHGRES_IC_RESOURCES;
+<     <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
+<     <jobname><cyclestr>chgres_fcstbndy_tm12_@H</cyclestr></jobname>
+<     <join><cyclestr>&LOGDIR;/chgres_fcstbndy_tm12_@H.log</cyclestr></join>
+< 
+<     <envar>
+<      <name>HOMEfv3</name>
+<      <value>&HOMEfv3;</value>
+<     </envar>
+<     <envar>
+<      <name>job</name>
+<      <value>chgres_fcstbndy_tm12</value>
+<     </envar>
+<     <envar>
+<       <name>machine</name>
+<       <value>&machine;</value>
+<     </envar>
+<     <envar>
+<       <name>tmmark</name>
+<       <value>tm12</value>
+<     </envar>
+<     <envar>
+<       <name>USER</name>
+<       <value>&USER;</value>
+<     </envar>
+<     <envar>
+<       <name>CDATE</name>
+<       <value><cyclestr>@Y@m@d@H</cyclestr></value>
+<     </envar>
+<     <envar>
+<       <name>PDY</name>
+<       <value><cyclestr>@Y@m@d</cyclestr></value>
+<     </envar>
+<     <envar>
+<       <name>cyc</name>
+<       <value><cyclestr>@H</cyclestr></value>
+<     </envar>
+<     <dependency>
+<         <taskdep task="chgres_firstguess"/>
+<     </dependency>
+192,193c141,143
+<   &CHGRES_IC_RESOURCES;
+<     <command>&PRE;  &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_MAKE_IC</command>
+---
+>   &CHGRES_ENS_IC_RESOURCES;
+>   <cores>1</cores>
+>     <command>&PRE;  &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_FIRSTGUESS</command>
+200,203d149
+<     <envar>
+<       <name>COMINgfs</name>
+<       <value>&COMINgfs;</value>
+<     </envar>
+265c211
+< 
+---
+>   <nodes>54:ppn=12</nodes>
+269,272d214
+< 
+< 
+< 
+< 
+468,470c410,413
+<      &RESERVATION;
+<      &CHGRES_IC_RESOURCES;
+<     <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
+---
+>     &RESERVATION;
+>     &CHGRES_BC_RESOURCES;
+>     <nodes>1:ppn=24</nodes>
+>     <command>&PRE; &JOBS;/JFV3CAM_SAR_CHGRES_FCSTBNDY</command>
+529,530c472,474
+<   &RESERVATION;
+<   &CHGRES_IC_RESOURCES;
+---
+>     &RESERVATION;
+>     &CHGRES_ENS_BC_RESOURCES;
+>     <nodes>1:ppn=24</nodes>
+537,540d480
+<     </envar>
+<     <envar>
+<       <name>COMINgfs</name>
+<       <value>&COMINgfs;</value>

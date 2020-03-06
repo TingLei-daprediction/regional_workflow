@@ -1,0 +1,2561 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow
+[
+
+<!ENTITY EXPenvir "EXP2region">
+<!ENTITY STARTYEAR "2019">
+<!ENTITY STARTMONTH "10">
+<!ENTITY STARTDAY "03">
+<!ENTITY STARTHOUR "00">
+
+<!ENTITY ENDYEAR "2019">
+<!ENTITY ENDMONTH "10">
+<!ENTITY ENDDAY "03">
+<!ENTITY ENDHOUR "00">
+
+<!ENTITY USER "Ting.Lei">
+<!ENTITY machine "hera">
+<!ENTITY ACCOUNT "fv3-cam">
+
+<!ENTITY HOMEfv3 "/scratch2/NCEPDEV/fv3-cam/&USER;/dr-regional-workflow/regional_workflow">
+<!ENTITY JOBS "&HOMEfv3;/jobs">
+<!ENTITY SCRIPTS "&HOMEfv3;/scripts">
+ <!ENTITY PTMP "/scratch2/NCEPDEV/stmp3/&USER;/&EXPenvir;/fv3sartest">
+ <!ENTITY STMP "/scratch2/NCEPDEV/stmp3/&USER;/&EXPenvir;/fv3sartest">
+<!ENTITY COMDIR "&PTMP;/com">
+<!ENTITY COMINgfs "/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-global-data/gpfs/dell1/nco/ops/com/gfs/prod/">
+<!ENTITY LOGDIR "&PTMP;/&USER;/&EXPenvir;">
+<!ENTITY DATAROOT "&STMP;/&USER;/tmpnwprd_hourly/&EXPenvir;">
+<!ENTITY PRE "&HOMEfv3;/rocoto/rocoto_pre_job.sh">
+<!ENTITY QUEUE_PE        "batch">
+ <!-- queue for PE (parallel environment) jobs -->
+<!ENTITY PE_EXTRA        "">
+<!ENTITY QUEUE_SERIAL    "batch"> 
+<!-- queue for serial jobs -->
+<!ENTITY SERIAL_EXTRA    "">
+<!ENTITY QUEUE_SHARED    "batch">
+<!ENTITY SHARED_EXTRA    "">
+<!ENTITY QUEUE_SERVICE   "service">
+<!ENTITY SERVICE_EXTRA   "">
+
+<!ENTITY RESERVATION '<queue>batch</queue><account>&ACCOUNT;</account>'>
+<!ENTITY RESERVATION_ANL '<queue>debug</queue><account>&ACCOUNT;</account>'>
+<!ENTITY RESERVATION_TRANSFER '<queue>dev_transfer</queue><account>&ACCOUNT;</account>'>
+
+<!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>04:00:00</walltime>">
+<!ENTITY FORECAST_EXTRA_DA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>00:30:00</walltime>">
+<!ENTITY FORECAST_RESOURCES "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+<!ENTITY FORECAST_RESOURCES_DA "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+
+
+
+
+<!ENTITY SCRUB_RESOURCES '<walltime>00:10:00</walltime><memory>1G</memory>'>
+<!ENTITY SENDINIBC_RESOURCES '<walltime>00:30:00</walltime><memory>1G</memory>'>
+<!ENTITY CHGRES_IC_RESOURCES "<nodes>4:ppn=3</nodes><envar><name>TOTAL_TASKS</name><value>12</value></envar><envar><name>NCTSK</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
+
+<!ENTITY CHGRES_ENS_IC_RESOURCES '<walltime>02:30:00</walltime>'>
+<!ENTITY CHGRES_BC_RESOURCES '<walltime>00:20:00</walltime>'>
+<!ENTITY CHGRES_ENS_BC_RESOURCES '<walltime>02:20:00</walltime>'>
+<!ENTITY FCST_RESOURCES_GUESS '<walltime>01:00:00</walltime>'>
+<!ENTITY FCST_RESOURCES_DA '<walltime>00:10:00</walltime>'>
+<!ENTITY FCST_RESOURCES '<walltime>01:35:00</walltime>'>
+<!ENTITY POST_RESOURCES '<walltime>00:20:00</walltime>'>
+<!ENTITY ANL_RESOURCES '<walltime>02:30:00</walltime>'>
+<!ENTITY HIST_RESOURCES '<walltime>00:30:00</walltime><memory>5G</memory>'>
+<!-- <!ENTITY gsiexec '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-add_ensemble/ProdGSI/build/bin/gsi.x'> -->
+<!-- <!ENTITY gsianlsh '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_da_hourly_rocoto/scripts/single-exfv3sar_gsianl.sh'> -->
+<!ENTITY ENKFEXEC '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-enkf_fv3native_t2/ProdGSI/build/bin/enkf_fv3reg.x'>
+<!ENTITY gsiexec ' /gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-EXP-GSI_fv3_reg_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
+<!ENTITY gsianlsh ''> 
+<!ENTITY nens '22'> 
+<!ENTITY l_both_fv3sar_gfs_ens '.true.'> 
+<!ENTITY nens_gfs '2'> 
+<!ENTITY nens_fv3sar '20'> 
+
+]>
+
+
+<!--  ************************************************************* -->
+<!--  ******************* STARTING THE WORKFLOW ******************* -->
+
+<!-- <workflow realtime="F" scheduler="lsf" taskthrottle="11"> -->
+<workflow realtime="T" scheduler="slurm" taskthrottle="60" cyclethrottle="2" cyclelifespan="23:18:00:00">
+
+  <cycledef group="regional">&STARTYEAR;&STARTMONTH;&STARTDAY;&STARTHOUR;00 &ENDYEAR;&ENDMONTH;&ENDDAY;&ENDHOUR;00 12:00:00</cycledef>
+
+  <log>
+    <cyclestr>&LOGDIR;/testlogs_hourly_rocoto/workflow_regional_@Y@m@d@H.log</cyclestr>
+  </log>
+
+
+<!--  **********************************************************************  -->
+<!--  ******************************* Scrubbing ****************************  -->
+<!--  clt  ****************************  -->
+
+
+<!--  **********************************************************************  -->
+<!--  **************************** Run chgres ******************************  -->
+
+<!-- Create the initial conditions at tm12 and boundary condition from tm12-tm06 from the FV3GFS -->
+
+
+  <task name="chgres_firstguess" cycledefs="regional" maxtries="3">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+    <command>&PRE; &JOBS;/JREGIONAL_MAKE_IC</command>
+    <jobname><cyclestr>chgres_firstguess_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/chgres_firstguess_@H.log</cyclestr></join>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>chgres_firstguess</value>
+    </envar>
+    <envar>
+      <name>machine</name>
+      <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+  </task>
+<!-- Create the boundary conditions for the tm12 6-h forecast -->
+
+  <task name="chgres_fcstbndy_tm12" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+    <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
+    <jobname><cyclestr>chgres_fcstbndy_tm12_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/chgres_fcstbndy_tm12_@H.log</cyclestr></join>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value>chgres_fcstbndy_tm12</value>
+    </envar>
+    <envar>
+      <name>machine</name>
+      <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <dependency>
+        <taskdep task="chgres_firstguess"/>
+    </dependency>
+  </task>
+
+ <metatask name="chgres_ens_firstguess">
+  <var name="ENSGRP">01 02 03 04 05 </var>
+  <var name="ENSBEG">01 05 09 13 17 </var>
+  <var name="ENSEND">04 08 12 16 20 </var>
+  <task name="chgres_ens_tm12_grp#ENSGRP#" cycledefs="regional" maxtries="5">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+    <command>&PRE;  &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_MAKE_IC</command>
+    <jobname><cyclestr>chgres_ens#ENSGRP#_guess_@H_tm12</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_ens#ENSGRP#_@H_firstguess.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+    <envar>
+      <name>COMINgfs</name>
+      <value>&COMINgfs;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>chgres_ens_tm12</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+    </task>
+   </metatask>
+
+
+<!--  ***********************************************************************  -->
+<!--  ********** Run the 6-h forecast from tm12 to tm06 *********************  -->
+
+  <task name="forecast_firstguess" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+    <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
+    <jobname><cyclestr>chgres_fcstbndy_tm12_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/chgres_fcstbndy_tm12_@H.log</cyclestr></join>
+
+
+
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+
+
+
+
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>forecast_firstguess</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+    <dependency>
+        <taskdep task="chgres_firstguess"/>
+    </dependency>
+
+  </task>
+
+ <metatask name="forecast_ens_firstguess">
+    
+  <var name="ENSGRP">01 02 03 04 05 </var>
+  <var name="ENSBEG">01 05 09 13 17 </var>
+  <var name="ENSEND">04 08 12 16 20 </var>
+  <task name="forecast_ens_firstguess_grp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &FCST_RESOURCES_GUESS;
+  <nodes>54:ppn=12</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
+    <jobname><cyclestr>forecast_ens#ENSGRP#_firstguess_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_firstguess_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+    <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>forecast_ens_firstguess</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm12</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+    <dependency>
+        <metataskdep metatask="chgres_ens_firstguess"/>
+    </dependency>
+
+  </task>
+  </metatask>
+<!--  ***********************************************************************  -->
+<!--  ********** Run the post job for the 6-h forecast valid at tm06*********  -->
+
+  <metatask>
+    <var name="fhr">06</var>
+    <task name="post#fhr#_firstguess" cycledefs="regional" maxtries="6">
+    &RESERVATION;
+    &POST_RESOURCES;
+    <nodes>2:ppn=14</nodes>
+      <command>&PRE; &JOBS;/JFV3CAM_SAR_POST_FIRSTGUESS</command>
+      <jobname><cyclestr>post_firstguess_@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_firstguess_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+      <envar>
+        <name>HOMEfv3</name>
+        <value>&HOMEfv3;</value>
+      </envar>
+      <envar>
+        <name>job</name>
+        <value>post_firstguess</value>
+      </envar>
+      <envar>
+       <name>tmmark</name>
+       <value>tm12</value>
+      </envar>
+      <envar>
+        <name>USER</name>
+        <value>&USER;</value>
+      </envar>
+      <envar>
+        <name>CYCLE</name>
+        <value><cyclestr>@Y@m@d@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>cyc</name>
+        <value><cyclestr>@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>fhr</name>
+        <value>#fhr#</value>
+      </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+      <dependency>
+        <taskdep task="forecast_firstguess"/>
+      </dependency>
+    </task>
+  </metatask>
+
+<!-- Create the boundary conditions from tm06-tm01 -->
+
+  <metatask name="chgres_fcstbndy_da">
+    <var name="mark">01 02 03 04 05 06</var>
+    <task name="chgres_fcstbndy_tm#mark#" cycledefs="regional" maxtries="6">
+     &RESERVATION;
+     &CHGRES_IC_RESOURCES;
+    <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
+    <jobname><cyclestr>chgres_fcstbndy_tm#mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_fcstbndy_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>chgres_fcstbndy_tm#mark#</value>
+    </envar>
+    <envar>
+     <name>tmmark</name>
+     <value>tm#mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="forecast_firstguess"/>
+    </dependency>
+
+    </task>
+   </metatask>
+
+  <metatask name="chgres_ens_fcstbndy_da">
+  <var name="ENSGRP">01 02 03 04 05 </var>
+  <var name="ENSBEG">01 05 09 13 17 </var>
+  <var name="ENSEND">04 08 12 16 20 </var>
+  <metatask name="chgres_ens_fcstbndy_da_ensgrp#ENSGRP#">
+    <var name="mark">01 02 03 04 05 06</var>
+    <task name="chgres_ens#ENSGRP#_fcstbndy_tm#mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &CHGRES_IC_RESOURCES;
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_FCSTBNDY</command>
+    <jobname><cyclestr>chgres_ens#ENSGRP#_fcstbndy_tm#mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_ens#ENSGRP#_fcstbndy_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+    <envar>
+      <name>COMINgfs</name>
+      <value>&COMINgfs;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>chgres_ens_fcstbndy_tm#mark#</value>
+    </envar>
+    <envar>
+     <name>tmmark</name>
+     <value>tm#mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="forecast_ens_firstguess"/>
+    </dependency>
+
+    </task>
+   </metatask>
+   </metatask>
+
+
+<!--  ***********************************************************************  -->
+<!--  ********** Run the tm06 analysis **************************************  -->
+
+  <task name="analysis_tm06" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
+    <jobname><cyclestr>gsianl_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_firstguess_tm06_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>gsianl_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+  
+    <envar>
+      <name>nens </name>
+      <value>&nens; </value>
+     </envar>
+    <envar>
+      <name>l_both_fv3sar_gfs_ens </name>
+      <value>&l_both_fv3sar_gfs_ens; </value>
+     </envar>
+
+    
+    <envar>
+      <name>nens_gfs </name>
+      <value>&nens_gfs; </value>
+    </envar>
+    <envar>
+      <name>nens_fv3sar </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+      <and>
+        <metataskdep metatask="chgres_fcstbndy_da"/>
+        <metataskdep metatask="chgres_ens_fcstbndy_da"/>
+      </and>
+    </dependency>
+
+  </task>
+
+  <metatask name="EnKF_analysis_tm06">
+    <var name="None">None</var>
+  <task name="epost2mean_tm06" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>epost2mean_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/deb-epost2mean_tm06_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>1</value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>epos2mean_tm06</value>
+    </envar>
+    <envar>
+      <name>nens</name>
+      <value>&nens;</value>
+    </envar>
+
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <dependency>
+      <and>
+        <metataskdep metatask="chgres_fcstbndy_da"/>
+        <metataskdep metatask="chgres_ens_fcstbndy_da"/>
+      </and>
+    </dependency>
+
+  </task>
+
+  <task name="emean_obs_tm06" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
+    <jobname><cyclestr>emean_obs_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm06_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>emean_obs_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="epost2mean_tm06"/>
+    </dependency>
+
+  </task>
+
+   <metatask name="enkf_obs_tm06" >
+   <var name="ENSGRP">01 02 03 04 05 </var>
+   <var name="ENSBEG">01 05 09 13 17 </var>
+   <var name="ENSEND">04 08 12 16 20 </var>
+   
+  <task name="enkf_obs_tm06_grp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
+    <jobname><cyclestr>enkf_obs_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm06_grp#ENSGRP#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>enkf_obs_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="emean_obs_tm06"/>
+    </dependency>
+
+  </task>
+  </metatask>
+
+
+
+
+  <task name="enkf_eupd_tm06" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>enkf_eupd_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_eupd_tm06_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>nens </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>0</value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>eupd_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="enkf_obs_tm06"/>
+    </dependency>
+  </task>
+
+  </metatask>
+
+  <task name="recenter_tm06" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>recenter_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm06_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>2</value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>recenter_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <dependency>
+      <and>
+        <metataskdep metatask="EnKF_analysis_tm06"/>
+        <taskdep task="analysis_tm06"/>
+      </and>
+    </dependency>
+  </task>
+
+
+
+<!-- end of ENKF_analysis_tm06***********************************************************************  -->
+
+<!--  ********** Run the tm06 fcst - tm01 analysis as a metatask*************  -->
+<!--  ***********************************************************************  -->
+
+  <metatask name="da_fcst_analysis_set">
+    <var name="mark">06 05 04 03 02</var>
+    <var name="next_mark">05 04 03 02 01</var>
+
+    <task name="forecast_tm#mark#" cycledefs="regional" maxtries="6">
+     &RESERVATION;
+     &FCST_RESOURCES_DA;
+     <nodes>54:ppn=12</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
+     <jobname><cyclestr>forecast_tm#mark#_@H</cyclestr></jobname>
+     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+     <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+     </envar>
+     <envar>
+      <name>job</name>
+      <value>forecast_tm#mark#</value>
+     </envar>
+
+
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+
+     <envar>
+      <name>gsianlsh</name>
+      <value>&gsianlsh;</value>
+     </envar>
+
+
+
+     <envar>
+      <name>tmmark</name>
+      <value>tm#mark#</value>
+     </envar>
+     <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+     </envar>
+     <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+     </envar>
+     <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+     </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+     <dependency>
+      <and>
+       <taskdep task="analysis_tm#mark#"/>
+       <taskdep task="chgres_fcstbndy_tm#mark#"/>
+      </and>
+     </dependency>
+
+  </task>
+
+
+  <metatask name="forecast_ens_tm#mark#" >
+  <var name="ENSGRP">01 02 03 04 05 </var>
+  <var name="ENSBEG">01 05 09 13 17 </var>
+  <var name="ENSEND">04 08 12 16 20 </var>
+  <task name="forecast_ens_tm#mark#_ensgrp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &FCST_RESOURCES_GUESS;
+  <nodes>54:ppn=12</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
+    <jobname><cyclestr>forecast_ens#ENSGRP#_tm#mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>forecast_ens_tm#mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#mark#</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+    <dependency>
+        <taskdep task="recenter_tm#mark#"/>
+    </dependency>
+
+  </task>
+  </metatask>
+
+
+
+  <task name="analysis_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
+    <jobname><cyclestr>gsianl_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>gsianl_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+     <envar>
+      <name>gsianlsh</name>
+      <value>&gsianlsh;</value>
+     </envar>
+
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+
+    <envar>
+      <name>nens </name>
+      <value>&nens; </value>
+     </envar>
+    <envar>
+      <name>l_both_fv3sar_gfs_ens </name>
+      <value>&l_both_fv3sar_gfs_ens; </value>
+     </envar>
+
+    
+    <envar>
+      <name>nens_gfs </name>
+      <value>&nens_gfs; </value>
+     </envar>
+    <envar>
+      <name>nens_fv3sar </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+
+
+
+
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+
+    <dependency>
+        <and>
+        <taskdep task="forecast_tm#mark#"/>
+        <metataskdep metatask="forecast_ens_tm#mark#"/>
+        </and>
+    </dependency>
+   </task>
+
+
+
+
+<metatask name="EnKF_analysis_tm#next_mark#">
+    <var name="None">None</var>
+  <task name="epost2mean_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>epost2mean_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>1</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>epos2mean_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="forecast_ens_tm#mark#"/>
+    </dependency>
+  </task>
+
+  <task name="emean_obs_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
+    <jobname><cyclestr>emean_obs_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>gsianl_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="epost2mean_tm#next_mark#"/>
+    </dependency>
+
+  </task>
+
+
+
+   <metatask name="enkf_obs_tm#next_mark#" >
+   <var name="ENSGRP">01 02 03 04 05 </var>
+   <var name="ENSBEG">01 05 09 13 17 </var>
+   <var name="ENSEND">04 08 12 16 20 </var>
+   
+  <task name="enkf_obs_tm#next_mark#_grp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
+    <jobname><cyclestr>enkf_obs_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>enkf_obs_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="emean_obs_tm#next_mark#"/>
+    </dependency>
+
+  </task>
+  </metatask>
+
+  
+  <task name="enkf_eupd_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>enkf_eupd_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>0</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>eupd_enkf_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="enkf_obs_tm#next_mark#"/>
+    </dependency>
+  </task>
+
+
+
+   </metatask>
+
+  <task name="recenter_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>recenter_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>2</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>recenter_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <dependency>
+      <and>
+        <metataskdep metatask="EnKF_analysis_tm#next_mark#"/>
+        <taskdep task="analysis_tm#next_mark#"/>
+      </and>
+    </dependency>
+  </task>
+
+
+
+  </metatask>
+
+
+<!--  ***********************************************************************  -->
+<!--  ********** Run the post jobs for tm06-tm01 *****************************  -->
+<!--  ***********************************************************************  -->
+
+   <metatask name="post_tm06-01" >
+   <var name="mark">06 05 04 03 02 01</var>
+   <metatask>
+    <var name="fhr">00 01</var>
+    <task name="post_f#fhr#_tm#mark#" cycledefs="regional" maxtries="6">
+    &RESERVATION;
+    &POST_RESOURCES;
+    <nodes>2:ppn=14</nodes>
+      <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
+      <jobname><cyclestr>post_f#fhr#_tm#mark#_@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+      <envar>
+        <name>HOMEfv3</name>
+        <value>&HOMEfv3;</value>
+      </envar>
+      <envar>
+        <name>job</name>
+        <value>post_f#fhr#_tm#mark#</value>
+      </envar>
+      <envar>
+        <name>USER</name>
+        <value>&USER;</value>
+      </envar>
+      <envar>
+        <name>CYCLE</name>
+        <value><cyclestr>@Y@m@d@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>cyc</name>
+        <value><cyclestr>@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>fhr</name>
+        <value>#fhr#</value>
+      </envar>
+      <envar>
+        <name>tmmark</name>
+        <value>tm#mark#</value>
+      </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+      <dependency>
+         <metataskdep metatask="da_fcst_analysis_set"/>
+      </dependency>
+    </task>
+   </metatask>
+  </metatask>
+
+<!--  ***********************************************************************  -->
+<!--  ********** Run the tm01 fcst - tm00 analysis as a metatask*************  -->
+<!--  ***********************************************************************  -->
+
+  <metatask name="fcsttm01_anltm00">
+    <var name="mark">01</var>
+    <var name="next_mark">00</var>
+
+    <task name="forecast_tm#mark#" cycledefs="regional" maxtries="6">
+     &RESERVATION;
+     &FCST_RESOURCES_DA;
+     <nodes>54:ppn=12</nodes>
+     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
+     <jobname><cyclestr>forecast_tm#mark#_@H</cyclestr></jobname>
+     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+     <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+     </envar>
+     <envar>
+      <name>job</name>
+      <value>forecast_tm#mark#</value>
+     </envar>
+
+
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+
+     <envar>
+      <name>gsianlsh</name>
+      <value>&gsianlsh;</value>
+     </envar>
+
+
+
+     <envar>
+      <name>tmmark</name>
+      <value>tm#mark#</value>
+     </envar>
+     <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+     </envar>
+     <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+     </envar>
+     <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+     </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+     <dependency>
+      <and>
+       <taskdep task="analysis_tm#mark#"/>
+       <taskdep task="chgres_fcstbndy_tm#mark#"/>
+      </and>
+     </dependency>
+
+  </task>
+
+  <metatask name="forecast_ens_tm#mark#" >
+  <var name="ENSGRP">01 02 03 04 05 </var>
+  <var name="ENSBEG">01 05 09 13 17 </var>
+  <var name="ENSEND">04 08 12 16 20 </var>
+  <task name="forecast_ens_tm#mark#_ensgrp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &FCST_RESOURCES_GUESS;
+  <nodes>54:ppn=12</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
+    <jobname><cyclestr>forecast_ens#ENSGRP#_tm#mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>forecast_ens_tm#mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#mark#</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+    <dependency>
+        <taskdep task="recenter_tm#mark#"/>
+    </dependency>
+
+  </task>
+  </metatask>
+
+  <task name="analysis_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
+    <jobname><cyclestr>gsianl_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>gsianl_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+     <envar>
+      <name>gsianlsh</name>
+      <value>&gsianlsh;</value>
+     </envar>
+
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+
+    <envar>
+      <name>nens </name>
+      <value>&nens; </value>
+     </envar>
+    <envar>
+      <name>l_both_fv3sar_gfs_ens </name>
+      <value>&l_both_fv3sar_gfs_ens; </value>
+     </envar>
+
+    
+    <envar>
+      <name>nens_gfs </name>
+      <value>&nens_gfs; </value>
+     </envar>
+    <envar>
+      <name>nens_fv3sar </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+
+
+    <dependency>
+        <and>
+        <taskdep task="forecast_tm#mark#"/>
+        <metataskdep metatask="forecast_ens_tm#mark#"/>
+        </and>
+    </dependency>
+   </task>
+
+  
+<metatask name="EnKF_analysis_tm#next_mark#">
+    <var name="None">None</var>
+  <task name="epost2mean_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>epost2mean_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>1</value>
+    </envar>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>epos2mean_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="forecast_ens_tm#mark#"/>
+    </dependency>
+  </task>
+
+  <task name="emean_obs_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
+    <jobname><cyclestr>emean_obs_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>gsianl_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="epost2mean_tm#next_mark#"/>
+    </dependency>
+
+  </task>
+
+
+
+   <metatask name="enkf_obs_tm#next_mark#" >
+   <var name="ENSGRP">01 02 03 04 05 </var>
+   <var name="ENSBEG">01 05 09 13 17 </var>
+   <var name="ENSEND">04 08 12 16 20 </var>
+   
+  <task name="enkf_obs_tm#next_mark#_grp#ENSGRP#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>10:ppn=24</nodes>
+    <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
+    <jobname><cyclestr>enkf_obs_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+    <envar>
+      <name>ENSGRP</name>
+      <value>#ENSGRP#</value>
+    </envar>
+    <envar>
+      <name>ENSBEG</name>
+      <value>#ENSBEG#</value>
+    </envar>
+    <envar>
+      <name>ENSEND</name>
+      <value>#ENSEND#</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>enkf_obs_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <taskdep task="emean_obs_tm#next_mark#"/>
+    </dependency>
+
+  </task>
+  </metatask>
+
+  
+  <task name="enkf_eupd_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>enkf_eupd_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>0</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>eupd_enkf_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+
+    <dependency>
+        <metataskdep metatask="enkf_obs_tm#next_mark#"/>
+    </dependency>
+  </task>
+
+   </metatask>
+
+
+  <task name="recenter_tm#next_mark#" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &ANL_RESOURCES;
+  <nodes>40:ppn=6</nodes>
+    <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
+    <jobname><cyclestr>recenter_tm#next_mark#_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm#next_mark#_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+     <envar>
+      <name>ldo_enscalc_option</name>
+      <value>2</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>recenter_tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm#next_mark#</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>ENKFEXEC</name>
+      <value>&ENKFEXEC;</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <dependency>
+      <and>
+        <metataskdep metatask="EnKF_analysis_tm#next_mark#"/>
+        <taskdep task="analysis_tm#next_mark#"/>
+      </and>
+    </dependency>
+  </task>
+
+
+
+
+
+
+
+
+
+
+
+  </metatask>
+
+<!-- Create the boundary conditions for the 60-h forecast -->
+
+  <task name="chgres_fcstbndy_tm00" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &CHGRES_BC_RESOURCES;
+  <nodes>21:ppn=1</nodes>
+    <command>&PRE; &JOBS;/JFV3CAM_SAR_CHGRES_FCSTBNDY</command>
+    <jobname><cyclestr> chgres_fcstbndy_tm00_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_fcstbndy.tm00_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value>chgres_fcstbndy_tm00</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm00</value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+       <taskdep task="analysis_tm00"/>
+    </dependency>
+
+  </task>
+
+<!-- Send tm00 IC/BC to FTP Server -->
+
+  <task name="sendinibc" cycledefs="regional" maxtries="6">
+  &RESERVATION_TRANSFER;
+  &SENDINIBC_RESOURCES;
+  <cores>1</cores>
+    <command>&PRE; &JOBS;/JFV3CAM_SAR_SENDINIBC</command>
+    <jobname><cyclestr> sendinibc_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/sendinibc_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value>sendinibc</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm00</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+    <dependency>
+      <and>
+       <taskdep task="analysis_tm00"/>
+       <taskdep task="chgres_fcstbndy_tm00"/>
+      </and>
+    </dependency>
+
+  </task>
+
+<!--  ***********************************************************************  -->
+<!--  ************************* Run the 60-h forecast ***********************  -->
+
+  <task name="forecast_tm00" cycledefs="regional" maxtries="6">
+  &RESERVATION;
+  &FCST_RESOURCES;
+  <nodes>114:ppn=12</nodes>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
+    <jobname><cyclestr>forecast_tm00_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm00_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value>forecast_tm00</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm00</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>PDY</name>
+      <value><cyclestr>@Y@m@d</cyclestr></value>
+    </envar>
+
+    <dependency>
+      <and>
+        <taskdep task="analysis_tm00"/>
+        <taskdep task="chgres_fcstbndy_tm00"/>
+      </and>
+    </dependency>
+
+  </task>
+
+<!--  *******************************************************************  -->
+<!--  ********************** Run the post processor *********************  -->
+
+  <metatask name="post_tm00">
+    <var name="fhr">00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60</var>
+    <task name="post#fhr#" cycledefs="regional" maxtries="6">
+    &RESERVATION;
+    &POST_RESOURCES;
+    <nodes>2:ppn=14</nodes>
+      <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
+      <jobname><cyclestr>fv3_postf#fhr#_@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_@H_tm00.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+   
+      <envar>
+       <name>HOMEfv3</name>
+       <value>&HOMEfv3;</value>
+      </envar>
+      <envar>
+       <name>job</name>
+       <value>fv3_postf#fhr#</value>
+      </envar>
+      <envar>
+        <name>tmmark</name>
+        <value>tm00</value>
+      </envar>
+      <envar>
+        <name>USER</name>
+        <value>&USER;</value>
+      </envar>
+      <envar>
+        <name>CYCLE</name>
+        <value><cyclestr>@Y@m@d@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>cyc</name>
+        <value><cyclestr>@H</cyclestr></value>
+      </envar>
+      <envar>
+        <name>fhr</name>
+        <value>#fhr#</value>
+      </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+
+      <dependency>
+        <datadep age="00:00:05:00"><cyclestr>&DATAROOT;/forecast_tm00_@H_@Y@m@d/logf0#fhr#</cyclestr></datadep>
+      </dependency>
+    </task>
+  </metatask>
+
+<!--  **********************************************************************  -->
+<!--  ******************************* Cleanup ******************************  -->
+
+  <task name="cleanup" cycledefs="regional" maxtries="6">
+  &RESERVATION_TRANSFER;
+  &SCRUB_RESOURCES;
+  <cores>1</cores>
+    <command>&PRE; &JOBS;/JFV3CAM_SAR_CLEANUP</command>
+    <jobname><cyclestr>cleanup_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/cleanup_@H.log</cyclestr></join>
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value>cleanup</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <dependency>
+       <metataskdep metatask="post_tm00"/>
+    </dependency>
+  </task>
+
+<!--  **********************************************************************  -->
+<!--  ******************************* Archive job **************************  -->
+<!--  *Commented out, archive job runs after the plot job (which changes the GRIB files)  -->
+
+<!--
+
+  <task name="rhist" cycledefs="regional" maxtries="6">
+  &RESERVATION_TRANSFER;
+  &HIST_RESOURCES;
+  <cores>1</cores>
+    <command>&JOBS;/JFV3SAR_RHIST</command>
+    <jobname><cyclestr>run_history_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/rhist_@H.log</cyclestr></join>
+
+    <envar>
+     <name>HOMEfv3</name>
+     <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+     <name>job</name>
+     <value><cyclestr>jrun_history@H_fv3sar</cyclestr></value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+    <dependency>
+       <metataskdep metatask="post_tm00"/>
+    </dependency>
+  </task>
+
+-->
+
+</workflow>
