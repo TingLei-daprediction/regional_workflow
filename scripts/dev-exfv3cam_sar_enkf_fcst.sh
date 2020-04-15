@@ -26,6 +26,7 @@ ENSEND=${ENSEND:-2}
 ################################################################################
 # Run forecast for ensemble member
    export DATATOP=${DATATOP:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}_efcst}
+export EnsAnMeanDir=$NWGES_ens/enkf_AnMean${tmmark}/ensmean
 rc=0
 for imem in $(seq $ENSBEG $ENSEND); do
 
@@ -34,17 +35,30 @@ for imem in $(seq $ENSBEG $ENSEND); do
 
 
    cmem=$(printf %03i $imem)
+   if [ $imem -eq 0 ] ; then
+   memchar=ensmean
+#use the lbc from the control runs
+       if [ $tmmark = tm12 ] ; then
+          export ensmemINPdir=${ensmemINPdir:-${COMOUT}/gfsanl.${tmmark}}
+          else
+          export ensmemINPdir=${ensmemINPdir:-${COMOUT}/anl.${tmmark}}
+       fi
+   else
    memchar="mem$cmem"
+   export ensmemINPdir=${ensINPdir}/${memchar} 
+   fi
   
    echo "Processing MEMBER: $cmem"
    if [ $tmmark = tm12 ] ; then 
-   export ensmemINPdir=${ensINPdir}/${memchar} 
    export FcstInDir=$ensmemINPdir
    else
    export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memchar
+   if [ $imem -eq 0 ] ; then
+   export FcstInDir=$EnsAnMeanDir
+   else
    export FcstInDir=$EnsRecDir
-   export ensmemINPdir=${ensINPdir}/$memchar
    cp $ensmemINPdir/*bndy*nc $FcstInDir
+   fi
    fi
    export FcstOutDir=$NWGES_ens/${tmmark_next}/$memchar
    mkdir -p $FcstOutDir

@@ -33,9 +33,9 @@ fi
 ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
 if [ $tmmark = tm00 ] ; then
-   if [ ${l_use_other_ctrlb_op:-.false.} = .true. ] ; then
+   if [ ${l_use_other_ctrlb_opt:-.false.} = .true. ] ; then
       OtherDirLbc=${COMOUT_CTRLBC}/anl.${tmmark}
-      cp $OtherDirLbc/*bndy*tile7.nc INPUT 
+      cp $OtherDirLbc/*bndy*tile7*.nc INPUT 
    fi
 fi 
 #cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
@@ -274,12 +274,14 @@ fi
 # Run the forecast
 #-----------------------------------------
 export pgm=regional_forecast.x
-. prep_step
+#clt . prep_step
 
-startmsg
+#clt startmsg
 ${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
+#cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
+#${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
-export err=$?;err_chk
+export err=$? #cltthink ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
 fi
@@ -294,15 +296,24 @@ FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
   cp grid_spec.nc $FcstOutDir/.
   cd RESTART
-  mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
-  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
-  mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
-  mv ${PDYfcst}.${CYCfcst}0000.fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
-  mv ${PDYfcst}.${CYCfcst}0000.sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+#cltorg   mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
+#cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
+#cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
+#cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
+#cltorg  mv ${PDYfcst}.${CYCfcst}0000.sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+
+
+  mv coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.coupler.res
+  mv fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
+  mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
+  mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
+  mv sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
-  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
+#cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
+  mv phy_data.nc $FcstOutDir/phy_data.nc
 fi
 
 exit

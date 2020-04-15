@@ -1,7 +1,7 @@
 #!/bin/sh --login
 set -x -u -e
 date
-
+export HOMEfv3=${HOMEfv3:-"/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow"}
 . ${HOMEfv3}/rocoto/machine-setup.sh
 export machine=${target}
 
