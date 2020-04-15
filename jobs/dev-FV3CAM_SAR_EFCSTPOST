@@ -8,7 +8,7 @@ set -x
 . $USHfv3/run_commands_forecast.sh
  
 export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
-rm -fr $DATA
+#cltthinkdeb rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
 

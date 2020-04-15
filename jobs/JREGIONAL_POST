@@ -27,8 +27,10 @@ export cyc=`echo $CDATE | cut -c 9-10`
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/${envir}/forecast_${tmmark}_${dom:+${dom}_}${cyc}_${PDY}}
-export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}}
+export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/forecast_${tmmark}_${dom:+${dom}_}${cyc}}
+#export INPUT_DATA=${INPUT_DATA:-/scratch1/NCEPDEV/stmp2/Ting.Lei/tmpnwprd-${CDATE}/${envir}/forecast_${tmmark}_${dom:+${dom}_}${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}}
+#export DATA=${DATA:-/scratch1/NCEPDEV/stmp2/Ting.Lei/tmpnwprd-${CDATE}/${envir}/${job}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi

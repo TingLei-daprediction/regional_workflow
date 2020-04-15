@@ -3,14 +3,14 @@
 [
 
 <!ENTITY EXPenvir "EXP0Gensregion">
-<!ENTITY STARTYEAR "2019">
-<!ENTITY STARTMONTH "12">
-<!ENTITY STARTDAY "28">
+<!ENTITY STARTYEAR "2020">
+<!ENTITY STARTMONTH "04">
+<!ENTITY STARTDAY "08">
 <!ENTITY STARTHOUR "12">
 
-<!ENTITY ENDYEAR "2019">
-<!ENTITY ENDMONTH "12">
-<!ENTITY ENDDAY "28">
+<!ENTITY ENDYEAR "2020">
+<!ENTITY ENDMONTH "04">
+<!ENTITY ENDDAY "08">
 <!ENTITY ENDHOUR "12">
 
 <!ENTITY USER "Ting.Lei">
@@ -80,7 +80,8 @@
 <!-- <!ENTITY gsiexec '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-add_ensemble/ProdGSI/build/bin/gsi.x'> -->
 <!-- <!ENTITY gsianlsh '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_da_hourly_rocoto/scripts/single-exfv3sar_gsianl.sh'> -->
 <!ENTITY ENKFEXEC '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM/dr-witaker/dr-gsi-enkf_fv3native_t2/ProdGSI/build/bin/enkf_fv3reg.x'>
-<!ENTITY gsiexec ' /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM/dr-add_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
+<!-- <!ENTITY gsiexec ' /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM/dr-add_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'> -->
+<!ENTITY gsiexec '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM_new/dr-add_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
 <!ENTITY gsianlsh ''> 
 <!ENTITY nens '81'> 
 <!ENTITY l_both_fv3sar_gfs_ens '.false.'> 

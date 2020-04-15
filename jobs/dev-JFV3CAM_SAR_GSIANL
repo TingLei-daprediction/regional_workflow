@@ -44,7 +44,9 @@ export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-export DATA=${STMP}/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
+#cltthinkdeb export DATA=${STMP}/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
+export DATA=/scratch1/NCEPDEV/stmp2/Ting.Lei/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
+rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
 
@@ -57,6 +59,8 @@ export pgmout="OUTPUT.${pid}"
 # Define COM directories
 ##############################################
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
+export COMOUT_ctrl=${COMROOT}/${NET}/${envir_ctrl:-$envir}/${RUN}.${PDYrun}/${CYCrun}
+export global_ens_dir_backup=/scratch2/NCEPDEV/stmp1/Ting.Lei/dr-global-data/
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
 mkdir -p $NWGES

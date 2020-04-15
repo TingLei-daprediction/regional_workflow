@@ -177,6 +177,10 @@ unset chg_memstring
 #export convert_sfc=.true.
 #export convert_nst=.true.
 $HOMEfv3/scripts/dev-make_ic.sh</dev/null
+export err=$?
+if [ $err -ne 0 ] ; then
+exit 199
+fi
 
 export res=768            #-- FV3 equivalent to 13-km global resolution
 export RES=C$res

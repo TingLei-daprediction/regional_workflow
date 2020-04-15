@@ -20,7 +20,8 @@ export cyc=`echo $CDATE | cut -c 9-10`
 #####################################
 # Working directories
 #####################################
-export DATA=${DATA:-${STMP}/tmpnwprd/${envir}/${job}_${cyc}_${PDY}}
+#thinkdeb export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
+export DATA=${DATA:-/scratch1/NCEPDEV/stmp2/Ting.Lei/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi

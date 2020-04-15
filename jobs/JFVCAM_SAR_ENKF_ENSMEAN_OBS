@@ -75,7 +75,7 @@ fi
 
 if [ $machine = hera ] ; then
    export COMINgfs=${COMINgfs:-/scratch4/NCEPDEV/rstprod/com/gfs/prod}
-   export COMINrap=${COMINrap:-/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-obs}
+   export COMINrap=${COMINrap:-/scratch1/NCEPDEV/stmp1/Ting.Lei/dr-obs}
    export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
    export COMINbias=$COMOUT

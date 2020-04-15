@@ -16,7 +16,7 @@ export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
 export CHGRESSH=$USHfv3/dev-ens-global_chgres_driver.sh
 export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
 
-export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${job}_${cyc}_ens_${ENSGRP:-xx}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}_ens_${ENSGRP:-xx}}
 mkdir -p $DATA 
 cd  $DATA
 

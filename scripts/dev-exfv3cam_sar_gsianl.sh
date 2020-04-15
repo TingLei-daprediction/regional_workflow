@@ -76,7 +76,7 @@ if [[ $DOHYBVAR = "YES" ]]; then
     export nhr_assimilation=03
     ##typeset -Z2 nhr_assimilation
 
-
+    if [ ${l_use_own_glb_ensemble:-.true.} = .true. ] ;then
     python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
 #cltthink      if [[ $l_both_fv3sar_gfs_ens = ".true."  ]]; then
 #cltthink        sed '1d;$d' filelist${nhr_assimilation} > d.txt  #don't use the ensemble mean
@@ -86,8 +86,20 @@ if [[ $DOHYBVAR = "YES" ]]; then
 
     #Check to see if ensembles were found
     numfiles=`cat filelist03 | wc -l`
-    cp filelist03 $COMOUT/${RUN}.t${CYCrun}z.filelist03.${tmmark}
-
+    cp filelist${nhr_assimilation} $COMOUT/${RUN}.t${CYCrun}z.filelist03.${tmmark}
+    else
+    cp  $COMOUT_ctrl/${RUN}.t${CYCrun}z.filelist03.${tmmark} tmp_filelist${nhr_assimilation}
+        glb_dir=$(dirname $(head -1 tmp_filelist${nhr_assimilation})) 
+        echo glbdir is $glb_dir 
+        ls $glb_dir 
+        if [ !  -d $glb_dir  ]; then
+# use different delimiter to handle the slash in the path names
+        sed  "s_${COMINgfs}_${global_ens_dir_backup}_g" tmp_filelist${nhr_assimilation} >filelist${nhr_assimilation}
+        else
+         cp tmp_filelist${nhr_assimilation} filelist${nhr_assimilation}
+        fi
+    fi
+         
        if [[ $regional_ensemble_option -eq 1  ]]; then
         if [ $numfiles -ne $nens_gfs ]; then
           echo "Ensembles not found - turning off HYBENS!"
@@ -495,12 +507,13 @@ fi
     if [ $err4 -ne 0 ] ; then
        $ncp $GBGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
      fi
+    err3=$?
 
   else
     $ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.abias_air.${tmmark_prev} ./aircftbias_in
+   err3=$?
   fi
-err1=$?
-if [ $err1 -ne 0 ] ; then
+if [ $err3 -ne 0 ] ; then
   cp $GESROOT_HOLD/gdas.airbias ./aircftbias_in
 fi
 
@@ -537,6 +550,7 @@ startmsg
 ###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
 ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+report-mem
 export err=$?;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -568,7 +582,7 @@ if [[ $HX_ONLY != TRUE ]];then
 cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits.${tmmark}
 cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits2.${tmmark}
 
- cp satbias_out $GESROOT_HOLD/satbias_in
+#clt cp satbias_out $GESROOT_HOLD/satbias_in
  cp satbias_out $COMOUT/${RUN}.t${CYCrun}z.satbias.${tmmark}
 #cltthink cp satbias_pc.out $GESROOT_HOLD/satbias_pc
  cp satbias_pc.out $COMOUT/${RUN}.t${CYCrun}z.satbias_pc.${tmmark}

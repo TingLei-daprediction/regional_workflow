@@ -152,7 +152,7 @@ mkdir -p $NWGES
 
 #mkdir -p $COMOUT/gfsanl.tm12
 #cltorg export INPdir=$COMOUT/gfsanl.tm12
-export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}
+export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/$tmmark
 export FV3SAR_GLBensmeandir=$GESROOT/${RUN}/EXP${envir}/glbensmean_${RUN}.${PDY}/${cyc}
 mkdir -p $FV3SAR_GLBensmeandir
 mkdir -p $ensINPdir
