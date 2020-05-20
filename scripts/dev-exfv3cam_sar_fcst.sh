@@ -27,11 +27,22 @@ mkdir -p INPUT RESTART
 if [ $tmmark = tm12 ] ; then
 FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
 else
+FcstInDir_tm12=${FcstInDir_tm12:-${COMOUT}/gfsanl.tm12}
+ln -sf $FcstInDir_tm12/gfs_data.tile7.nc INPUT/gfs_data.nc
 FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
 fi
+
+if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
+#cltthinkdeb
+ln -sf /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0Rocoto_blending1_surge/dr-tmp/fv_core.res.tile1.nc INPUT/fv_core.res.temp.nc
+ln -sf /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0Rocoto_blending1_surge/dr-tmp/fv_tracer.res.tile1.nc INPUT/fv_tracer.res.temp.nc
+fi
+
+
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
 ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
+
 if [ $tmmark = tm00 ] ; then
    if [ ${l_use_other_ctrlb_opt:-.false.} = .true. ] ; then
       OtherDirLbc=${COMOUT_CTRLBC}/anl.${tmmark}
@@ -44,19 +55,19 @@ numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 let "numbndy_check=$NHRS/3+1"
 
 if [ $tmmark = tm00 ] ; then
-  if [ $numbndy -ne $numbndy_check ] ; then
+  if [ $numbndy -lt $numbndy_check ] ; then
     export err=13
     echo "Don't have all BC files at tm00, abort run"
     err_exit "Don't have all BC files at tm00, abort run"
   fi
   elif  [ $tmmark = tm12 ] ; then 
-   if [ $numbndy -ne 3 ] ; then
+   if [ $numbndy -lt 3 ] ; then
     export err=4
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"
    fi
 else
-  if [ $numbndy -ne 2 ] ; then
+  if [ $numbndy -lt 2 ] ; then
     export err=2
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"
@@ -161,6 +172,8 @@ if [ $tmmark = tm00 ] ; then
     fi
 
   fi
+   
+
   cp ${PARMfv3}/model_configure_sar.tmp_${dom:-conus} model_configure.tmp
 
 	if [ ${dom:-conus} = "conus" ]
@@ -222,6 +235,49 @@ else
  fi
 
 fi
+if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
+ if [ $tmmark = tm12 ]; then 
+#     if [ $tmmark = tm00 ] ; then
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+ elif [ $tmmark = tm00 ];then
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
+   regional_bcs_from_gsi=.true.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-10}
+  else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-10}
+  fi
+ else
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
+   regional_bcs_from_gsi=.true.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+  else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+  fi
+
+ fi
+   
+
+else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-0}
+fi
+   sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
+   sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
+   sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
+
+
+
+
+
 
 #cp diag_table_tmp diag_table.tmp
 
@@ -277,7 +333,7 @@ export pgm=regional_forecast.x
 #clt . prep_step
 
 #clt startmsg
-${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
+${APRUNC} $EXECfv3/regional_forecast.x_gfdlmp >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
@@ -295,6 +351,7 @@ fi
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
   cp grid_spec.nc $FcstOutDir/.
+  cp grid_spec.nc RESTART
   cd RESTART
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
@@ -307,13 +364,35 @@ if [ $tmmark != tm00 ] ; then
   mv fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
   mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
   mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
-  mv sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+  cp sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
 
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
   mv phy_data.nc $FcstOutDir/phy_data.nc
+  mv fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+
+if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+  #Move enlarged restart files for 00-h BC's
+   mv fv_tracer.res.tile1_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1_new.nc 
+   mv fv_core.res.tile1_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1_new.nc 
+  # Make enlarged sfc file
+  mv sfc_data.nc sfc_data_orig.nc
+  mv grid_spec.nc grid_spec_orig.nc
+
+  cp $HOMEfv3/regional_da_imbalance/prep_for_regional_DA.x .
+  cp $HOMEfv3/regional_da_imbalance/grid.tile7.halo3_${CASE}.nc grid.tile7.halo3.nc
+  ./prep_for_regional_DA.x
+
+  mv sfc_data_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data_new.nc
+  mv grid_spec_new.nc $FcstOutDir/grid_spec_new.nc
+
+fi
+
+
+
+
 fi
 
 exit

@@ -96,6 +96,14 @@ elif [ $machine = HERA -o $machine = hera ]; then
  export INIDIR=$COMgfs/gfs/prod/${CDUMP}.$ymd
  ulimit -a
  ulimit -s unlimited
+elif [ $machine = wcoss_cray -o $machine = WCOSS_CRAY ]; then
+    export UTIL=$HOMEfv3/util/ush
+    export CDUMP=${CDUMP:-gdas}                   # gfs or gdas
+    export ymd=`echo $CDATE | cut -c 1-8`
+    export INIDIR=$COMgfs/gfs/prod/${CDUMP}.$ymd
+    ulimit -a
+    ulimit -s unlimited
+
 else
  echo "$machine not supported, exit"
  exit

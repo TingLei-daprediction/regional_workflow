@@ -97,6 +97,7 @@ cat <<EOF >fort.41
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
+ halo_blend=${NROWS_BLEND:-0}
 /
 EOF
 
@@ -104,7 +105,7 @@ export pgm=regional_chgres_cube.x
 #cltthinkdeb . prep_step
 
 #cltthinkdeb startmsg
-time ${APRUNC} -l ./regional_chgres_cube.x> stdout
+time ${APRUNC} ./regional_chgres_cube.x> stdout
 export err=$?
 ###export err=$?;err_chk
 
