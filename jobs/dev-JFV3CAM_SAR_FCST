@@ -16,12 +16,13 @@ offset=`echo $tmmark | cut -c 3-4`
 export CYCLEanl=`$NDATE -${offset} $CDATE`
 export PDY=`echo $CDATE | cut -c 1-8`
 export cyc=`echo $CDATE | cut -c 9-10`
+export CYC=$cyc
 
 #####################################
 # Working directories
 #####################################
 #thinkdeb export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
-export DATA=${DATA:-/scratch1/NCEPDEV/stmp2/Ting.Lei/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
 if [ -d $DATA ]; then
   rm -rf $DATA
 fi

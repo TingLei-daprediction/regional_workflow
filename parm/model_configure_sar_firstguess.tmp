@@ -1,5 +1,3 @@
-print_esmf:              .false.
-total_member:            1
 PE_MEMBER01:             NTASKS
 start_year:              YR
 start_month:             MN
@@ -10,8 +8,7 @@ start_second:            0
 nhours_fcst:             NHRS
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                90
-cpl:                     .false.
+dt_atmos:                36 
 calendar:                'julian'
 memuse_verbose:          .false.
 atmos_nthreads:          NTHRD
@@ -19,16 +16,23 @@ use_hyper_thread:        .false.
 ncores_per_node:         NCNODE
 debug_affinity:          .true.
 restart_interval:        06
-output_1st_tstep_rst:    .false.
-
+cpl:                     .false.
+write_dopost:            .false.
 quilting:                .true.
-write_groups:            2
-write_tasks_per_group:   54
+write_groups:            5 
+write_tasks_per_group:   24 
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
+ideflate:                1
+nbits:                   18
+ichunk2d:                -1
+jchunk2d:                -1
+ichunk3d:                -1
+jchunk3d:                -1
+kchunk3d:                -1
 
 output_grid:             'rotated_latlon'
 cen_lon:                 -97.5  # central longitude
@@ -44,4 +48,7 @@ nfhout:                  1
 nfhmax_hf:               60
 nfhout_hf:               1
 nsout:                   -1
+print_esmf:              .false.
+total_member:            1
+
 

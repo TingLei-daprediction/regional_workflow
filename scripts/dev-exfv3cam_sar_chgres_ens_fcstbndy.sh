@@ -213,7 +213,7 @@ do
  elif [ $machine = DELL -a $tmmark = tm00 ]; then
   BC_DATA=$DATA/wrk.chgres.$hour_name
   echo "env REGIONAL=2 HALO=4 bchour=$hour_name DATA=$BC_DATA $USHfv3/dev-global_chgres_driver_dacycle_hourly.sh >&out.chgres.$hour_name" >>bcfile.input
- elif [ $machine = hera -o $machine = HERA -o $machine = WCOSS -o $tmmark != tm00 ]; then
+ elif [ $machine = hera -o $machine = HERA -o $machine = WCOSS -o $machine = wcoss_cray -o $tmmark != tm00 ]; then
 #
 #for now on theia run the BC creation sequentially
 #

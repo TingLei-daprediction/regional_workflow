@@ -65,8 +65,9 @@ export DATAbase=$DATA
 # Not using FGAT or 4DEnVar, so hardwire nhr_assimilation to 3
 export nhr_assimilation=03
 ##typeset -Z2 nhr_assimilation
-export nens=20
+export nens=${nens:-20}
 rm -f filelist${nhr_assimilation}_tmp_ens$ENSGRP 
+echo "UTIL 0 is "$UTIL
 python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
 
 sed '/ensmean/d'  filelist${nhr_assimilation}_tmp0_ens$ENSGRP> filelist${nhr_assimilation}_tmp_ens$ENSGRP 
@@ -74,7 +75,7 @@ cat filelist${nhr_assimilation}_tmp_ens$ENSGRP
 #Check to see if ensembles were found 
 numfiles=`cat filelist${nhr_assimilation}_tmp_ens$ENSGRP | wc -l`
 
-if [ $numfiles -ne 5 ]; then
+if [ $numfiles -le $nens ]; then
   echo "Ensembles not found - turning off HYBENS!"
   export HYB_ENS=".false."
 else
@@ -244,7 +245,7 @@ if [ $L_USE_CONTROL_LBC != ".true." ]; then
 #
   BC_DATA=/gpfs/hps3/ptmp/${LOGNAME}/${chg_memstr}wrk.chgres.$hour_name
   echo "env REGIONAL=2 bchour=$hour_name DATA=$BC_DATA $USHfv3/global_chgres_driver.sh >&out.chgres.$hour_name" >>bcfile.input
- elif [ $machine = HERA -o  $machine = hera  -o $machine = WCOSS -o $machine = DELL ]; then
+ elif [ $machine = HERA -o  $machine = hera  -o $machine = WCOSS -o $machine = DELL -o $machine = wcoss_cray ]; then
 #
 #for now on theia run the BC creation sequentially
 #

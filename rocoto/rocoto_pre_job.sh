@@ -22,9 +22,8 @@ if [ "${jobpre}" = "regional_forecast" ]; then
 else
   module load regional
 fi
-module load nco
-echo "thinkdeb show module list"
-module list
+#cltorg module load nco
+module load nco-gnu-haswell/4.4.4
 module list
 
 exec "$@"
