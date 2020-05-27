@@ -5,8 +5,12 @@ export envir=${envir:-para}
 export NET=fv3cam
 export RUN=fv3sar
 export model=fv3sar_da	# fv3sar (cold start) or fv3sar_da (with DA)
-export CCPP=false
-export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
+#cltorg export CCPP=false
+#cltorg export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
+export CCPP=true
+export MPSUITE=thompson
+export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
+
 
 if [ ${machine} = "wcoss_dell_p3" ]
 then
@@ -29,14 +33,18 @@ then
 export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-
+export COMINrap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/prod}
+ 
 export PTMP=${PTMP:-/gpfs/hps3/ptmp/${USER}}
 export STMP=${STMP:-/gpfs/hps3/stmp/${USER}}
 export rzdmuser=mpyle
 
-export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/noscrub/$USER/regional_workflow}
+export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/save/$USER/regional_workflow}
 export NDATE=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/ndate
 export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
+
+export COMINbias=$COMOUT
+export fixcrtm=${fixcrtm:-/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix}
 
 elif [ ${machine} = "hera" ]
 then
@@ -83,8 +91,8 @@ export CASE=C${CRES}
 export gtype=regional    # grid type = uniform, stretch, nest, or regional
 
 export PARMfv3=$HOMEfv3/parm
-#cltthinkdeb export EXECfv3=$HOMEfv3/exec
-export EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_workflow/exec/
+export EXECfv3=$HOMEfv3/exec
+#cltexport EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_workflow/exec/
 export USHfv3=$HOMEfv3/ush
 export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
@@ -95,7 +103,9 @@ export FIXco2=$FIXam/fix_co2_proj
 
 export COMROOT=${PTMP}/com
 export GESROOT=${PTMP}/nwges
-export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
+#export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
+#export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-hold
+export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-Eric/gesroot_hold
 mkdir -p $GESROOT_HOLD
 export comdir=ptmp
 export gesdir=ptmp
@@ -106,3 +116,6 @@ export NHRSda=01	#-- Forecast length for cycled DA
 export NHRS=48          #-- Forecast length for free fcst
 
 export jlogfile=${STMP}/jlogfile.$envir.${RUN}.jlog
+export LEVS=${LEVS:-61}
+L_LBC_UPDATE=${L_LBC_UPDATE:-FALSE}
+NROWS_BLEND=${NROWS_BLEND:-0}
