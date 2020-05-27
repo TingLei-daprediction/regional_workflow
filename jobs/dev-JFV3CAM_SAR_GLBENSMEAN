@@ -25,7 +25,8 @@ machine=${machine:-DELL}
 #####################################
 export CDUMP=gfs
 export CDAS=gfs
-export LEVS=${LEVS:-65}
+export LEVS=${LEVS:-61}
+>>>>>>> 1353d5871db8e1873983c80a435c7882024570f6
 export LSOIL=4
 export REGIONAL=1		# REGIONAL=0 - uniform, stretch, or nest
 				# REGIONAL=1 - generate data and boundary (for regional case)
