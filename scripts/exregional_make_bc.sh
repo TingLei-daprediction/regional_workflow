@@ -151,6 +151,13 @@ export pgm=regional_chgres_cube.x
   fi
 
   hour=`expr $hour + $hour_inc`
+=======
+ halo_blend=10
+/
+EOF
+
+time ${APRUNC} ./regional_chgres_cube.x
+>>>>>>> develop
 
 #
 # move output files to save directory

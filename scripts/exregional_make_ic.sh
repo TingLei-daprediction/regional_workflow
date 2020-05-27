@@ -87,7 +87,6 @@ cat <<EOF >fort.41
  regional=${REGIONAL}
  halo_bndy=${HALO}
  halo_blend=${NROWS_BLEND:-0}
- halo_blend=${NROWS_BLEND:-0}
 /
 EOF
 
