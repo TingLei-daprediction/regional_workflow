@@ -68,7 +68,7 @@ else
   export CDUMP=gdas
 fi
 export CDAS=gfs
-export LEVS=${LEVS:-65}
+export LEVS=${LEVS:-61}
 export LSOIL=4
 export REGIONAL=2		# REGIONAL=0 - uniform, stretch, or nest
 				# REGIONAL=1 - generate data and boundary (for regional case)

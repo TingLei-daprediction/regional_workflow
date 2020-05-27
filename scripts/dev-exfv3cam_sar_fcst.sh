@@ -221,7 +221,6 @@ if [ $tmmark = tm00 ] ; then
 # Submit post manager here
 elif [ $tmmark = tm12 ] ; then
 
-
   cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
   cat input.nml.tmp | \
      sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
