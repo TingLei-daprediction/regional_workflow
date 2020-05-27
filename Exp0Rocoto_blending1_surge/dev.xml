@@ -5,12 +5,12 @@
 <!ENTITY EXPenvir "EXP0region_blend">
 <!ENTITY STARTYEAR "2020">
 <!ENTITY STARTMONTH "05">
-<!ENTITY STARTDAY "15">
+<!ENTITY STARTDAY "20">
 <!ENTITY STARTHOUR "00">
 
 <!ENTITY ENDYEAR "2020">
 <!ENTITY ENDMONTH "05">
-<!ENTITY ENDDAY "15">
+<!ENTITY ENDDAY "20">
 <!ENTITY ENDHOUR "00">
 
 <!ENTITY USER "Ting.Lei">
@@ -81,11 +81,11 @@
 <!ENTITY ENKFEXEC '/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-enkf_fv3native_t2/ProdGSI/build/bin/enkf_fv3reg.x'>
 <!ENTITY gsiexec ' /gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-mixdual/ProdGSI/exec/global_gsi.x'>
 <!ENTITY gsianlsh ''> 
-<!ENTITY nens '18'> 
+<!ENTITY nens '20'> 
 <!ENTITY regional_ensemble_option '5'> 
 <!ENTITY l_both_fv3sar_gfs_ens '.false.'> 
 <!ENTITY nens_gfs '0'> 
-<!ENTITY nens_fv3sar '18'> 
+<!ENTITY nens_fv3sar '20'> 
 <!ENTITY l_use_other_ctrlb_opt '.true.'> 
 <!ENTITY envirlbctm00 'EXP0Gensregion'> 
 <!ENTITY L_LBC_UPDATE 'TRUE'> 
@@ -753,6 +753,14 @@
       <envar>
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+     <name>L_LBC_UPDATE</name>
+     <value>&L_LBC_UPDATE;</value>
+    </envar>
+    <envar>
+     <name>NROWS_BLEND</name>
+     <value>&NROWS_BLEND;</value>
     </envar>
 
     <dependency>

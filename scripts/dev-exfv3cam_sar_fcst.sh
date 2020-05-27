@@ -55,19 +55,19 @@ numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 let "numbndy_check=$NHRS/3+1"
 
 if [ $tmmark = tm00 ] ; then
-  if [ $numbndy -ne $numbndy_check ] ; then
+  if [ $numbndy -lt $numbndy_check ] ; then
     export err=13
     echo "Don't have all BC files at tm00, abort run"
     err_exit "Don't have all BC files at tm00, abort run"
   fi
   elif  [ $tmmark = tm12 ] ; then 
-   if [ $numbndy -ne 3 ] ; then
+   if [ $numbndy -lt 3 ] ; then
     export err=4
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"
    fi
 else
-  if [ $numbndy -ne 2 ] ; then
+  if [ $numbndy -lt 2 ] ; then
     export err=2
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"

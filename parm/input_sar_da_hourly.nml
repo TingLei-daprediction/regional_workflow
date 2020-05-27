@@ -190,6 +190,7 @@
        cdmbgwd        = 3.5, 0.01       ! NCEP default
        prslrd0        = 0.
        ivegsrc        = 1
+       lsm            = 1
        isot           = 1
        lsm            = 1
 !      lsoil_lsm      = 4
