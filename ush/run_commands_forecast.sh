@@ -10,6 +10,7 @@
   export KMP_AFFINITY=disabled
 if [ "$machine" = wcoss_cray ]; then
   #export NODES=1
+  export OMP_NUM_THREADS=1 #cltthink
   export APRUNS=${APRUNS:-"aprun -b -j1 -n1 -N1 -d1 -cc depth"}
   export APRUNF=${APRUNF:-"aprun -b -j1 -n${TOTAL_TASKS} -N${NCTSK} -d${OMP_NUM_THREADS} -cc depth cfp"}
   export APRUNC=${APRUNC:-"aprun -b -j1 -n${TOTAL_TASKS} -N${NCTSK} -d${OMP_NUM_THREADS} -cc depth"}

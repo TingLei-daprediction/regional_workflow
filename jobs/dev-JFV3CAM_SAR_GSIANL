@@ -115,6 +115,8 @@ elif [ $machine = WCOSS ] ; then
   export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
   export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
 elif [ $machine = wcoss_cray ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
   export fixgsi="/gpfs/hps3/emc/meso/save/Eric.Rogers/regional_workflow/regional_gsi.fd/fix"
   export fixcrtm=/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix
 

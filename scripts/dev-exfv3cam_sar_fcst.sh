@@ -34,8 +34,9 @@ fi
 
 if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
 #cltthinkdeb
-ln -sf /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0Rocoto_blending1_surge/dr-tmp/fv_core.res.tile1_levs${LEVS}.nc INPUT/fv_core.res.temp.nc
-ln -sf /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0Rocoto_blending1_surge/dr-tmp/fv_tracer.res.tile1_levs${LEVS}.nc INPUT/fv_tracer.res.temp.nc
+ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
+ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
+
 fi
 
 
@@ -214,8 +215,20 @@ if [ $tmmark = tm00 ] ; then
 	let nctsk=ncnode/OMP_NUM_THREADS    # 12 tasks per node with 2 threads 
 	let ntasks=nodes*nctsk
 	echo nctsk = $nctsk and ntasks = $ntasks
-     cp ${PARMfv3}/d* .
-     cp ${PARMfv3}/field_table .
+	if [ $MPSUITE = thompson ] ; then
+	  cp ${PARMfv3}/thompson/diag_table.tmp .
+	  cp ${PARMfv3}/thompson/field_table .
+	  cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
+	  cp $PARMfv3/thompson/freezeH2O.dat                             freezeH2O.dat
+	  cp $PARMfv3/thompson/qr_acr_qg.dat                             qr_acr_qg.dat
+	  cp $PARMfv3/thompson/qr_acr_qs.dat                             qr_acr_qs.dat
+	  cp $PARMfv3/thompson/thompson_tables_precomp.sl                thompson_tables_precomp.sl
+	fi
+	if [ $MPSUITE = gfdlmp ] ; then
+	  cp ${PARMfv3}/diag_table.tmp .
+	  cp ${PARMfv3}/field_table .
+	fi
+
      cp ${PARMfv3}/nems.configure .
 
 # Submit post manager here
@@ -289,12 +302,9 @@ else
   fi
   
 
-
-
   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
 
   cp ${PARMfv3}/data_table .
-  cp ${PARMfv3}/field_table .
   cp ${PARMfv3}/nems.configure .
 fi
 
