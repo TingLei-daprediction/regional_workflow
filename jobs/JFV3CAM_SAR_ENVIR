@@ -5,17 +5,12 @@ export envir=${envir:-para}
 export NET=fv3cam
 export RUN=fv3sar
 export model=fv3sar_da	# fv3sar (cold start) or fv3sar_da (with DA)
-<<<<<<< HEAD
 #cltorg export CCPP=false
 #cltorg export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
 export CCPP=true
 export MPSUITE=thompson
 export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
 
-=======
-export CCPP=false
-export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
->>>>>>> 1353d5871db8e1873983c80a435c7882024570f6
 
 if [ ${machine} = "wcoss_dell_p3" ]
 then
