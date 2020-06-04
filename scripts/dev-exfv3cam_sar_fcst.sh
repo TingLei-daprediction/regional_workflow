@@ -315,7 +315,7 @@ if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
    write_restart_with_bcs=.true.
    nrows_blend=${NROWS_BLEND:-10}
  elif [ $tmmark = tm00 ];then
-  if [ -z ${memstr+x} ]; then  #memstr not defined , for control run
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
    regional_bcs_from_gsi=.true.
    write_restart_with_bcs=.false.
    nrows_blend=${NROWS_BLEND:-10}
@@ -325,7 +325,7 @@ if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
    nrows_blend=${NROWS_BLEND:-10}
   fi
  else
-  if [ -z ${memstr+x} ]; then  #memstr not defined , for control run
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
    regional_bcs_from_gsi=.true.
    write_restart_with_bcs=.true.
    nrows_blend=${NROWS_BLEND:-10}
