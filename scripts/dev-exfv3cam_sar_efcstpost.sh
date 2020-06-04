@@ -205,7 +205,8 @@ fi
 
 
 #cltthinkdeb nens=`cat filelist03 | wc -l`
-if [ $ldo_enscalc_option -eq 1 ]; then
+if [ $ldo_enscalc_option -eq 1 -o $ldo_enscalc_option -eq 2 ]; then
+tothink
 anavinfo=$PARMfv3/anavinfo_fv3_enkf_ensmean_64
 else
 anavinfo=$PARMfv3/anavinfo_fv3_enkf_64

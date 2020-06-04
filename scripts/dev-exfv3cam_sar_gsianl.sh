@@ -638,8 +638,8 @@ cp $fv3_case/${PDY}.${CYC}0000.sfc_data${lbcupdt_str}.nc fv3_sfcdata
 ctrlstrname=${ctrlstr:+_${ctrlstr}_}
    BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1${lbcupdt_str}.nc}
    BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1${lbcupdt_str}.nc}
-   BgFile4dynvarOld=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
-   BgFile4tracerOld=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
+   BgFile4dynvarOld=${BgFile4dynvarOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
+   BgFile4tracerOld=${BgFile4tracerOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
 cp $BgFile4dynvar fv3_dynvars
 #   This file contains 3d tracer fields sphum, liq_wat, o3mr
 cp $BgFile4tracer fv3_tracer
