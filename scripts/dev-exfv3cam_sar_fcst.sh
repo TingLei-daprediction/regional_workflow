@@ -229,7 +229,9 @@ if [ $tmmark = tm00 ] ; then
 	  cp ${PARMfv3}/field_table .
 	fi
 
-     cp ${PARMfv3}/nems.configure .
+	cp ${PARMfv3}/data_table .
+	cp ${PARMfv3}/nems.configure .
+
 
 # Submit post manager here
 elif [ $tmmark = tm12 ] ; then
