@@ -129,7 +129,7 @@ cat <<EOF >fort.41
  convert_atm=.true.
  convert_sfc=.false.
  convert_nst=.false.
- input_type="gaussian_nemsio"
+ input_type="gaussian"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
@@ -151,14 +151,6 @@ export pgm=regional_chgres_cube.x
   fi
 
   hour=`expr $hour + $hour_inc`
-=======
- halo_blend=10
-/
-EOF
-
-time ${APRUNC} ./regional_chgres_cube.x
->>>>>>> develop
-
 #
 # move output files to save directory
 #
