@@ -41,15 +41,13 @@ fi
 
 
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
-ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
 
-if [ $tmmark = tm00 ] ; then
    if [ ${l_use_other_ctrlb_opt:-.false.} = .true. ] ; then
-      OtherDirLbc=${COMOUT_CTRLBC}/anl.${tmmark}
+      OtherDirLbc=${COMOUT}/anl.${tmmark}
       cp $OtherDirLbc/*bndy*tile7*.nc INPUT 
+     
    fi
-fi 
 #cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
