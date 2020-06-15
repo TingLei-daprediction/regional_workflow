@@ -5,17 +5,15 @@ export envir=${envir:-para}
 export NET=fv3cam
 export RUN=fv3sar
 export model=fv3sar_da	# fv3sar (cold start) or fv3sar_da (with DA)
-<<<<<<< HEAD
 #cltorg export CCPP=false
 #cltorg export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
-export CCPP=true
-export MPSUITE=thompson
-export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
+#export CCPP=true
+#export MPSUITE=thompson
+#export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
 
-=======
 export CCPP=false
+export MPSUITE=gfsdlmp
 export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
->>>>>>> 1353d5871db8e1873983c80a435c7882024570f6
 
 if [ ${machine} = "wcoss_dell_p3" ]
 then
@@ -82,6 +80,9 @@ export NDATE=${NDATE:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/e
 export NHOUR=${NHOUR:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/nhour}
 export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/regional_workflow}
 
+elif [ ${machine} = "orion" ]
+
+   export COMINgfs=${COMINgfs:-/work/noaa/stmp/erogers/}
 
 else
 
