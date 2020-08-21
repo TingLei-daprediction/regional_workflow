@@ -20,6 +20,8 @@ ncores_per_node:         NCNODE
 debug_affinity:          .true.
 restart_interval:        NRESTART
 output_1st_tstep_rst:    .false.
+ideflate:1 
+nbits:  18 
 
 quilting:                .true.
 write_groups:            2

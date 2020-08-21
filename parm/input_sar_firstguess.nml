@@ -141,6 +141,7 @@
        ldiag3d        = .false.
        lradar         = .true.
        avg_max_length = 3600.
+       nsradar_reset  = 3600.
        h2o_phys       = .true.
        fhcyc          = 24.
        nst_anl        = .true.
@@ -149,8 +150,8 @@
        ncld           = 5
        imp_physics    = 11
        pdfcld         = .false.
-       fhswr          = 3600.
-       fhlwr          = 3600.
+       fhswr          = 900.
+       fhlwr          = 900.
        ialb           = 1
        iems           = 1
        IAER           = 111
@@ -161,10 +162,13 @@
        lwhtr          = .true.
        swhtr          = .true.
        cnvgwd         = .false.
+       shal_cnv       = .false.
        cal_pre        = .false.
        redrag         = .true.
        dspheat        = .true.
-       hybedmf        = .true.
+       hybedmf        = .T.
+       satmedmf       = .F.
+       lheatstrg      = .F.
        random_clds    = .false.
        trans_trac     = .true.
        cnvcld         = .false.
@@ -174,15 +178,13 @@
        prslrd0        = 0.
        ivegsrc        = 1
        isot           = 1
-       debug          = .false.
-       nstf_name      = 2,0,0,0,0
-       iau_delthrs    = 6
-       iaufhrs        = 30
-       iau_inc_files  = ''
-       shal_cnv = .false. !Shallow convection
-       do_deep = .false.
-       lgfdlmprad   = .true.
-       effr_in      = .true.
+       lsm            = 1
+       iopt_dveg      = 2
+       iopt_crs       = 1
+       iopt_btr       = 1
+       iopt_run       = 1
+       iopt_sfc       = 1
+
 /
 
  &gfdl_cloud_microphysics_nml
