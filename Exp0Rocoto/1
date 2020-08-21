@@ -1,58 +1,65 @@
-total 2068
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 22:37 1
--rw-r--r-- 1 Ting.Lei fv3-cam    243 Feb  5 15:55 2
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 23 03:14 OUTPUT.107167
--rw-r--r-- 1 Ting.Lei fv3-cam   6849 Feb 20 02:19 OUTPUT.168878
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 22 20:56 OUTPUT.248815
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 22 20:29 OUTPUT.319147
-lrwxrwxrwx 1 Ting.Lei fv3-cam    107 Feb 20 02:19 anavinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/parm/anavinfo_fv3_enkf_ensmean_64
-lrwxrwxrwx 1 Ting.Lei fv3-cam    125 Feb 20 02:19 convinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//nam_regional_convinfo.txt*
--rw-r--r-- 1 Ting.Lei fv3-cam  70693 Feb  5 15:36 d.xml
--rw-r--r-- 1 Ting.Lei fv3-cam    172 Feb  5 15:44 d0
-lrwxrwxrwx 1 Ting.Lei fv3-cam      1 Dec  3 17:18 d1 -> 2
--rw-r--r-- 1 Ting.Lei fv3-cam    139 Feb 12 21:10 dd
--rwxr-xr-x 1 Ting.Lei fv3-cam    308 Jan  6 17:24 deb-glb_ens-oneob.sh*
--rwxr-xr-x 1 Ting.Lei fv3-cam    308 Jan  6 17:25 deb-mix_ens-oneob.sh*
--rwxr-xr-x 1 Ting.Lei fv3-cam  16879 Jan  6 16:27 deb-oneob.sh*
--rw-r--r-- 1 Ting.Lei fv3-cam   5666 Feb 20 19:30 deb.log
--rwxr-xr-x 1 Ting.Lei fv3-cam  19061 Feb 20 22:23 deb.sh*
--rw-r--r-- 1 Ting.Lei fv3-cam  76701 Feb 12 20:18 deb.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  69268 Jan  6 17:00 dev-glbens-oneob.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  69720 Dec 15 19:58 dev-glbensmean.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  69440 Jan  6 19:50 dev-mixens-oneob.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  68772 Dec  9 11:36 dev-new.xml
--rwxr-xr-x 1 Ting.Lei fv3-cam    268 Dec 10 23:16 dev-next2.sh*
--rw-r--r-- 1 Ting.Lei fv3-cam  68855 Dec 11 15:00 dev-next2.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  69109 Jan  6 16:52 dev-oneob.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  68643 Dec  8 15:41 dev-xml.bak
--rw-r--r-- 1 Ting.Lei fv3-cam  40960 Feb 20 22:23 dev.db
--rwxr-xr-x 1 Ting.Lei fv3-cam    256 Feb  4 22:43 dev.sh*
--rw-r--r-- 1 Ting.Lei fv3-cam  76863 Feb 20 12:08 dev.xml
--rw-r--r-- 1 Ting.Lei fv3-cam  68503 Dec  8 05:02 dev.xml.dev
--rw-r--r-- 1 Ting.Lei fv3-cam  70701 Feb 12 15:27 dev.xml.org-20200212
--rw-r--r-- 1 Ting.Lei fv3-cam   8192 Feb 20 22:23 dev_lock.db
-drwxr-sr-x 2 Ting.Lei fv3-cam   4096 Dec  5 19:36 dr-bak/
-drwxr-sr-x 2 Ting.Lei fv3-cam   4096 Feb  4 19:48 dr-org-20200204/
--rw-r--r-- 1 Ting.Lei fv3-cam   5354 Feb 20 02:19 enkf.nml
--rw-r--r-- 1 Ting.Lei fv3-cam    258 Nov 23 03:14 err
--rw-r--r-- 1 Ting.Lei fv3-cam  43400 Nov 23 03:14 eta_micro_lookup.dat
+total 2524
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Apr  2 17:45 1
+-rw-r--r-- 1 Ting.Lei fv3-cam  24769 Apr  2 17:45 deb.sh.out-tl
+-rw-r--r-- 1 Ting.Lei fv3-cam  49152 Apr  2 17:45 dev.db
+-rw-r--r-- 1 Ting.Lei fv3-cam   8192 Apr  2 17:45 dev_lock.db
+-rw-r--r-- 1 Ting.Lei fv3-cam  24773 Apr  2 17:43 2
+-rwxr-xr-x 1 Ting.Lei fv3-cam  24048 Apr  2 17:40 deb.sh*
+-rw-r--r-- 1 Ting.Lei fv3-cam   5666 Apr  2 15:54 deb.log
+-rw-r--r-- 1 Ting.Lei fv3-cam  76828 Apr  1 22:14 dev.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  76828 Apr  1 13:50 dev.xml.bak
+drwxr-sr-x 2 Ting.Lei fv3-cam   4096 Mar 31 12:30 dr-org-20200225/
+-rw-r--r-- 1 Ting.Lei fv3-cam  76828 Mar 31 12:26 dd.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  76863 Mar 17 13:42 tlei-dev.xml
+drwxr-sr-x 2 Ting.Lei fv3-cam   4096 Mar  6 21:57 dr-org-20200204/
+-rw-r--r-- 1 Ting.Lei fv3-cam  76856 Feb 25 20:39 deb-dev.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  76863 Feb 23 15:55 dev.xml.org
 -rw-r--r-- 1 Ting.Lei fv3-cam      6 Feb 20 02:22 hname
--rw-r--r-- 1 Ting.Lei fv3-cam    458 Nov 23 03:14 itag
--rw-r--r-- 1 Ting.Lei fv3-cam     17 Feb 20 02:19 ncepdate
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 nck_dynvar_list.txt
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 nck_tracer_list.txt
-lrwxrwxrwx 1 Ting.Lei fv3-cam    106 Dec 10 15:00 obs_input.tar -> /scratch2/NCEPDEV/stmp3/Ting.Lei/com/fv3cam/EXP0region/fv3sar.20191209/00/obsinput_2019120900_tm03_ensmean*
-lrwxrwxrwx 1 Ting.Lei fv3-cam    121 Feb 20 02:19 ozinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//nam_global_ozinfo.txt*
--rwxr-xr-x 1 Ting.Lei fv3-cam  35306 Nov 23 03:14 params_grib2_tbl_new*
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 part_1_OUTPUT.168878
--rw-r--r-- 1 Ting.Lei fv3-cam   1853 Feb 20 02:19 part_1_stderr
--rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 part_2_OUTPUT.168878
+-rw-r--r-- 1 Ting.Lei fv3-cam   6849 Feb 20 02:19 OUTPUT.168878
 -rw-r--r-- 1 Ting.Lei fv3-cam   8129 Feb 20 02:19 part_2_stderr
 -rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 part_3_OUTPUT.168878
 -rw-r--r-- 1 Ting.Lei fv3-cam   8217 Feb 20 02:19 part_3_stderr
--rw-r--r-- 1 Ting.Lei fv3-cam  79096 Nov 23 03:14 postxconfig-NT.txt
+lrwxrwxrwx 1 Ting.Lei fv3-cam    107 Feb 20 02:19 anavinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/parm/anavinfo_fv3_enkf_ensmean_64
+lrwxrwxrwx 1 Ting.Lei fv3-cam    125 Feb 20 02:19 convinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//nam_regional_convinfo.txt*
+-rw-r--r-- 1 Ting.Lei fv3-cam   5354 Feb 20 02:19 enkf.nml
+lrwxrwxrwx 1 Ting.Lei fv3-cam    121 Feb 20 02:19 ozinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//nam_global_ozinfo.txt*
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 part_1_OUTPUT.168878
+-rw-r--r-- 1 Ting.Lei fv3-cam   1853 Feb 20 02:19 part_1_stderr
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 part_2_OUTPUT.168878
 lrwxrwxrwx 1 Ting.Lei fv3-cam    125 Feb 20 02:19 satbias_angle -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//nam_global_satangbias.txt*
 -rw-r--r-- 1 Ting.Lei fv3-cam 859665 Feb 20 02:19 satbias_in
 lrwxrwxrwx 1 Ting.Lei fv3-cam     97 Feb 20 02:19 satinfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/parm/fv3sar_satinfo.txt
 lrwxrwxrwx 1 Ting.Lei fv3-cam    119 Feb 20 02:19 scaninfo -> /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/sorc/regional_gsi.fd/fix//global_scaninfo.txt
+-rw-r--r-- 1 Ting.Lei fv3-cam     17 Feb 20 02:19 ncepdate
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 nck_dynvar_list.txt
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Feb 20 02:19 nck_tracer_list.txt
 -rw-r--r-- 1 Ting.Lei fv3-cam     10 Feb 20 02:19 tmp.txt
+-rw-r--r-- 1 Ting.Lei fv3-cam    139 Feb 12 21:10 dd
+-rw-r--r-- 1 Ting.Lei fv3-cam  76701 Feb 12 20:18 deb.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  70701 Feb 12 15:27 dev.xml.org-20200212
+-rw-r--r-- 1 Ting.Lei fv3-cam    172 Feb  5 15:44 d0
+-rw-r--r-- 1 Ting.Lei fv3-cam  70693 Feb  5 15:36 d.xml
+-rwxr-xr-x 1 Ting.Lei fv3-cam    256 Feb  4 22:43 dev.sh*
+-rw-r--r-- 1 Ting.Lei fv3-cam  69440 Jan  6 19:50 dev-mixens-oneob.xml
+-rwxr-xr-x 1 Ting.Lei fv3-cam    308 Jan  6 17:25 deb-mix_ens-oneob.sh*
+-rwxr-xr-x 1 Ting.Lei fv3-cam    308 Jan  6 17:24 deb-glb_ens-oneob.sh*
+-rw-r--r-- 1 Ting.Lei fv3-cam  69268 Jan  6 17:00 dev-glbens-oneob.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  69109 Jan  6 16:52 dev-oneob.xml
+-rwxr-xr-x 1 Ting.Lei fv3-cam  16879 Jan  6 16:27 deb-oneob.sh*
+-rw-r--r-- 1 Ting.Lei fv3-cam  69720 Dec 15 19:58 dev-glbensmean.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  68855 Dec 11 15:00 dev-next2.xml
+-rwxr-xr-x 1 Ting.Lei fv3-cam    268 Dec 10 23:16 dev-next2.sh*
+lrwxrwxrwx 1 Ting.Lei fv3-cam    106 Dec 10 15:00 obs_input.tar -> /scratch2/NCEPDEV/stmp3/Ting.Lei/com/fv3cam/EXP0region/fv3sar.20191209/00/obsinput_2019120900_tm03_ensmean*
+-rw-r--r-- 1 Ting.Lei fv3-cam  68772 Dec  9 11:36 dev-new.xml
+-rw-r--r-- 1 Ting.Lei fv3-cam  68643 Dec  8 15:41 dev-xml.bak
+-rw-r--r-- 1 Ting.Lei fv3-cam  68503 Dec  8 05:02 dev.xml.dev
+drwxr-sr-x 2 Ting.Lei fv3-cam   4096 Dec  5 19:36 dr-bak/
+lrwxrwxrwx 1 Ting.Lei fv3-cam      1 Dec  3 17:18 d1 -> 2
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 23 03:14 OUTPUT.107167
+-rw-r--r-- 1 Ting.Lei fv3-cam    258 Nov 23 03:14 err
+-rw-r--r-- 1 Ting.Lei fv3-cam  43400 Nov 23 03:14 eta_micro_lookup.dat
+-rw-r--r-- 1 Ting.Lei fv3-cam    458 Nov 23 03:14 itag
+-rwxr-xr-x 1 Ting.Lei fv3-cam  35306 Nov 23 03:14 params_grib2_tbl_new*
+-rw-r--r-- 1 Ting.Lei fv3-cam  79096 Nov 23 03:14 postxconfig-NT.txt
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 22 20:56 OUTPUT.248815
+-rw-r--r-- 1 Ting.Lei fv3-cam      0 Nov 22 20:29 OUTPUT.319147

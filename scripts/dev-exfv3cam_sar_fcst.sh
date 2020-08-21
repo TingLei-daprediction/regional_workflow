@@ -277,7 +277,7 @@ export pgm=regional_forecast.x
 #clt . prep_step
 
 #clt startmsg
-${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
+${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
@@ -291,6 +291,7 @@ fi
 # NOT the one in the INPUT directory......
 
 # GUESSdir, ANLdir set in J-job
+if [ $tmmark = tm000 ] ; then
 
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
@@ -315,5 +316,5 @@ if [ $tmmark != tm00 ] ; then
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
   mv phy_data.nc $FcstOutDir/phy_data.nc
 fi
-
+fi #=tm000
 exit
