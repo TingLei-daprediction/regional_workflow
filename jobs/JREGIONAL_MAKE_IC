@@ -8,6 +8,7 @@ set -xe
 # Specify Execution Areas
 ####################################
 export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
+export l_coldstart_anal=${l_coldstart_anal:-FALSE}
 
 ####################################
 # Run setpdy and initialize PDY variables
@@ -18,11 +19,14 @@ export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
 
 export month=`echo $CDATE | cut -c 5-6`
 export day=`echo $CDATE | cut -c 7-8`
+offset=`echo $tmmark | cut -c 3-4`
 
-export CYCLEguess=`$NDATE -12 $CDATE`
+export CYCLEguess=`$NDATE -$offset $CDATE`
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
-export PDYtm12=`echo $CYCLEguess | cut -c 1-8`
+export PDYguess=`echo $CYCLEguess | cut -c 1-8`
+export monthguess=`echo $CDATEguess | cut -c 5-6`
+export dayguess=`echo $CDATEguess | cut -c 7-8`
 export cycguess=`echo $CYCLEguess | cut -c 9-10`
 
 #####################################
@@ -43,19 +47,24 @@ export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
-export INIDIRtm12=${COMINgfs}/gfs.$PDYtm12/$cycguess
+export INIDIRguess=${COMINgfs}/gfs.$PDYguess/$cycguess
 
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-if [ $tmmark = tm12 ] ; then	# SAR-DA
-  export INPdir=$COMOUT/gfsanl.$tmmark
+if [ $tmmark = tm12 -o $tmmark = tm06  ] ; then	# SAR-DA
+  if [ $l_coldstart_anal  = TRUE  ] ; then	# SAR-DA
+    export INPdir=$COMOUT/gfsguess.$tmmark
+  else
+    export INPdir=$COMOUT/gfsanl.$tmmark
+  fi
 elif [ $tmmark = tm00 ] ; then	# SAR without DA
   export INPdir=$COMOUT/anl.${dom:+${dom}.}$tmmark
 fi
 mkdir -p $INPdir
+export OUTDIR=$INPdir
 
 #####################################
 # wcoss environment settings
@@ -78,20 +87,42 @@ env
 # Generate the ICs and BC hour 0
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/exregional_make_ic.sh
+#clt ${HOMEfv3}/scripts/exregional_make_ic.sh
+${HOMEfv3}/scripts/dev-make_ic.sh
 export err=$?
-#####################################
 
+if [ ${l_coldstart_anl:-FALSE} = TRUE ] ; then
+#generate a fv3sar time files to be used by GSI
+  cat << EOF > user_coupler.res
+      2        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
+  $PDYguess  $monguess  $dayguess  $cycguess  0     0        Model start time:   year, month, day, hour, minute, second
+  $PDYguess  $monguess  $dayguess  $cycguess        Current model time: year, month, day, hour, minute, second
+
+EOF
+
+  
+fi
+
+
+#####################################o
 exit #clthinkdeb
 #####################################
 # Generate BCs for NHRSguess for SAR-DA
 #####################################
-if [ $tmmark = tm12 ] ; then
+if [ $tmmark = tm12 -o $tmmark = tm06 ] ; then
   export REGIONAL=2
 
 # NHRSguess comes from JREGIONAL_ENVIR
-  hour=3
-  end_hour=$NHRSguess
+  if [ $tmmark = tm12  ] ; then
+    hour=3
+  elif [ $tmmark = tm06  ] ; then
+     hour=1
+     end_hour=1
+  else
+    echo "other choices are not available yet, exit" 
+    exit 12
+  fi
+    
   while (test "$hour" -le "$end_hour")
   do
     if [ $hour -lt 10 ] ; then
@@ -103,7 +134,7 @@ if [ $tmmark = tm12 ] ; then
     fi
 
     export bchour=$hour_name
-    ${HOMEfv3}/scripts/exregional_make_ic.sh
+    ${HOMEfv3}/scripts/dev-make_ic.sh
 
     err=$?
     if [ $err -ne 0 ] ; then

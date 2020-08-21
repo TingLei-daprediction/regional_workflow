@@ -301,6 +301,7 @@ OBS_INPUT::
    s_ens_v=3,
    generate_ens=.false.,
    regional_ensemble_option=${regional_ensemble_option},
+   fv3sar_bg_opt=${fv3sar_bg_opt:-0},
    aniso_a_en=.false.,
    nlon_ens=0,
    nlat_ens=0,
@@ -628,22 +629,34 @@ export fv3_case=$GUESSdir
 #  INPUT FILES FV3 NEST (single tile)
 
 #   This file contains time information
-cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
-#   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
-cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.nc fv3_akbk
-#   This file contains horizontal grid information
-cp $fv3_case/grid_spec${lbcupdt_str}.nc fv3_grid_spec
-cp $fv3_case/${PDY}.${CYC}0000.sfc_data${lbcupdt_str}.nc fv3_sfcdata
-#   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
-ctrlstrname=${ctrlstr:+_${ctrlstr}_}
-   BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1${lbcupdt_str}.nc}
-   BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1${lbcupdt_str}.nc}
-   BgFile4dynvarOld=${BgFile4dynvarOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
-   BgFile4tracerOld=${BgFile4tracerOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
-cp $BgFile4dynvar fv3_dynvars
-#   This file contains 3d tracer fields sphum, liq_wat, o3mr
-cp $BgFile4tracer fv3_tracer
-#   This file contains surface fields (vert dims of 3, 4, and 63)
+
+if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
+	cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
+	#   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
+	cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.nc fv3_akbk
+	#   This file contains horizontal grid information
+	cp $fv3_case/grid_spec${lbcupdt_str}.nc fv3_grid_spec
+	cp $fv3_case/${PDY}.${CYC}0000.sfc_data${lbcupdt_str}.nc fv3_sfcdata
+	#   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
+	ctrlstrname=${ctrlstr:+_${ctrlstr}_}
+	   BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1${lbcupdt_str}.nc}
+	   BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1${lbcupdt_str}.nc}
+	   BgFile4dynvarOld=${BgFile4dynvarOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
+	   BgFile4tracerOld=${BgFile4tracerOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
+	cp $BgFile4dynvar fv3_dynvars
+	#   This file contains 3d tracer fields sphum, liq_wat, o3mr
+	cp $BgFile4tracer fv3_tracer
+	#   This file contains surface fields (vert dims of 3, 4, and 63)
+else
+	#   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
+	cp $Fix_Temp/fv_core.res.nc fv3_akbk
+	#   This file contains horizontal grid information
+	cp $fv3_case/user_coupler.res coupler.res
+	cp $Fix_Temp/grid_spec.nc fv3_grid_spec
+        cp $fv3_case/gfs_data.nc .
+	ln -sf gfs_data.nc  fv3_dynvars
+	ln -sf gfs_data.nc fv3_tracer
+fi
 
 export pgm=`basename $gsiexec`
 . prep_step
@@ -651,7 +664,9 @@ export pgm=`basename $gsiexec`
 startmsg
 ###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
-${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+#clt ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+gsitest=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-GSI-RegDA_DZ_update/ProdGSI/exec/global_gsi.x
+${APRUNC} $gsitest < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -766,53 +781,58 @@ echo 'do nothing for being now'
 #  cp $RADSTAT ${GESROOT_HOLD}/radstat.nam
 fi
 
-cp fv3_dynvars $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1${lbcupdt_str}.nc
-cp fv3_tracer $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1${lbcupdt_str}.nc
+if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
+	cp fv3_dynvars $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1${lbcupdt_str}.nc
+	cp fv3_tracer $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1${lbcupdt_str}.nc
 
 
-if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
-mv fv3_dynvars fv_core.res.tile1${lbcupdt_str}.nc
-mv fv3_tracer fv_tracer.res.tile1${lbcupdt_str}.nc
-# Get orig restart files and 00-h bndy file for move_DA_update code
-#clt cp $GUESSdir/fv_core.res.tile1.nc fv_core.res.tile1.nc
-cp $BgFile4dynvarOld fv_core.res.tile1.nc
-#clt cp $GUESSdir/fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
-cp $BgFile4tracerOld fv_tracer.res.tile1.nc
-cp $ANLdir/gfs_bndy.tile7.000.nc .
+	if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+	mv fv3_dynvars fv_core.res.tile1${lbcupdt_str}.nc
+	mv fv3_tracer fv_tracer.res.tile1${lbcupdt_str}.nc
+	# Get orig restart files and 00-h bndy file for move_DA_update code
+	#clt cp $GUESSdir/fv_core.res.tile1.nc fv_core.res.tile1.nc
+	cp $BgFile4dynvarOld fv_core.res.tile1.nc
+	#clt cp $GUESSdir/fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+	cp $BgFile4tracerOld fv_tracer.res.tile1.nc
+	cp $ANLdir/gfs_bndy.tile7.000.nc .
 
-# run move_DA_update code
+	# run move_DA_update code
 
-cp $HOMEfv3/regional_da_imbalance/move_DA_update_data.x .
+	cp $HOMEfv3/regional_da_imbalance/move_DA_update_data.x .
 
-export pgm=move_DA_update_data.x
-. prep_step
+	export pgm=move_DA_update_data.x
+	. prep_step
 
-startmsg
-./move_DA_update_data.x 000
-export err=$?;err_chk
+	startmsg
+	./move_DA_update_data.x 000
+	export err=$?;err_chk
 
-#Put new 000-h BC file and modified original restart files into ANLdir
-cp gfs_bndy.tile7.000_gsi.nc $ANLdir/
-mv fv_core.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc
-mv fv_tracer.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc
+	#Put new 000-h BC file and modified original restart files into ANLdir
+	cp gfs_bndy.tile7.000_gsi.nc $ANLdir/
+	mv fv_core.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc
+	mv fv_tracer.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc
 
-fi
-
-
-
-# Put analysis files in ANLdir (defined in J-job)
-mv fv3_akbk $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.nc
-mv coupler.res $ANLdir/${ctrlstr+_${ctrlstr}_}coupler.res
-mv fv3_sfcdata $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data${lbcupdt_str}.nc
-mv fv3_grid_spec $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec${lbcupdt_str}.nc
-if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
-cp $fv3_case/${PDY}.${CYC}0000.sfc_data.nc $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data.nc 
-cp $fv3_case/grid_spec.nc   $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc
-fi
+	fi
 
 
 
-cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+	# Put analysis files in ANLdir (defined in J-job)
+	mv fv3_akbk $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.nc
+	mv coupler.res $ANLdir/${ctrlstr+_${ctrlstr}_}coupler.res
+	mv fv3_sfcdata $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data${lbcupdt_str}.nc
+	mv fv3_grid_spec $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec${lbcupdt_str}.nc
+	if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+	cp $fv3_case/${PDY}.${CYC}0000.sfc_data.nc $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data.nc 
+	cp $fv3_case/grid_spec.nc   $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc
+	fi
+
+
+
+	cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+  else
+	cp gfs_ctrl.nc $ANLdir/.  #tothink
+  fi
+	
 fi #if != tm00
 
 exit

@@ -34,9 +34,9 @@ cycleguess=`echo ${CDATE} | cut -c 9-10`
 fi
 if [ $tmmark = tm12 ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
-  export ANLDIR=$INIDIRtm12
-export ATMANL=$INIDIRtm12/${CDUMP}.t${cycguess}z.atmanl.nemsio
-export SFCANL=$INIDIRtm12/${CDUMP}.t${cycguess}z.sfcanl.nemsio
+  export ANLDIR=$INIDIRguess
+export ATMANL=$INIDIRguess/${CDUMP}.t${cycguess}z.atmanl.nemsio
+export SFCANL=$INIDIRguess/${CDUMP}.t${cycguess}z.sfcanl.nemsio
 atmfile=${CDUMP}.t${cycguess}z.atmanl.nemsio
 sfcfile=${CDUMP}.t${cycguess}z.sfcanl.nemsio
 monthguess=`echo ${CYCLEguess} | cut -c 5-6`

@@ -70,11 +70,19 @@ export NWGES_ens=${NWGES_ens:-${GESROOT}/${NET}/${envir4ens}/${RUN}_ens.${PDYrun
 fi
 export COMIN_GES_ENS=${NWGES_ens}/$tmmark
 mkdir -p $NWGES
+if [ ${l_coldstart_anal:-FLASE} != TRUE ]; then
+  export GUESSdir=$COMOUT/guess.${tmmark}
+  export ANLdir=$COMOUT/anl.${tmmark}
+else
+  fv3sar_bg_opt=1
+  export GUESSdir=$COMOUT/gfsguess.$tmmark
+  export ANLdir=$COMOUT/gfsanl.$tmmark
+  cp `ls GUESSdir/* |grep -v gfs_data.nc ` $ANLdir
+  
+fi
 
-export GUESSdir=$COMOUT/guess.${tmmark}
 mkdir -p $GUESSdir
 
-export ANLdir=$COMOUT/anl.${tmmark}
 mkdir -p $ANLdir
 
 ##############################################

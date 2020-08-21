@@ -81,6 +81,7 @@ export NHOUR=${NHOUR:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/e
 export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/regional_workflow}
 
 elif [ ${machine} = "orion" ]
+then
 
    export COMINgfs=${COMINgfs:-/work/noaa/stmp/erogers/}
 

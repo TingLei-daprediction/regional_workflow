@@ -31,10 +31,10 @@ monthguess=`echo ${CDATE} | cut -c 5-6`
 dayguess=`echo ${CDATE} | cut -c 7-8`
 cycleguess=`echo ${CDATE} | cut -c 9-10`
 
-elif [ $tmmark = tm12 ] ; then
+elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a $l_coldstart_anal = TRUE ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
-export ATMANL=${ATMANL:-$INIDIRtm12/${CDUMP}.t${cycguess}z.atmanl.nemsio}
-export SFCANL=${SFCANL:-$INIDIRtm12/${CDUMP}.t${cycguess}z.sfcanl.nemsio}
+export ATMANL=${ATMANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.atmanl.nemsio}
+export SFCANL=${SFCANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.sfcanl.nemsio}
 export input_dir=$(dirname $ATMANL)
 atmfile=$(basename $ATMANL)   #${CDUMP}.t${cycguess}z.atmanl.nemsio
 sfcfile=$(basename $SFCANL)   #${CDUMP}.t${cycguess}z.sfcanl.nemsio
@@ -123,7 +123,7 @@ else
 numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc  out.sfc.tile1.nc | wc -l`
 if [ $numfiles -ne 3 ] ; then
   export err=5
-  echo "Don't have all bc files at ${tmmark}, "
+  echo "Don't have all bc files at ${tmmark}, maybe false alarm when out.sfc.* could be absent "
 fi
 fi
 
@@ -132,10 +132,14 @@ fi
 #
 mv gfs.bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
+
 if [ $REGIONAL = 1 ] ; then  
+  if [ $l_coldstart_anl = TRUE ] ; then  
+    ncks -A -v phis $Fix_temp/fv3_dynvars gfs_ctrl.nc
+  fi
 mv gfs_ctrl.nc $OUTDIR/.
 mv out.atm.tile1.nc $OUTDIR/gfs_data.tile7.nc
-if [ $CONVERT_SFC != .false. ] ; then
+if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
 mv out.sfc.tile1.nc $OUTDIR/sfc_data.tile7.nc
 fi
 fi
