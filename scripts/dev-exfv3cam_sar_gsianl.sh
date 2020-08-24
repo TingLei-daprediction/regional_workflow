@@ -46,6 +46,9 @@ export endianness=Big_Endian
 #   ncp is cp replacement, currently keep as /bin/cp
 ncp=/bin/cp
 
+if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
+    export L_LBC_UPDATE=FALSE
+fi
 
 if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
    lbcupdt_str="_new"
@@ -141,7 +144,7 @@ export fstat=.false.
 export i_gsdcldanal_type=0
 use_gfs_nemsio=.true.,
 
-export SETUP_part1=${SETUP_part1:-"miter=2,niter(1)=50,niter(2)=50"}
+export SETUP_part1=${SETUP_part1:-"miter=1,niter(1)=1,niter(2)=50"}
 if [ ${l_both_fv3sar_gfs_ens:-.false.} = ".true." ]; then  #regular  run
 export HybParam_part2="l_both_fv3sar_gfs_ens=$l_both_fv3sar_gfs_ens,n_ens_gfs=$nens_gfs,n_ens_fv3sar=$nens_fv3sar,"
 else
@@ -649,13 +652,14 @@ if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 	#   This file contains surface fields (vert dims of 3, 4, and 63)
 else
 	#   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
-	cp $Fix_Temp/fv_core.res.nc fv3_akbk
+	cp $Fix_temp/fv_core.res.nc fv3_akbk
 	#   This file contains horizontal grid information
 	cp $fv3_case/user_coupler.res coupler.res
-	cp $Fix_Temp/grid_spec.nc fv3_grid_spec
-        cp $fv3_case/gfs_data.nc .
-	ln -sf gfs_data.nc  fv3_dynvars
-	ln -sf gfs_data.nc fv3_tracer
+	cp $Fix_temp/grid_spec.nc fv3_grid_spec
+        cp $fv3_case/sfc_data.tile7.nc fv3_sfcdata
+        cp $fv3_case/gfs_data.tile7.nc . 
+	ln -sf gfs_data.tile7.nc  fv3_dynvars
+	ln -sf gfs_data.tile7.nc fv3_tracer
 fi
 #ctl =======
 #clt cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
@@ -682,9 +686,9 @@ export pgm=`basename $gsiexec`
 startmsg
 ###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
-#clt ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
-gsitest=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-GSI-RegDA_DZ_update/ProdGSI/exec/global_gsi.x
-${APRUNC} $gsitest < gsiparm.anl > $pgmout 2> stderr
+${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
+#cltgsitest=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-GSI-RegDA_DZ_update/ProdGSI/exec/global_gsi.x
+#${APRUNC} $gsitest < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -848,7 +852,7 @@ if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 
 	cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
   else
-	cp gfs_ctrl.nc $ANLdir/.  #tothink
+	cp gfs_data.tile7.nc $ANLdir/.  #tothink
   fi
 	
 fi #if != tm00

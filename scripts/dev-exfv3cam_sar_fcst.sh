@@ -24,7 +24,8 @@ ulimit -s unlimited
 ulimit -a
 
 mkdir -p INPUT RESTART
-if [ $tmmark = tm12 ] ; then
+tothink
+if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
 FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
 else
 FcstInDir_tm12=${FcstInDir_tm12:-${COMOUT}/gfsanl.tm12}
@@ -36,7 +37,6 @@ if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
 #cltthinkdeb
 ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
 ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
-
 fi
 
 
@@ -126,7 +126,7 @@ ln -sf ${CASE}_grid.tile7.halo4.nc grid.tile7.halo4.nc
 ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.nc
 ln -sf ${CASE}_oro_data.tile7.halo4.nc oro_data.tile7.halo4.nc
 # Initial Conditions are needed for SAR but not SAR-DA
-if [ ${tmmark} = tm12 ] ; then
+if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
   ln -sf sfc_data.tile7.nc sfc_data.nc
   ln -sf gfs_data.tile7.nc gfs_data.nc
 fi
@@ -232,8 +232,8 @@ if [ $tmmark = tm00 ] ; then
 
 
 # Submit post manager here
-elif [ $tmmark = tm12 ] ; then
-
+elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
+#cltthinkdeb here should consider using different physical suite 
   cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
   cat input.nml.tmp | \
      sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
@@ -309,7 +309,7 @@ else
 fi
 
 if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
- if [ $tmmark = tm12 ]; then 
+ if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
 #     if [ $tmmark = tm00 ] ; then
    regional_bcs_from_gsi=.false.
    write_restart_with_bcs=.true.
@@ -387,7 +387,8 @@ $yr $mn $dy $cyc 0 0
 
 cat temp diag_table.tmp > diag_table
 
-if [ $tmmark = tm12 ] ; then
+#if [ $tmmark = tm12 ] ; then
+if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
     cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
     sed s/NHRS/$NHRSguess/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \

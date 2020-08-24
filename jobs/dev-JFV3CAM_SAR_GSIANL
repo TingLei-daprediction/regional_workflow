@@ -74,10 +74,10 @@ if [ ${l_coldstart_anal:-FLASE} != TRUE ]; then
   export GUESSdir=$COMOUT/guess.${tmmark}
   export ANLdir=$COMOUT/anl.${tmmark}
 else
-  fv3sar_bg_opt=1
+  export fv3sar_bg_opt=1
   export GUESSdir=$COMOUT/gfsguess.$tmmark
   export ANLdir=$COMOUT/gfsanl.$tmmark
-  cp `ls GUESSdir/* |grep -v gfs_data.nc ` $ANLdir
+  cp `ls $GUESSdir/* |grep -v gfs_data.tile7.nc ` $ANLdir
   
 fi
 

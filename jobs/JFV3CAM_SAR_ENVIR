@@ -12,7 +12,7 @@ export model=fv3sar_da	# fv3sar (cold start) or fv3sar_da (with DA)
 #export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
 
 export CCPP=false
-export MPSUITE=gfsdlmp
+export MPSUITE=gfdlmp
 export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
 
 if [ ${machine} = "wcoss_dell_p3" ]
@@ -48,6 +48,7 @@ export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
 
 export COMINbias=$COMOUT
 export fixcrtm=${fixcrtm:-/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix}
+export Fix_temp=${Fix_temp:-/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-Fix_temp}
 
 elif [ ${machine} = "hera" ]
 then

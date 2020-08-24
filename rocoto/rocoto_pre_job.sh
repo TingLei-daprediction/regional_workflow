@@ -28,7 +28,8 @@ else
   module load regional
 fi
 #cltorg module load nco
-#clt  module load nco-gnu-haswell/4.4.4
+module load nco-gnu-sandybridge/4.4.4
+ 
 module list
 
 exec "$@"
