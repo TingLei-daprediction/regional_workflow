@@ -45,24 +45,28 @@ CDATE=${CDATE:-${PDY}${cyc}}
 
 # Set path/file for gsi executable
 
-if [ $machine = HERA -o $machine = hera ] ; then
+if [ $machine = hera -o $machine = HERA ] ; then
+#clthinkdeb are the bloak needed? 
   export UTIL=$HOMEfv3/util/ush
-#cltthinkdeb if the following block is needed? 
   export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
   export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
   export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
-fi
-if [ $machine = WCOSS ] ; then
+elif [ $machine = WCOSS ] ; then
   export UTIL=$HOMEfv3/util/ush
-  export gsiexec0=/meso/save/$USER/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
-  export fixgsi=/meso/save/$USER/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
+  export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
+  export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
   export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
-fi
-if [ $machine = DELL ] ; then
-  export UTIL=$HOMEfv3/util/ush
-  export gsiexec0=/gpfs/dell2/emc/modeling/noscrub/$USER/fv3reg_oct2018/fv3gfs/sorc/gsi.fd/build/bin/gsi.x
-  export fixgsi=/gpfs/dell2/emc/modeling/noscrub/$USER/fv3reg_oct2018/fv3gfs/sorc/gsi.fd/fix
-  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+elif [ $machine = wcoss_cray ] ; then
+  export fixgsi="/gpfs/hps3/emc/meso/save/Eric.Rogers/regional_workflow/regional_gsi.fd/fix"
+  export fixcrtm=/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix
+  export gsiexec0=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-mixdual/ProdGSI/exec/global_gsi.x
+
+elif [ $machine = DELL ] ; then
+  export UTIL=${HOMEfv3}/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
+#clt 20200424   export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.7/fix
 fi
 
 hostname > hname

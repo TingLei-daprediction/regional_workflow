@@ -46,6 +46,13 @@ export endianness=Big_Endian
 #   ncp is cp replacement, currently keep as /bin/cp
 ncp=/bin/cp
 
+
+if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+   lbcupdt_str="_new"
+else
+   lbcupdt_str=""
+   
+fi
 # setup ensemble filelist03
 
 # Run gsi under Parallel Operating Environment (poe) on NCEP IBM
@@ -55,8 +62,6 @@ export HYB_ENS=".true."
 export HX_ONLY=${HX_ONLY:-FALSE}
 
 DOHYBVAR=${DOHYBVAR:-"YES"}
-#DOHYBVAR="NO"  #thinkdeb ${DOHYBVAR:-"YES"}
-#export HYB_ENS=".false." #cltthink
 if [[ ${HX_ONLY} = "TRUE" ]]; then
 DOHYBVAR=NO
 export HYB_ENS=".false."
@@ -119,8 +124,8 @@ if [[ $DOHYBVAR = "YES" ]]; then
        for imem in $(seq 1 $nens_fv3sar ); do
              memchar="mem"$(printf %03i $imem)
 #        cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc fv3SAR01_${memchar}-fv3_dynvars
-         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_dynvars
-         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_tracer.res.tile1.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_tracer
+         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1${lbcupdt_str}.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_dynvars
+         cp ${COMIN_GES_ENS}/$memchar/${PDY}.${CYC}0000.${memstr}fv_tracer.res.tile1${lbcupdt_str}.nc fv3SAR${ens_nstarthr}_ens_${memchar}-fv3_tracer
          done
 
      fi
@@ -190,87 +195,96 @@ cat << EOF > gsiparm.anl
    aircraft_t_bc=.true.,biaspredt=1000.0,upd_aircraft=.true.,cleanup_tail=.true.,
  /
  &OBS_INPUT
-   dmesh(1)=120.0,time_window_max=1.5,ext_sonde=.true.,
+   dmesh(1)=120.0,dmesh(2)=60.0,time_window_max=1.5,ext_sonde=.true.,
  /
 OBS_INPUT::
-!  dfile          dtype       dplat       dsis                  dval    dthin  dsfcalc
-   prepbufr       ps          null        ps                  0.0     0     0
-   prepbufr       t           null        t                   0.0     0     0
-   prepbufr_profl t           null        t                   0.0     0     0
-   prepbufr       q           null        q                   0.0     0     0
-   prepbufr_profl q           null        q                   0.0     0     0
-   prepbufr       pw          null        pw                  0.0     0     0
-   prepbufr       uv          null        uv                  0.0     0     0
-   prepbufr_profl uv          null        uv                  0.0     0     0
-   satwndbufr     uv          null        uv                  0.0     0     0
-   prepbufr       spd         null        spd                 0.0     0     0
-   prepbufr       dw          null        dw                  0.0     0     0
-   l2rwbufr       rw          null        l2rw                0.0     0     0
-   prepbufr       sst         null        sst                 0.0     0     0
-   nsstbufr       sst         nsst        sst                 0.0     0     0
-   gpsrobufr      gps_bnd     null        gps                 0.0     0     0
-   hirs4bufr      hirs4       metop-a     hirs4_metop-a       0.0     1     1
-   gimgrbufr      goes_img    g11         imgr_g11            0.0     1     0
-   gimgrbufr      goes_img    g12         imgr_g12            0.0     1     0
-   airsbufr       airs        aqua        airs281SUBSET_aqua  0.0     1     1
-   amsuabufr      amsua       n15         amsua_n15           0.0     1     1
-   amsuabufr      amsua       n18         amsua_n18           0.0     1     1
-   amsuabufr      amsua       metop-a     amsua_metop-a       0.0     1     1
-   airsbufr       amsua       aqua        amsua_aqua          0.0     1     1
-   mhsbufr        mhs         n18         mhs_n18             0.0     1     1
-   mhsbufr        mhs         metop-a     mhs_metop-a         0.0     1     1
-   ssmitbufr      ssmi        f14         ssmi_f14            0.0     1     0
-   ssmitbufr      ssmi        f15         ssmi_f15            0.0     1     0
-   amsrebufr      amsre_low   aqua        amsre_aqua          0.0     1     0
-   amsrebufr      amsre_mid   aqua        amsre_aqua          0.0     1     0
-   amsrebufr      amsre_hig   aqua        amsre_aqua          0.0     1     0
-   ssmisbufr      ssmis       f16         ssmis_f16           0.0     1     0
-   ssmisbufr      ssmis       f17         ssmis_f17           0.0     1     0
-   ssmisbufr      ssmis       f18         ssmis_f18           0.0     1     0
-   ssmisbufr      ssmis       f19         ssmis_f19           0.0     1     0
-   gsnd1bufr      sndrd1      g12         sndrD1_g12          0.0     1     0
-   gsnd1bufr      sndrd2      g12         sndrD2_g12          0.0     1     0
-   gsnd1bufr      sndrd3      g12         sndrD3_g12          0.0     1     0
-   gsnd1bufr      sndrd4      g12         sndrD4_g12          0.0     1     0
-   gsnd1bufr      sndrd1      g11         sndrD1_g11          0.0     1     0
-   gsnd1bufr      sndrd2      g11         sndrD2_g11          0.0     1     0
-   gsnd1bufr      sndrd3      g11         sndrD3_g11          0.0     1     0
-   gsnd1bufr      sndrd4      g11         sndrD4_g11          0.0     1     0
-   gsnd1bufr      sndrd1      g13         sndrD1_g13          0.0     1     0
-   gsnd1bufr      sndrd2      g13         sndrD2_g13          0.0     1     0
-   gsnd1bufr      sndrd3      g13         sndrD3_g13          0.0     1     0
-   gsnd1bufr      sndrd4      g13         sndrD4_g13          0.0     1     0
-   iasibufr       iasi        metop-a     iasi616_metop-a     0.0     1     1
-   omibufr        omi         aura        omi_aura            0.0     2     0
-   hirs4bufr      hirs4       n19         hirs4_n19           0.0     1     1
-   amsuabufr      amsua       n19         amsua_n19           0.0     1     1
-   mhsbufr        mhs         n19         mhs_n19             0.0     1     1
-   tcvitl         tcp         null        tcp                 0.0     0     0
-   seviribufr     seviri      m08         seviri_m08          0.0     1     0
-   seviribufr     seviri      m09         seviri_m09          0.0     1     0
-   seviribufr     seviri      m10         seviri_m10          0.0     1     0
-   hirs4bufr      hirs4       metop-b     hirs4_metop-b       0.0     1     1
-   amsuabufr      amsua       metop-b     amsua_metop-b       0.0     1     1
-   mhsbufr        mhs         metop-b     mhs_metop-b         0.0     1     1
-   iasibufr       iasi        metop-b     iasi616_metop-b     0.0     1     1
-   atmsbufr       atms        npp         atms_npp            0.0     1     0
-   crisbufr       cris        npp         cris_npp            0.0     1     0
-   gsnd1bufr      sndrd1      g14         sndrD1_g14          0.0     1     0
-   gsnd1bufr      sndrd2      g14         sndrD2_g14          0.0     1     0
-   gsnd1bufr      sndrd3      g14         sndrD3_g14          0.0     1     0
-   gsnd1bufr      sndrd4      g14         sndrD4_g14          0.0     1     0
-   gsnd1bufr      sndrd1      g15         sndrD1_g15          0.0     1     0
-   gsnd1bufr      sndrd2      g15         sndrD2_g15          0.0     1     0
-   gsnd1bufr      sndrd3      g15         sndrD3_g15          0.0     1     0
-   gsnd1bufr      sndrd4      g15         sndrD4_g15          0.0     1     0
-   oscatbufr      uv          null        uv                  0.0     0     0
-   mlsbufr        mls30       aura        mls30_aura          0.0     0     0
-   avhambufr      avhrr       metop-a     avhrr3_metop-a      0.0     1     0
-   avhpmbufr      avhrr       n18         avhrr3_n18          0.0     1     0
-   prepbufr       mta_cld     null        mta_cld             1.0     0     0     
-   prepbufr       gos_ctp     null        gos_ctp             1.0     0     0     
-   lgycldbufr     larccld     null        larccld             1.0     0     0
-   lghtnbufr      lghtn       null        lghtn               1.0     0     0
+!  dfile          dtype       dplat     dsis                 dval    dthin dsfcalc
+   prepbufr       ps          null      ps                   1.0     0     0
+   prepbufr       t           null      t                    1.0     0     0
+   prepbufr       q           null      q                    1.0     0     0
+   prepbufr       pw          null      pw                   1.0     0     0
+   satwndbufr     uv          null      uv                   1.0     0     0
+   prepbufr       uv          null      uv                   1.0     0     0
+   prepbufr       spd         null      spd                  1.0     0     0
+   prepbufr       dw          null      dw                   1.0     0     0
+   l2rwbufr       rw          null      l2rw                 1.0     0     0
+   prepbufr       sst         null      sst                  1.0     0     0
+   gpsrobufr      gps_ref     null      gps                  1.0     0     0
+   ssmirrbufr     pcp_ssmi    dmsp      pcp_ssmi             1.0    -1     0
+   tmirrbufr      pcp_tmi     trmm      pcp_tmi              1.0    -1     0
+   sbuvbufr       sbuv2       n16       sbuv8_n16            0.0     0     0
+   sbuvbufr       sbuv2       n17       sbuv8_n17            0.0     0     0
+   sbuvbufr       sbuv2       n18       sbuv8_n18            0.0     0     0
+   hirs3bufr      hirs3       n16       hirs3_n16            0.0     1     0
+   hirs3bufr      hirs3       n17       hirs3_n17            0.0     1     0
+   hirs4bufr      hirs4       metop-a   hirs4_metop-a        0.0     2     0
+   hirs4bufr      hirs4       n18       hirs4_n18            0.0     1     0
+   hirs4bufr      hirs4       n19       hirs4_n19            0.0     2     0
+   hirs4bufr      hirs4       metop-b   hirs4_metop-b        0.0     2     0
+   gimgrbufr      goes_img    g11       imgr_g11             0.0     1     0
+   gimgrbufr      goes_img    g12       imgr_g12             0.0     1     0
+   airsbufr       airs        aqua      airs_aqua            0.0     2     0
+   amsuabufr      amsua       n15       amsua_n15            0.0     2     0
+   amsuabufr      amsua       n18       amsua_n18            0.0     2     0
+   amsuabufr      amsua       n19       amsua_n19            0.0     2     0
+   amsuabufr      amsua       metop-a   amsua_metop-a        0.0     2     0
+   amsuabufr      amsua       metop-b   amsua_metop-b        0.0     2     0
+   airsbufr       amsua       aqua      amsua_aqua           0.0     2     0
+   amsubbufr      amsub       n17       amsub_n17            0.0     1     0
+   mhsbufr        mhs         n18       mhs_n18              0.0     2     0
+   mhsbufr        mhs         n19       mhs_n19              0.0     2     0
+   mhsbufr        mhs         metop-a   mhs_metop-a          0.0     2     0
+   mhsbufr        mhs         metop-b   mhs_metop-b          0.0     2     0
+   ssmitbufr      ssmi        f13       ssmi_f13             0.0     2     0
+   ssmitbufr      ssmi        f14       ssmi_f14             0.0     2     0
+   ssmitbufr      ssmi        f15       ssmi_f15             0.0     2     0
+   amsrebufr      amsre_low   aqua      amsre_aqua           0.0     2     0
+   amsrebufr      amsre_mid   aqua      amsre_aqua           0.0     2     0
+   amsrebufr      amsre_hig   aqua      amsre_aqua           0.0     2     0
+   ssmisbufr      ssmis       f16       ssmis_f16            0.0     2     0
+   ssmisbufr      ssmis       f17       ssmis_f17            0.0     2     0
+   ssmisbufr      ssmis       f18       ssmis_f18            0.0     2     0
+   ssmisbufr      ssmis       f19       ssmis_f19            0.0     2     0
+   gsnd1bufr      sndrd1      g12       sndrD1_g12           0.0     1     0
+   gsnd1bufr      sndrd2      g12       sndrD2_g12           0.0     1     0
+   gsnd1bufr      sndrd3      g12       sndrD3_g12           0.0     1     0
+   gsnd1bufr      sndrd4      g12       sndrD4_g12           0.0     1     0
+   gsnd1bufr      sndrd1      g11       sndrD1_g11           0.0     1     0
+   gsnd1bufr      sndrd2      g11       sndrD2_g11           0.0     1     0
+   gsnd1bufr      sndrd3      g11       sndrD3_g11           0.0     1     0
+   gsnd1bufr      sndrd4      g11       sndrD4_g11           0.0     1     0
+   gsnd1bufr      sndrd1      g13       sndrD1_g13           0.0     1     0
+   gsnd1bufr      sndrd2      g13       sndrD2_g13           0.0     1     0
+   gsnd1bufr      sndrd3      g13       sndrD3_g13           0.0     1     0
+   gsnd1bufr      sndrd4      g13       sndrD4_g13           0.0     1     0
+   gsnd1bufr      sndrd1      g15       sndrD1_g15           0.0     2     0
+   gsnd1bufr      sndrd2      g15       sndrD2_g15           0.0     2     0
+   gsnd1bufr      sndrd3      g15       sndrD3_g15           0.0     2     0
+   gsnd1bufr      sndrd4      g15       sndrD4_g15           0.0     2     0
+   iasibufr       iasi        metop-a   iasi_metop-a         0.0     2     0
+   gomebufr       gome        metop-a   gome_metop-a         0.0     2     0
+   omibufr        omi         aura      omi_aura             0.0     2     0
+   sbuvbufr       sbuv2       n19       sbuv8_n19            0.0     0     0
+   tcvitl         tcp         null      tcp                  0.0     0     0
+   seviribufr     seviri      m08       seviri_m08           0.0     2     0
+   seviribufr     seviri      m09       seviri_m09           0.0     2     0
+   seviribufr     seviri      m10       seviri_m10           0.0     2     0
+   iasibufr       iasi        metop-b   iasi_metop-b         0.0     2     0
+   gomebufr       gome        metop-b   gome_metop-b         0.0     2     0
+   atmsbufr       atms        npp       atms_npp             0.0     2     0
+   atmsbufr       atms        n20       atms_n20             0.0     2     0
+   crisbufr       cris        npp       cris_npp             0.0     2     0
+   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0 
+   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0 
+   abibufr        abi         g16       abi_g16              0.0     2     0
+   abibufr        abi         g17       abi_g17              0.0     2     0
+   mlsbufr        mls30       aura      mls30_aura           0.0     0     0
+   oscatbufr      uv          null      uv                   0.0     0     0
+   prepbufr       mta_cld     null      mta_cld              1.0     0     0
+   prepbufr       gos_ctp     null      gos_ctp              1.0     0     0
+   refInGSI       rad_ref     null      rad_ref              1.0     0     0
+   lghtInGSI      lghtn       null      lghtn                1.0     0     0
+   larcInGSI      larccld     null      larccld              1.0     0     0
 ::
  &SUPEROB_RADAR
    del_azimuth=5.,del_elev=.25,del_range=5000.,del_time=.5,elev_angle_max=5.,minnum=50,range_max=100000.,
@@ -334,9 +348,8 @@ OBS_INPUT::
  /
 
 EOF
-
-anavinfo=$PARMfv3/anavinfo_fv3_64
-berror=$fixgsi/$endianness/nam_glb_berror.f77.gcv
+anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_64}
+berror=${berror:-$fixgsi/$endianness/nam_glb_berror.f77.gcv}
 emiscoef_IRwater=$fixcrtm/Nalli.IRwater.EmisCoeff.bin
 emiscoef_IRice=$fixcrtm/NPOESS.IRice.EmisCoeff.bin
 emiscoef_IRland=$fixcrtm/NPOESS.IRland.EmisCoeff.bin
@@ -431,7 +444,42 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
      fi
    fi
      
-# Copy observational data to $tmpdir
+
+# Try para RAP first
+export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
+export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
+$ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs3.tm00.bufr_d ./hirs3bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs4.tm00.bufr_d ./hirs4bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.mtiasi.tm00.bufr_d ./iasibufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamua.tm00.bufr_d ./amsuabufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.esamua.tm00.bufr_d ./amsuabufrears
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamub.tm00.bufr_d ./amsubbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bmhs.tm00.bufr_d  ./mhsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.goesnd.tm00.bufr_d ./gsnd1bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.airsev.tm00.bufr_d ./airsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.cris.tm00.bufr_d ./crisbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.atms.tm00.bufr_d ./atmsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.sevcsr.tm00.bufr_d ./seviribufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.radwnd.tm00.bufr_d ./radarbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.nexrad.tm00.bufr_d ./l2rwbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.crisf4.tm00.bufr_d ./crisfsbufr
+$ncp $g1617_rad_obs/rap.t${cya}z.gsrcsr.tm00.bufr_d ./abibufr
+#$ncp $nmmb_nems_obs/rap.t${cya}z.gsrcsr.tm00.bufr_d ./abibufr
+#new directbroadcast
+#$ncp $nmmb_nems_obs/rap.t${cya}z.escrsf.tm00.bufr_d ./crisfsbufrears
+#$ncp $nmmb_nems_obs/rap.t${cya}z.crsfdb.tm00.bufr_d ./crisfsbufr_db
+#$ncp $nmmb_nems_obs/rap.t${cya}z.atmsdb.tm00.bufr_d ./atmsbufr_db
+#$ncp $nmmb_nems_obs/rap.t${cya}z.iasidb.tm00.bufr_d ./iasibufr_db
+
+ls -1 prepbufr
+err0=$?
+
+#No paraRAP obs, get ops RAP data
+if [ $err0 -ne 0 ] ; then
+export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
 $ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
@@ -451,55 +499,107 @@ $ncp $nmmb_nems_obs/rap.t${cya}z.radwnd.tm00.bufr_d ./radarbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.nexrad.tm00.bufr_d ./l2rwbufr
 fi
 
+ls -1 prepbufr
+err1=$?
+
+#No RAP obs, get NAM data
+if [ $err1 -ne 0 ] ; then
+export nmmb_nems_obs=${COMINnam}/nam.${PDYrun}
+$ncp $nmmb_nems_obs/nam.t${cya}z.prepbufr.${tmmark}  ./prepbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.prepbufr.acft_profiles.${tmmark} prepbufr_profl
+$ncp $nmmb_nems_obs/nam.t${cya}z.satwnd.${tmmark}.bufr_d ./satwndbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bhrs3.${tmmark}.bufr_d ./hirs3bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bhrs4.${tmmark}.bufr_d ./hirs4bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.mtiasi.${tmmark}.bufr_d ./iasibufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bamua.${tmmark}.bufr_d ./amsuabufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.esamua.${tmmark}.bufr_d ./amsuabufrears
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bamub.${tmmark}.bufr_d ./amsubbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bmhs.${tmmark}.bufr_d  ./mhsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.goesnd.${tmmark}.bufr_d ./gsnd1bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.airsev.${tmmark}.bufr_d ./airsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.cris.${tmmark}.bufr_d ./crisbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.atms.${tmmark}.bufr_d ./atmsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.sevcsr.${tmmark}.bufr_d ./seviribufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.radwnd.${tmmark}.bufr_d ./radarbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.nexrad.${tmmark}.bufr_d ./l2rwbufr
+fi
+
+
+fi #USE_SELECT
 export GDAS_SATBIAS=NO
 
 if [ $GDAS_SATBIAS = NO ] ; then
 
-  if [ $tmmark = "tm06" ]; then  #regular  run
-       $ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.satbias.tm01 ./satbias_in
-       err1=$?
-       if [ $err1 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/satbias_in ./satbias_in
-	fi
+$ncp $nmmb_nems_bias/fv3sar.t${CYCrun}z.satbias.${tmmark_prev} ./satbias_in
+err1=$?
+if [ $err1 -ne 0 ] ; then
+  cp $GESROOT_HOLD/satbias_in ./satbias_in
+fi
+$ncp $nmmb_nems_bias/fv3sar.t${CYCrun}z.satbias_pc.${tmmark_prev} ./satbias_pc
+err2=$?
+if [ $err2 -ne 0 ] ; then
+  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
+fi
+$ncp $nmmb_nems_bias/fv3sar.t${CYCrun}z.radstat.${tmmark_prev}    ./radstat.gdas
+err3=$?
+if [ $err3 -ne 0 ] ; then
+  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
+fi
 
-	$ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.satbias_pc.tm01 ./satbias_pc
-	err2=$?
-	if [ $err2 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
-	fi
-
-	$ncp $nmmb_nems_bias/${RUN}.t${cyctm06}z.radstat.tm01    ./radstat.gdas
-	err3=$?
-	if [ $err3 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
-	fi
-
-  else
-	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias.${tmmark_prev} ./satbias_in
-	err1=$?
-	if [ $err1 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/satbias_in ./satbias_in
-	fi
-	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.satbias_pc.${tmmark_prev} ./satbias_pc
-	err2=$?
-	if [ $err2 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/satbias_pc ./satbias_pc
-	fi
-	$ncp $nmmb_nems_bias/${RUN}.t${CYCrun}z.radstat.${tmmark_prev}    ./radstat.gdas
-	err3=$?
-	if [ $err3 -ne 0 ] ; then
-	  cp $GESROOT_HOLD/radstat.nam ./radstat.gdas
-	fi
-   fi
 else
 
 cp $GESROOT_HOLD/gdas.satbias_out ./satbias_in
 cp $GESROOT_HOLD/gdas.satbias_pc ./satbias_pc
 cp $GESROOT_HOLD/gdas.radstat_out ./radstat.gdas
 
-
 fi
 
+#for new type satellite to build the bias coreection file
+USE_RADSTAT=${USE_RADSTAT:-"YES"}
+USE_CFP=${USE_CFP:-"NO"}
+##############################################################
+# If requested, copy and de-tar guess radstat file
+if [ $USE_RADSTAT = "YES" ]; then
+   if [ $USE_CFP = "YES" ]; then
+     rm $DATA/unzip.sh $DATA/mp_unzip.sh
+     cat > $DATA/unzip.sh << EOFunzip
+#!/bin/sh
+   diag_file=\$1
+   fname=\$(echo \$diag_file | cut -d'.' -f1)
+   fdate=\$(echo \$diag_file | cut -d'.' -f2)
+   #$UNCOMPRESS \$diag_file
+   gunzip \$diag_file
+   fnameges=\$(echo \$fname | sed 's/_ges//g')
+   $NMV \$fname.\$fdate \$fnameges
+EOFunzip
+     chmod 755 $DATA/unzip.sh
+   fi
+
+listdiag=$(tar xvf radstat.gdas | cut -d' ' -f2 | grep _ges)
+   for type in $listdiag; do
+      diag_file=$(echo $type | cut -d',' -f1)
+      if [ $USE_CFP = "YES" ] ; then
+         echo "$DATA/unzip.sh $diag_file" | tee -a $DATA/mp_unzip.sh
+      else
+         fname=$(echo $diag_file | cut -d'.' -f1)
+         date=$(echo $diag_file | cut -d'.' -f2)
+         #$UNCOMPRESS $diag_file
+         gunzip $diag_file
+         fnameges=$(echo $fname|sed 's/_ges//g')
+         #$NMV $fname.$date $fnameges
+         mv $fname.$date $fnameges
+      fi
+   done
+   if [ $USE_CFP = "YES" ] ; then
+      chmod 755 $DATA/mp_unzip.sh
+      ncmd=$(cat $DATA/mp_unzip.sh | wc -l)
+      if [ $ncmd -gt 0 ]; then
+         ncmd_max=$((ncmd < npe_node_max ? ncmd : npe_node_max))
+         APRUNCFP_UNZIP=$(eval echo $APRUNCFP)
+         $APRUNCFP_UNZIP $DATA/mp_unzip.sh
+      fi
+   fi
+fi # if [ $USE_RADSTAT = "YES" ]
 #Aircraft bias corrections always cycled through 6-h DA
  if [ $tmmark = "tm06" ]; then  #regular  run
    $ncp $MYGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
@@ -532,12 +632,14 @@ cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
 #   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
 cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.nc fv3_akbk
 #   This file contains horizontal grid information
-cp $fv3_case/grid_spec.nc fv3_grid_spec
-cp $fv3_case/${PDY}.${CYC}0000.sfc_data.nc fv3_sfcdata
+cp $fv3_case/grid_spec${lbcupdt_str}.nc fv3_grid_spec
+cp $fv3_case/${PDY}.${CYC}0000.sfc_data${lbcupdt_str}.nc fv3_sfcdata
 #   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
 ctrlstrname=${ctrlstr:+_${ctrlstr}_}
-   BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
-   BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
+   BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1${lbcupdt_str}.nc}
+   BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1${lbcupdt_str}.nc}
+   BgFile4dynvarOld=${BgFile4dynvarOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
+   BgFile4tracerOld=${BgFile4tracerOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
 cp $BgFile4dynvar fv3_dynvars
 #   This file contains 3d tracer fields sphum, liq_wat, o3mr
 cp $BgFile4tracer fv3_tracer
@@ -550,7 +652,6 @@ startmsg
 ###mpirun -l -n 240 $gsiexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
 ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
-report-mem
 export err=$?;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -582,9 +683,9 @@ if [[ $HX_ONLY != TRUE ]];then
 cat fit_p1 fit_w1 fit_t1 fit_q1 fit_pw1 fit_rad1 fit_rw1 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits.${tmmark}
 cat fort.208 fort.210 fort.211 fort.212 fort.213 fort.220 > $COMOUT/${RUN}.t${CYCrun}z.${ctrlstr}fits2.${tmmark}
 
-#clt cp satbias_out $GESROOT_HOLD/satbias_in
+ cp satbias_out $GESROOT_HOLD/satbias_in
  cp satbias_out $COMOUT/${RUN}.t${CYCrun}z.satbias.${tmmark}
-#cltthink cp satbias_pc.out $GESROOT_HOLD/satbias_pc
+ cp satbias_pc.out $GESROOT_HOLD/satbias_pc
  cp satbias_pc.out $COMOUT/${RUN}.t${CYCrun}z.satbias_pc.${tmmark}
 
  cp aircftbias_out $COMOUT/${RUN}.t${CYCrun}z.abias_air.${tmmark}
@@ -665,14 +766,53 @@ echo 'do nothing for being now'
 #  cp $RADSTAT ${GESROOT_HOLD}/radstat.nam
 fi
 
+cp fv3_dynvars $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1${lbcupdt_str}.nc
+cp fv3_tracer $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1${lbcupdt_str}.nc
+
+
+if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+mv fv3_dynvars fv_core.res.tile1${lbcupdt_str}.nc
+mv fv3_tracer fv_tracer.res.tile1${lbcupdt_str}.nc
+# Get orig restart files and 00-h bndy file for move_DA_update code
+#clt cp $GUESSdir/fv_core.res.tile1.nc fv_core.res.tile1.nc
+cp $BgFile4dynvarOld fv_core.res.tile1.nc
+#clt cp $GUESSdir/fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
+cp $BgFile4tracerOld fv_tracer.res.tile1.nc
+cp $ANLdir/gfs_bndy.tile7.000.nc .
+
+# run move_DA_update code
+
+cp $HOMEfv3/regional_da_imbalance/move_DA_update_data.x .
+
+export pgm=move_DA_update_data.x
+. prep_step
+
+startmsg
+./move_DA_update_data.x 000
+export err=$?;err_chk
+
+#Put new 000-h BC file and modified original restart files into ANLdir
+cp gfs_bndy.tile7.000_gsi.nc $ANLdir/
+mv fv_core.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc
+mv fv_tracer.res.tile1.nc $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc
+
+fi
+
+
+
 # Put analysis files in ANLdir (defined in J-job)
 mv fv3_akbk $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.nc
 mv coupler.res $ANLdir/${ctrlstr+_${ctrlstr}_}coupler.res
-mv fv3_dynvars $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc
-mv fv3_tracer $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc
-mv fv3_sfcdata $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data.nc
-cp fv3_grid_spec $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc
-cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+mv fv3_sfcdata $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data${lbcupdt_str}.nc
+mv fv3_grid_spec $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec${lbcupdt_str}.nc
+if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+cp $fv3_case/${PDY}.${CYC}0000.sfc_data.nc $ANLdir/${ctrlstr+_${ctrlstr}_}sfc_data.nc 
+cp $fv3_case/grid_spec.nc   $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc
 fi
+
+
+
+cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+fi #if != tm00
 
 exit

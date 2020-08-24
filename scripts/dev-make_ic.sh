@@ -79,7 +79,7 @@ cat <<EOF >fort.41
  fix_dir_target_grid="$FIXsar"
  orog_dir_target_grid="$FIXsar"
  orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
- vcoord_file_target_grid="${FIXam}/global_hyblev.l${LEVS}.txt"
+ vcoord_file_target_grid="${PARMfv3}/global_hyblev.l${LEVS}.txt"
  mosaic_file_input_grid="NULL"
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
@@ -97,6 +97,7 @@ cat <<EOF >fort.41
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
+ halo_blend=${NROWS_BLEND:-0}
 /
 EOF
 
@@ -104,7 +105,7 @@ export pgm=regional_chgres_cube.x
 #cltthinkdeb . prep_step
 
 #cltthinkdeb startmsg
-time ${APRUNC} -l ./regional_chgres_cube.x> stdout
+time ${APRUNC} ./regional_chgres_cube.x> stdout
 export err=$?
 ###export err=$?;err_chk
 

@@ -44,8 +44,7 @@ export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
 ##############################################
 # Obtain unique process id (pid) and make temp directory
 ##############################################
-#cltthinkdeb export DATA=${STMP}/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
-export DATA=/scratch1/NCEPDEV/stmp2/Ting.Lei/${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
+export DATA=${STMP}//${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}
 rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
@@ -115,11 +114,19 @@ elif [ $machine = WCOSS ] ; then
   export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
   export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
   export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
+elif [ $machine = wcoss_cray ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi="/gpfs/hps3/emc/meso/save/Eric.Rogers/regional_workflow/regional_gsi.fd/fix"
+  export fixcrtm=/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix
+  export gsiexec0=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-mixdual/ProdGSI/exec/global_gsi.x
+
 elif [ $machine = DELL ] ; then
   export UTIL=${HOMEfv3}/util/ush
   export gsiexec0=${EXECfv3}/regional_gsi.x
   export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
-  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+#clt 20200424   export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.7/fix
 fi
 
 

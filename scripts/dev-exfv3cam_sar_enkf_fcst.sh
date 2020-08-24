@@ -57,7 +57,9 @@ for imem in $(seq $ENSBEG $ENSEND); do
    export FcstInDir=$EnsAnMeanDir
    else
    export FcstInDir=$EnsRecDir
-   cp $ensmemINPdir/*bndy*nc $FcstInDir
+     if [ ${l_use_other_ctrlb_opt:-.false.} = .false. ] ; then
+      cp $ensmemINPdir/*bndy*nc $FcstInDir
+     fi
    fi
    fi
    export FcstOutDir=$NWGES_ens/${tmmark_next}/$memchar
