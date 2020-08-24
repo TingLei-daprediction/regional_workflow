@@ -355,7 +355,7 @@
     <task name="forecast_tm#mark#" cycledefs="regional" maxtries="6">
     &PE_EXTRA;
     &RESERVATION;
-    &FORECAST_RESOURCES;
+    &FORECAST_RESOURCES_DA;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
      <jobname><cyclestr>forecast_tm#mark#_@H</cyclestr></jobname>
      <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_tm#mark#_@H.log</cyclestr></join>
