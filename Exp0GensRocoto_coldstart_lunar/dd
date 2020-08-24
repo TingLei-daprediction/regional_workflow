@@ -1,4 +1,8 @@
+<<<<<<< HEAD
     <envar>
       <name>l_coldstart_anal</name>
       <value>TRUE</value>
     </envar>
+=======
+rocotorun -v 10 -w /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0GensRocoto_coldstart_lunar/dev-Gens_coldstart.xml  -d /gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/Exp0GensRocoto_coldstart_lunar/dev-Gens_coldstart.db
+>>>>>>> 46fc5c417bc41516590726681006731d3544f6ec

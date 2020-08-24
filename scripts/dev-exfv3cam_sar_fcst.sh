@@ -233,7 +233,6 @@ if [ $tmmark = tm00 ] ; then
 
 # Submit post manager here
 elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
-#cltthinkdeb here should consider using different physical suite 
   cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
   cat input.nml.tmp | \
      sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml

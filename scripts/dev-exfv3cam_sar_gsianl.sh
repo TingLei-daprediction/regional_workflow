@@ -632,6 +632,7 @@ export fv3_case=$GUESSdir
 #  INPUT FILES FV3 NEST (single tile)
 
 #   This file contains time information
+<<<<<<< HEAD
 
 if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 	cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
@@ -661,24 +662,6 @@ else
 	ln -sf gfs_data.tile7.nc  fv3_dynvars
 	ln -sf gfs_data.tile7.nc fv3_tracer
 fi
-#ctl =======
-#clt cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
-#clt #   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
-#clt cp $fv3_case/${PDY}.${CYC}0000.fv_core.res.nc fv3_akbk
-#clt #   This file contains horizontal grid information
-#clt cp $fv3_case/grid_spec${lbcupdt_str}.nc fv3_grid_spec
-#clt cp $fv3_case/${PDY}.${CYC}0000.sfc_data${lbcupdt_str}.nc fv3_sfcdata
-#clt #   This file contains 3d fields u,v,w,dz,T,delp, and 2d sfc geopotential phis
-#clt ctrlstrname=${ctrlstr:+_${ctrlstr}_}
-#clt    BgFile4dynvar=${BgFile4dynvar:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1${lbcupdt_str}.nc}
-#clt    BgFile4tracer=${BgFile4tracer:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1${lbcupdt_str}.nc}
-#clt    BgFile4dynvarOld=${BgFile4dynvarOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_core.res.tile1.nc}
-#clt    BgFile4tracerOld=${BgFile4tracerOld:-$fv3_case/${PDY}.${CYC}0000.${ctrlstrname}fv_tracer.res.tile1.nc}
-#clt cp $BgFile4dynvar fv3_dynvars
-#   This file contains 3d tracer fields sphum, liq_wat, o3mr
-#clt cp $BgFile4tracer fv3_tracer
-#   This file contains surface fields (vert dims of 3, 4, and 63)
-#clt>>>>>>> ae525b0c5ff12899c6c13043175cd483e9217a24
 
 export pgm=`basename $gsiexec`
 . prep_step
