@@ -42,7 +42,8 @@ module load rca/1.0.0-2.0502.57212.2.56.ari
 module load atp
 
 module load intel/15.0.3.187
-module load hpss
+#clt module load hpss
+module load hpss/4.1.0.3
 
 module load NetCDF-intel-haswell/4.2
 module load HDF5-serial-intel-haswell/1.8.9

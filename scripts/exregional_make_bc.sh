@@ -42,21 +42,6 @@ dayguess=`echo ${CYCLEguess} | cut -c 7-8`
 fi
 
 #
-# set the links to use the 4 halo grid and orog files
-# these are necessary for creating the boundary data
-#
-ln -sf $FIXsar/${CASE}_grid.tile7.halo4.nc $FIXsar/${CASE}_grid.tile7.nc 
-ln -sf $FIXsar/${CASE}_oro_data.tile7.halo4.nc $FIXsar/${CASE}_oro_data.tile7.nc 
-ln -sf $FIXsar/${CASE}.vegetation_greenness.tile7.halo4.nc $FIXsar/${CASE}.vegetation_greenness.tile7.nc
-ln -sf $FIXsar/${CASE}.soil_type.tile7.halo4.nc $FIXsar/${CASE}.soil_type.tile7.nc
-ln -sf $FIXsar/${CASE}.slope_type.tile7.halo4.nc $FIXsar/${CASE}.slope_type.tile7.nc
-ln -sf $FIXsar/${CASE}.substrate_temperature.tile7.halo4.nc $FIXsar/${CASE}.substrate_temperature.tile7.nc
-ln -sf $FIXsar/${CASE}.facsf.tile7.halo4.nc $FIXsar/${CASE}.facsf.tile7.nc
-ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc
-ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
-ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
-
-#
 # create namelist and run chgres cube
 #
 cp ${CHGRESEXEC} .
@@ -131,7 +116,7 @@ cat <<EOF >fort.41
  fix_dir_target_grid="$FIXsar"
  orog_dir_target_grid="$FIXsar"
  orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
- vcoord_file_target_grid="${FIXam}/global_hyblev.l${LEVS}.txt"
+ vcoord_file_target_grid="${PARMfv3}/global_hyblev.l${LEVS}.txt"
  mosaic_file_input_grid="NULL"
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
@@ -149,6 +134,7 @@ cat <<EOF >fort.41
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
+ halo_blend=${NROWS_BLEND:-0}
 /
 EOF
 
@@ -156,7 +142,7 @@ export pgm=regional_chgres_cube.x
 . prep_step
 
   startmsg
-  time ${APRUNC} -l ./regional_chgres_cube.x
+  time ${APRUNC}  ./regional_chgres_cube.x
   export err=$?
   ###export err=$?;err_chk
 
@@ -165,7 +151,6 @@ export pgm=regional_chgres_cube.x
   fi
 
   hour=`expr $hour + $hour_inc`
-
 #
 # move output files to save directory
 #

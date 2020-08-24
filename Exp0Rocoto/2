@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 + module load rocoto/1.3.1
 ++ /apps/lmod/7.7.18/libexec/lmod bash load rocoto/1.3.1
 + eval '__LMOD_REF_COUNT_LOADEDMODULES="intel/18.0.5.274:1;impi/2018.0.4:1;contrib:1;grib_api/1.26.1:1;cdo/1.9.5:1;netcdf/4.6.1:1;ncview/2.1.7:1;nco/4.9.1:1;wgrib/1.8.1.0b:1;wgrib2/2.0.8:1;R/3.5.0:1;anaconda/2.3.0:1;gempak/7.4.2:1;grads/2.2.1:1;ncl/6.5.0:1;hpss/hpss:1;imagemagick/7.0.8-53:1;rocoto/1.3.1:1";' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES="intel/18.0.5.274:impi/2018.0.4:contrib:grib_api/1.26.1:cdo/1.9.5:netcdf/4.6.1:ncview/2.1.7:nco/4.9.1:wgrib/1.8.1.0b:wgrib2/2.0.8:R/3.5.0:anaconda/2.3.0:gempak/7.4.2:grads/2.2.1:ncl/6.5.0:hpss/hpss:imagemagick/7.0.8-53:rocoto/1.3.1";' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH="/apps/rocoto/1.3.1/man:1;/apps/ImageMagick/7.0.8-53/man:1;/apps/R/3.5.0-intel-mkl/man:1;/apps/nco/4.9.1/intel/18.0.5.274/share/man:1;/apps/netcdf/4.6.1/intel/16.1.150/share/man:1;/apps/intel/compilers_and_libraries_2018/linux/mpi/man:1;/apps/intel/parallel_studio_xe_2018.4.057/man/common:1;/apps/intel/parallel_studio_xe_2018.4.057/documentation_2018/en/debugger/gdb-ia/man:1;/apps/intel/parallel_studio_xe_2018.4.057/documentation_2018/en/debugger/gdb-igfx/man:1;/apps/lmod/lmod/share/man:1;/apps/local/man:1;/apps/slurm/default/share/man:2;/apps/slurm/tools/sbank/share/man:2";' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH="/apps/rocoto/1.3.1/man:/apps/ImageMagick/7.0.8-53/man:/apps/R/3.5.0-intel-mkl/man:/apps/nco/4.9.1/intel/18.0.5.274/share/man:/apps/netcdf/4.6.1/intel/16.1.150/share/man:/apps/intel/compilers_and_libraries_2018/linux/mpi/man:/apps/intel/parallel_studio_xe_2018.4.057/man/common:/apps/intel/parallel_studio_xe_2018.4.057/documentation_2018/en/debugger/gdb-ia/man:/apps/intel/parallel_studio_xe_2018.4.057/documentation_2018/en/debugger/gdb-igfx/man:/apps/lmod/lmod/share/man:/apps/local/man:/apps/slurm/default/share/man:/apps/slurm/tools/sbank/share/man";' export 'MANPATH;' 'MODULEPATH="/contrib/modulefiles:/apps/lmod/lmod/modulefiles/Core:/apps/modules/modulefiles/Linux:/apps/modules/modulefiles:/opt/cray/modulefiles:/opt/cray/craype/default/modulefiles:/apps/modules/modulefamilies/intel:/apps/modules/modulefamilies/intel_impi";' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH="/apps/rocoto/1.3.1/bin:1;/apps/ImageMagick/7.0.8-53/bin:1;/apps/hpss:1;/apps/ncl/6.5.0-CentOS7.5_64bit_gnu485/bin:1;/apps/grads/2.2.1/bin:1;/apps/gempak/7.4.2/bin:1;/contrib/anaconda/EXT/2.3.0/bin:1;/contrib/anaconda/2.3.0/bin:1;/apps/R/3.5.0-intel-mkl/bin:1;/apps/wgrib2/2.0.8/intel/18.0.3.222/bin:1;/apps/wgrib/1.8.1.0b/bin:1;/apps/nco/4.9.1/intel/18.0.5.274/bin:1;/apps/ncview/2.1.7/bin:1;/apps/netcdf/4.6.1/intel/16.1.150/bin:1;/apps/cdo/1.9.5/intel/18.0.3.051/bin:1;/apps/grib_api/1.26.1/intel/18.0.3.051/bin:1;/apps/intel/compilers_and_libraries_2018/linux/mpi/intel64/bin:1;/apps/intel/parallel_studio_xe_2018.4.057/compilers_and_libraries_2018/linux/bin/intel64:1;.:1;/home/Ting.Lei/bin:1;/usr/lib64/qt-3.3/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/ibutils/bin:1;/apps/local/bin:1;/apps/local/sbin:1;/apps/slurm/default/slurm/tools:1;/apps/slurm/default/bin:2;/apps/slurm/default/sbin:2;/apps/slurm/tools/sbank/bin:2;/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-verif/dr-perry/METplus-2.1/ush:1;/apps/gempak/7.4.2/os/linux64/bin:1;/apps/slurm/default/tools:1";' export '__LMOD_REF_COUNT_PATH;' 'PATH="/apps/rocoto/1.3.1/bin:/apps/ImageMagick/7.0.8-53/bin:/apps/hpss:/apps/ncl/6.5.0-CentOS7.5_64bit_gnu485/bin:/apps/grads/2.2.1/bin:/apps/gempak/7.4.2/bin:/contrib/anaconda/EXT/2.3.0/bin:/contrib/anaconda/2.3.0/bin:/apps/R/3.5.0-intel-mkl/bin:/apps/wgrib2/2.0.8/intel/18.0.3.222/bin:/apps/wgrib/1.8.1.0b/bin:/apps/nco/4.9.1/intel/18.0.5.274/bin:/apps/ncview/2.1.7/bin:/apps/netcdf/4.6.1/intel/16.1.150/bin:/apps/cdo/1.9.5/intel/18.0.3.051/bin:/apps/grib_api/1.26.1/intel/18.0.3.051/bin:/apps/intel/compilers_and_libraries_2018/linux/mpi/intel64/bin:/apps/intel/parallel_studio_xe_2018.4.057/compilers_and_libraries_2018/linux/bin/intel64:.:/home/Ting.Lei/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/apps/local/bin:/apps/local/sbin:/apps/slurm/default/slurm/tools:/apps/slurm/default/bin:/apps/slurm/default/sbin:/apps/slurm/tools/sbank/bin:/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-verif/dr-perry/METplus-2.1/ush:/apps/gempak/7.4.2/os/linux64/bin:/apps/slurm/default/tools";' export 'PATH;' '__LMOD_REF_COUNT__LMFILES_="/apps/modules/modulefiles/intel/18.0.5.274:1;/apps/modules/modulefamilies/intel/impi/2018.0.4:1;/apps/modules/modulefiles/contrib:1;/apps/modules/modulefamilies/intel/grib_api/1.26.1:1;/apps/modules/modulefamilies/intel/cdo/1.9.5:1;/apps/modules/modulefamilies/intel/netcdf/4.6.1:1;/apps/modules/modulefamilies/intel/ncview/2.1.7:1;/apps/modules/modulefamilies/intel/nco/4.9.1:1;/apps/modules/modulefiles/wgrib/1.8.1.0b:1;/apps/modules/modulefamilies/intel/wgrib2/2.0.8:1;/apps/modules/modulefamilies/intel/R/3.5.0:1;/contrib/modulefiles/anaconda/2.3.0:1;/apps/modules/modulefiles/gempak/7.4.2:1;/apps/modules/modulefiles/grads/2.2.1:1;/apps/modules/modulefiles/ncl/6.5.0:1;/apps/modules/modulefiles/hpss/hpss:1;/apps/modules/modulefiles/imagemagick/7.0.8-53:1;/apps/modules/modulefiles/rocoto/1.3.1:1";' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_="/apps/modules/modulefiles/intel/18.0.5.274:/apps/modules/modulefamilies/intel/impi/2018.0.4:/apps/modules/modulefiles/contrib:/apps/modules/modulefamilies/intel/grib_api/1.26.1:/apps/modules/modulefamilies/intel/cdo/1.9.5:/apps/modules/modulefamilies/intel/netcdf/4.6.1:/apps/modules/modulefamilies/intel/ncview/2.1.7:/apps/modules/modulefamilies/intel/nco/4.9.1:/apps/modules/modulefiles/wgrib/1.8.1.0b:/apps/modules/modulefamilies/intel/wgrib2/2.0.8:/apps/modules/modulefamilies/intel/R/3.5.0:/contrib/modulefiles/anaconda/2.3.0:/apps/modules/modulefiles/gempak/7.4.2:/apps/modules/modulefiles/grads/2.2.1:/apps/modules/modulefiles/ncl/6.5.0:/apps/modules/modulefiles/hpss/hpss:/apps/modules/modulefiles/imagemagick/7.0.8-53:/apps/modules/modulefiles/rocoto/1.3.1";' export '_LMFILES_;' '_ModuleTable001_="X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09ImludGVsIixbIm1waSJdPSJpbXBpIix9LG1UPXtSPXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwvUi8zLjUuMCIsWyJmdWxsTmFtZSJdPSJSLzMuNS4wIixbImxvYWRPcmRlciJdPTExLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09IlIiLH0sYW5hY29uZGE9e1siZm4iXT0iL2NvbnRyaWIvbW9kdWxlZmlsZXMvYW5hY29uZGEvMi4zLjAiLFsiZnVsbE5hbWUiXT0iYW5hY29uZGEvMi4zLjAiLFsi";' export '_ModuleTable001_;' '_ModuleTable002_="bG9hZE9yZGVyIl09MTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iYW5hY29uZGEvMi4zLjAiLH0sY2RvPXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwvY2RvLzEuOS41IixbImZ1bGxOYW1lIl09ImNkby8xLjkuNSIsWyJsb2FkT3JkZXIiXT01LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNkbyIsfSxjb250cmliPXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmlsZXMvY29udHJpYiIsWyJmdWxsTmFtZSJdPSJjb250cmliIixbImxvYWRPcmRlciJdPTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1";' export '_ModuleTable002_;' '_ModuleTable003_="cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY29udHJpYiIsfSxnZW1wYWs9e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcy9nZW1wYWsvNy40LjIiLFsiZnVsbE5hbWUiXT0iZ2VtcGFrLzcuNC4yIixbImxvYWRPcmRlciJdPTEzLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdlbXBhayIsfSxncmFkcz17WyJmbiJdPSIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL2dyYWRzLzIuMi4xIixbImZ1bGxOYW1lIl09ImdyYWRzLzIuMi4xIixbImxvYWRPcmRlciJdPTE0LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdyYWRzIix9LGdyaWJfYXBp";' export '_ModuleTable003_;' '_ModuleTable004_="PXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwvZ3JpYl9hcGkvMS4yNi4xIixbImZ1bGxOYW1lIl09ImdyaWJfYXBpLzEuMjYuMSIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImdyaWJfYXBpIix9LGhwc3M9e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcy9ocHNzL2hwc3MiLFsiZnVsbE5hbWUiXT0iaHBzcy9ocHNzIixbImxvYWRPcmRlciJdPTE2LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imhwc3MiLH0saW1hZ2VtYWdpY2s9e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVm";' export '_ModuleTable004_;' '_ModuleTable005_="aWxlcy9pbWFnZW1hZ2ljay83LjAuOC01MyIsWyJmdWxsTmFtZSJdPSJpbWFnZW1hZ2ljay83LjAuOC01MyIsWyJsb2FkT3JkZXIiXT0xNyxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJpbWFnZW1hZ2ljayIsfSxpbXBpPXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwvaW1waS8yMDE4LjAuNCIsWyJmdWxsTmFtZSJdPSJpbXBpLzIwMTguMC40IixbImxvYWRPcmRlciJdPTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iaW1waSIsfSxpbnRlbD17WyJmbiJdPSIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL2ludGVsLzE4LjAu";' export '_ModuleTable005_;' '_ModuleTable006_="NS4yNzQiLFsiZnVsbE5hbWUiXT0iaW50ZWwvMTguMC41LjI3NCIsWyJsb2FkT3JkZXIiXT0xLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImludGVsIix9LG5jbD17WyJmbiJdPSIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL25jbC82LjUuMCIsWyJmdWxsTmFtZSJdPSJuY2wvNi41LjAiLFsibG9hZE9yZGVyIl09MTUscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibmNsIix9LG5jbz17WyJmbiJdPSIvYXBwcy9tb2R1bGVzL21vZHVsZWZhbWlsaWVzL2ludGVsL25jby80LjkuMSIsWyJmdWxsTmFtZSJdPSJuY28vNC45LjEiLFsibG9hZE9yZGVyIl09OCxw";' export '_ModuleTable006_;' '_ModuleTable007_="cm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJuY28iLH0sbmN2aWV3PXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwvbmN2aWV3LzIuMS43IixbImZ1bGxOYW1lIl09Im5jdmlldy8yLjEuNyIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Im5jdmlldyIsfSxuZXRjZGY9e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmYW1pbGllcy9pbnRlbC9uZXRjZGYvNC42LjEiLFsiZnVsbE5hbWUiXT0ibmV0Y2RmLzQuNi4xIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0";' export '_ModuleTable007_;' '_ModuleTable008_="YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibmV0Y2RmIix9LHJvY290bz17WyJmbiJdPSIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL3JvY290by8xLjMuMSIsWyJmdWxsTmFtZSJdPSJyb2NvdG8vMS4zLjEiLFsibG9hZE9yZGVyIl09MTgscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0icm9jb3RvLzEuMy4xIix9LHdncmliPXtbImZuIl09Ii9hcHBzL21vZHVsZXMvbW9kdWxlZmlsZXMvd2dyaWIvMS44LjEuMGIiLFsiZnVsbE5hbWUiXT0id2dyaWIvMS44LjEuMGIiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJ3Z3Jp";' export '_ModuleTable008_;' '_ModuleTable009_="YiIsfSx3Z3JpYjI9e1siZm4iXT0iL2FwcHMvbW9kdWxlcy9tb2R1bGVmYW1pbGllcy9pbnRlbC93Z3JpYjIvMi4wLjgiLFsiZnVsbE5hbWUiXT0id2dyaWIyLzIuMC44IixbImxvYWRPcmRlciJdPTEwLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09IndncmliMiIsfSx9LG1wYXRoQT17Ii9jb250cmliL21vZHVsZWZpbGVzIiwiL2FwcHMvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLCIvYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzL0xpbnV4IiwiL2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcyIsIi9vcHQvY3JheS9tb2R1bGVmaWxlcyIsIi9vcHQvY3JheS9jcmF5cGUvZGVmYXVsdC9tb2R1bGVmaWxlcyIsIi9hcHBz";' export '_ModuleTable009_;' '_ModuleTable010_="L21vZHVsZXMvbW9kdWxlZmFtaWxpZXMvaW50ZWwiLCIvYXBwcy9tb2R1bGVzL21vZHVsZWZhbWlsaWVzL2ludGVsX2ltcGkiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL2FwcHMvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmU6L2FwcHMvbW9kdWxlcy9tb2R1bGVmaWxlcy9MaW51eDovYXBwcy9tb2R1bGVzL21vZHVsZWZpbGVzOi9vcHQvY3JheS9tb2R1bGVmaWxlczovb3B0L2NyYXkvY3JheXBlL2RlZmF1bHQvbW9kdWxlZmlsZXMiLH0=";' export '_ModuleTable010_;' '_ModuleTable_Sz_="10";' export '_ModuleTable_Sz_;'
@@ -82,3 +83,73 @@ export CDATE='2020040100'
 }}
 task 'forecast_ens_tm06_ensgrp07' for cycle '202004010000' has been booted
 + exit
+=======
+8,9c8,9
+< <!ENTITY STARTDAY "28">
+< <!ENTITY STARTHOUR "12">
+---
+> <!ENTITY STARTDAY "09">
+> <!ENTITY STARTHOUR "00">
+13,14c13,14
+< <!ENTITY ENDDAY "28">
+< <!ENTITY ENDHOUR "12">
+---
+> <!ENTITY ENDDAY "09">
+> <!ENTITY ENDHOUR "00">
+68,69c68,69
+< <!ENTITY ANL_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
+< <!ENTITY ENKF_EXTRA "<envar><name>NCTSK</name><value>2</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:30:00</walltime>">
+---
+> <!ENTITY ANL_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
+> <!ENTITY ENKF_EXTRA "<envar><name>NCTSK</name><value>2</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
+84,86c84,85
+< <!ENTITY gsianlsh '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/scripts/oneob-dev-exfv3cam_sar_gsianl.sh'> 
+< <!ENTITY oneobtestname 'glb_ens'> 
+< <!ENTITY nens '81'> 
+---
+> <!ENTITY gsianlsh ''> 
+> <!ENTITY nens '20'> 
+88,89c87,88
+< <!ENTITY nens_gfs '81'> 
+< <!ENTITY nens_fv3sar '0'> 
+---
+> <!ENTITY nens_gfs '0'> 
+> <!ENTITY nens_fv3sar '20'> 
+92d90
+< <!ENTITY regional_ensemble_option '1'>
+226,228c224,226
+<   <var name="ENSGRP">01 02 03 04 05 06 07 08 09 10 </var>
+<   <var name="ENSBEG">01 03 05 07 09 11 13 15 17 19</var>
+<   <var name="ENSEND">02 04 06 08 10 12 14 16 18 20</var>
+---
+>   <var name="ENSGRP">01 02 03 04 05 </var>
+>   <var name="ENSBEG">01 05 09 13 17 </var>
+>   <var name="ENSEND">04 08 12 16 20 </var>
+572,574c570,572
+<   <var name="ENSGRP">01 02 03 04 05 06 07 08 09 10 </var>
+<   <var name="ENSBEG">01 03 05 07 09 11 13 15 17 19</var>
+<   <var name="ENSEND">02 04 06 08 10 12 14 16 18 20</var>
+---
+>   <var name="ENSGRP">01 02 03 04 05 </var>
+>   <var name="ENSBEG">01 05 09 13 17 </var>
+>   <var name="ENSEND">04 08 12 16 20 </var>
+1898c1896
+<     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/oneob-glb-gsianl_tm#next_mark#_@H.log</cyclestr></join>
+---
+>     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/gsianl_tm#next_mark#_@H.log</cyclestr></join>
+1937,1945d1934
+<      <envar>
+<       <name>oneobtestname</name>
+<       <value>&oneobtestname;</value>
+<      </envar>
+<      <envar>
+<      <name>regional_ensemble_option</name>
+<     <value>&regional_ensemble_option;</value>
+<     </envar>
+< 
+2519,2520c2508
+<       <command>&PRE; &JOBS;/JREGIONAL_POST</command>
+< 
+---
+>       <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
+>>>>>>> origin/regional-workflow-fv3sar_ensda

@@ -30,8 +30,7 @@
 ++ : -s sh
 + eval
 + rocotorun -v 10 -w /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db
-08/21/20 14:05:13 UTC :: dev-Gens.xml :: sbatch: error: Batch job submission failed: Invalid qos specification
-08/21/20 14:05:13 UTC :: dev-Gens.xml :: Submitting sendinibc using sbatch < /tmp/sbatch.in20200821-109938-2q7rct with input
+08/24/20 19:10:08 UTC :: dev-Gens.xml :: Submitting sendinibc using sbatch < /tmp/sbatch.in20200824-209837-13be4to with input
 {{
 #! /bin/sh
 #SBATCH --qos=dev_transfer
@@ -41,7 +40,7 @@
 #SBATCH --ntasks=1
 #SBATCH --job-name=sendinibc_00
 #SBATCH -o /scratch1/NCEPDEV/stmp2/Ting.Lei/EXP0Gensregion/dr2020050400.log/sendinibc_00.log
-#SBATCH --comment=38ada7831abb343204a79b450db1023d
+#SBATCH --comment=a2d514f129cdeca9992d7857b10615a2
 export envir='EXP0Gensregion'
 export machine='hera'
 export HOMEfv3='/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow'
@@ -53,5 +52,4 @@ export cyc='00'
 export CDATE='2020050400'
 /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/rocoto/rocoto_pre_job.sh /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/jobs/JFV3CAM_SAR_SENDINIBC
 }}
-08/21/20 14:05:13 UTC :: dev-Gens.xml :: WARNING: job submission failed: sbatch: error: Batch job submission failed: Invalid qos specification
-08/21/20 14:05:13 UTC :: dev-Gens.xml :: Submission of sendinibc failed!  sbatch: error: Batch job submission failed: Invalid qos specification
+08/24/20 19:10:08 UTC :: dev-Gens.xml :: WARNING: job submission failed: sbatch: error: Batch job submission failed: Invalid qos specification

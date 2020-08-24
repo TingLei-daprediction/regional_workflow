@@ -27,36 +27,46 @@ mkdir -p INPUT RESTART
 if [ $tmmark = tm12 ] ; then
 FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
 else
+FcstInDir_tm12=${FcstInDir_tm12:-${COMOUT}/gfsanl.tm12}
+ln -sf $FcstInDir_tm12/gfs_data.tile7.nc INPUT/gfs_data.nc
 FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
 fi
+
+if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
+#cltthinkdeb
+ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
+ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
+
+fi
+
+
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
-ls -l  $FcstInDir/*gfs_bndy*tile7*.nc 
 cp $FcstInDir/*.nc INPUT
-if [ $tmmark = tm00 ] ; then
+
    if [ ${l_use_other_ctrlb_opt:-.false.} = .true. ] ; then
-      OtherDirLbc=${COMOUT_CTRLBC}/anl.${tmmark}
+      OtherDirLbc=${COMOUT}/anl.${tmmark}
       cp $OtherDirLbc/*bndy*tile7*.nc INPUT 
+     
    fi
-fi 
 #cltcp $ANLdir/fv_core.res.nc INPUT  #tothink temperaryily
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 let "numbndy_check=$NHRS/3+1"
 
 if [ $tmmark = tm00 ] ; then
-  if [ $numbndy -ne $numbndy_check ] ; then
+  if [ $numbndy -lt $numbndy_check ] ; then
     export err=13
     echo "Don't have all BC files at tm00, abort run"
     err_exit "Don't have all BC files at tm00, abort run"
   fi
   elif  [ $tmmark = tm12 ] ; then 
-   if [ $numbndy -ne 3 ] ; then
+   if [ $numbndy -lt 3 ] ; then
     export err=4
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"
    fi
 else
-  if [ $numbndy -ne 2 ] ; then
+  if [ $numbndy -lt 2 ] ; then
     export err=2
     echo "Don't have both BC files at ${tmmark}, abort run"
     err_exit "Don't have all BC files at ${tmmark}, abort run"
@@ -84,14 +94,14 @@ cp $FIXam/seaice_newland.grb .
 cp $FIXam/global_shdmin.0.144x0.144.grb .
 cp $FIXam/global_shdmax.0.144x0.144.grb .
 
-ln -sf $FIXsar/C768.maximum_snow_albedo.tile7.nc C768.maximum_snow_albedo.tile1.nc
-ln -sf $FIXsar/C768.snowfree_albedo.tile7.nc C768.snowfree_albedo.tile1.nc
-ln -sf $FIXsar/C768.slope_type.tile7.nc C768.slope_type.tile1.nc
-ln -sf $FIXsar/C768.soil_type.tile7.nc C768.soil_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_type.tile7.nc C768.vegetation_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_greenness.tile7.nc C768.vegetation_greenness.tile1.nc
-ln -sf $FIXsar/C768.substrate_temperature.tile7.nc C768.substrate_temperature.tile1.nc
-ln -sf $FIXsar/C768.facsf.tile7.nc C768.facsf.tile1.nc
+ln -sf $FIXsar/C768.maximum_snow_albedo.tile7.halo0.nc C768.maximum_snow_albedo.tile1.nc
+ln -sf $FIXsar/C768.snowfree_albedo.tile7.halo0.nc C768.snowfree_albedo.tile1.nc
+ln -sf $FIXsar/C768.slope_type.tile7.halo0.nc C768.slope_type.tile1.nc
+ln -sf $FIXsar/C768.soil_type.tile7.halo0.nc C768.soil_type.tile1.nc
+ln -sf $FIXsar/C768.vegetation_type.tile7.halo0.nc C768.vegetation_type.tile1.nc
+ln -sf $FIXsar/C768.vegetation_greenness.tile7.halo0.nc C768.vegetation_greenness.tile1.nc
+ln -sf $FIXsar/C768.substrate_temperature.tile7.halo0.nc C768.substrate_temperature.tile1.nc
+ln -sf $FIXsar/C768.facsf.tile7.halo0.nc C768.facsf.tile1.nc
 
 
 for file in `ls $FIXco2/global_co2historicaldata* ` ; do
@@ -136,15 +146,32 @@ cd ..
 #-------------------------------------------------------------------
 
 if [ $tmmark = tm00 ] ; then
+	if [ $MPSUITE = thompson ] ; then
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+	  cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+	fi
+	if [ $MPSUITE = gfdlmp ] ; then
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
+	  cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+	fi
+
 # Free forecast with DA (warm start)
   if [ $model = fv3sar_da ] ; then
-    cp ${PARMfv3}/input_sar_da.nml input.nml.tmp 
+    if [ ${MPSUITE:-thompson} = thompson ] ; then
+      cp ${PARMfv3}/thompson/input_sar_da.nml input.nml.tmp
+    fi
+    if [ $MPSUITE = gfdlmp ] ; then
+
+        cp ${PARMfv3}/input_sar_da.nml input.nml.tmp 
+    fi
     cat input.nml.tmp | \
         sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
 
     
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
+      echo "think tobe done exit"
+      exit 999
    if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
       cp ${PARMfv3}/input_sar_${dom}_ccpp.nml input.nml.tmp
       cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
@@ -161,6 +188,8 @@ if [ $tmmark = tm00 ] ; then
     fi
 
   fi
+   
+
   cp ${PARMfv3}/model_configure_sar.tmp_${dom:-conus} model_configure.tmp
 
 	if [ ${dom:-conus} = "conus" ]
@@ -184,9 +213,23 @@ if [ $tmmark = tm00 ] ; then
 	let nctsk=ncnode/OMP_NUM_THREADS    # 12 tasks per node with 2 threads 
 	let ntasks=nodes*nctsk
 	echo nctsk = $nctsk and ntasks = $ntasks
-     cp ${PARMfv3}/d* .
-     cp ${PARMfv3}/field_table .
-     cp ${PARMfv3}/nems.configure .
+	if [ $MPSUITE = thompson ] ; then
+	  cp ${PARMfv3}/thompson/diag_table.tmp .
+	  cp ${PARMfv3}/thompson/field_table .
+	  cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
+	  cp $PARMfv3/thompson/freezeH2O.dat                             freezeH2O.dat
+	  cp $PARMfv3/thompson/qr_acr_qg.dat                             qr_acr_qg.dat
+	  cp $PARMfv3/thompson/qr_acr_qs.dat                             qr_acr_qs.dat
+	  cp $PARMfv3/thompson/thompson_tables_precomp.sl                thompson_tables_precomp.sl
+	fi
+	if [ $MPSUITE = gfdlmp ] ; then
+	  cp ${PARMfv3}/diag_table.tmp .
+	  cp ${PARMfv3}/field_table .
+	fi
+
+	cp ${PARMfv3}/data_table .
+	cp ${PARMfv3}/nems.configure .
+
 
 # Submit post manager here
 elif [ $tmmark = tm12 ] ; then
@@ -197,31 +240,119 @@ elif [ $tmmark = tm12 ] ; then
 
 
 
-	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
-	cp ${PARMfv3}/d* .
+      if [ $MPSUITE = thompson ] ; then
+         CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+         cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+         cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml
+         cp ${PARMfv3}/thompson/diag_table.tmp .
+         cp ${PARMfv3}/thompson/field_table .
+         cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
+         cp $PARMfv3/thompson/freezeH2O.dat                             freezeH2O.dat
+         cp $PARMfv3/thompson/qr_acr_qg.dat                             qr_acr_qg.dat
+         cp $PARMfv3/thompson/qr_acr_qs.dat                             qr_acr_qs.dat
+         cp $PARMfv3/thompson/thompson_tables_precomp.sl                thompson_tables_precomp.sl
+      fi
+    
+      if [ $MPSUITE = gfdlmp ] ; then
+        CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
+        cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+        cp ${PARMfv3}/input_sar_firstguess.nml input.nml
+        cp ${PARMfv3}/diag_table.tmp .
 	cp ${PARMfv3}/field_table .
+     fi
+	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
+        cp ${PARMfv3}/data_table .
 	cp ${PARMfv3}/nems.configure .
 #thinkdeb do we need consider  if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
 
 else
+	if [ $MPSUITE = thompson ] ; then
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+	  cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+	fi
+	if [ $MPSUITE = gfdlmp ] ; then
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
+	  cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+	fi
+   
+
 #clt for bblake  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
 #for bblake   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
-  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml.tmp
+  if [ $MPSUITE = thompson ] ; then
+    cp ${PARMfv3}/thompson/input_sar_da_hourly.nml input.nml.tmp
+  fi
+  if [ $MPSUITE = gfdlmp ] ; then
+    cp ${PARMfv3}/input_sar_da_hourly.nml input.nml.tmp
+  fi
+
   cat input.nml.tmp | \
         sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+  if [ $MPSUITE = thompson ] ; then
+    cp ${PARMfv3}/thompson/diag_table.tmp .
+    cp ${PARMfv3}/thompson/field_table .
+    cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
+    cp $PARMfv3/thompson/freezeH2O.dat                             freezeH2O.dat
+    cp $PARMfv3/thompson/qr_acr_qg.dat                             qr_acr_qg.dat
+    cp $PARMfv3/thompson/qr_acr_qs.dat                             qr_acr_qs.dat
+    cp $PARMfv3/thompson/thompson_tables_precomp.sl                thompson_tables_precomp.sl
+  fi
+  if [ $MPSUITE = gfdlmp ] ; then
+    cp ${PARMfv3}/diag_table.tmp .
+    cp ${PARMfv3}/field_table .
+  fi
+  
 
   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
 
-  cp ${PARMfv3}/d* .
-  cp ${PARMfv3}/field_table .
+  cp ${PARMfv3}/data_table .
   cp ${PARMfv3}/nems.configure .
- if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
-   if [ -f "${PARMfv3}/field_table_ccpp" ] ; then
-    cp -f ${PARMfv3}/field_table_ccpp field_table
-   fi
- fi
-
 fi
+
+if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
+ if [ $tmmark = tm12 ]; then 
+#     if [ $tmmark = tm00 ] ; then
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+ elif [ $tmmark = tm00 ];then
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
+   regional_bcs_from_gsi=.true.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-10}
+  else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-10}
+  fi
+ else
+  if [ -z ${MEMBER+x} ]; then  #MEMBER not defined , for control run
+   regional_bcs_from_gsi=.true.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+  else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.true.
+   nrows_blend=${NROWS_BLEND:-10}
+  fi
+
+ fi
+   
+
+else
+   regional_bcs_from_gsi=.false.
+   write_restart_with_bcs=.false.
+   nrows_blend=${NROWS_BLEND:-0}
+fi
+   sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
+   sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
+   sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
+   sed -i  -e "/npz.*=/ s/=.*/= $((LEVS-1))/"  input.nml
+   sed -i  -e "/levp.*=/ s/=.*/= ${LEVS}/"  input.nml
+
+
+
+
+
 
 #cp diag_table_tmp diag_table.tmp
 
@@ -276,8 +407,8 @@ fi
 export pgm=regional_forecast.x
 #clt . prep_step
 
-#clt startmsg
-${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
+#clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
+${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
@@ -296,6 +427,7 @@ if [ $tmmark = tm000 ] ; then
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
   cp grid_spec.nc $FcstOutDir/.
+  cp grid_spec.nc RESTART
   cd RESTART
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
@@ -308,13 +440,35 @@ if [ $tmmark != tm00 ] ; then
   mv fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
   mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
   mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
-  mv sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+  cp sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
 
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
   mv phy_data.nc $FcstOutDir/phy_data.nc
+  mv fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+
+if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
+  #Move enlarged restart files for 00-h BC's
+   mv fv_tracer.res.tile1_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1_new.nc 
+   mv fv_core.res.tile1_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1_new.nc 
+  # Make enlarged sfc file
+  mv sfc_data.nc sfc_data_orig.nc
+  mv grid_spec.nc grid_spec_orig.nc
+
+  cp $HOMEfv3/regional_da_imbalance/prep_for_regional_DA.x .
+  cp $HOMEfv3/regional_da_imbalance/grid.tile7.halo3_${CASE}.nc grid.tile7.halo3.nc
+  ./prep_for_regional_DA.x
+
+  mv sfc_data_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data_new.nc
+  mv grid_spec_new.nc $FcstOutDir/grid_spec_new.nc
+
+fi
+
+
+
+
 fi
 fi #=tm000
 exit

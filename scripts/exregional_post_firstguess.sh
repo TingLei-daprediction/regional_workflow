@@ -53,12 +53,12 @@ export pgm=regional_post.x
 
 startmsg
 #export POSTGPEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow-org_EMC/regional_workflow/exec/regional_post.x
-export POSTGPEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-wen/EMC_post/sorc/ncep_post.fd/ncep_post
+export POSTGPEXEC=$EXECfv3/regional_post.x
 ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2> err
 export err=$?;err_chk
 
 # Run wgrib2
-domain=conus
+domain=${domain:-conus}
 gridspecs="lambert:262.5:38.5:38.5 237.280:1799:3000 21.138:1059:3000"
 compress_type=c3
 
