@@ -62,15 +62,16 @@
 <!ENTITY FCST_RESOURCES_GUESS '<walltime>01:00:00</walltime>'>
 <!ENTITY FCST_RESOURCES_DA '<walltime>00:10:00</walltime>'>
 <!ENTITY FCST_RESOURCES '<walltime>01:35:00</walltime>'>
-<!ENTITY POST_RESOURCES '<walltime>00:20:00</walltime>'>
 
 <!ENTITY ANL_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
 <!ENTITY ENKF_EXTRA "<envar><name>NCTSK</name><value>2</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
+<!ENTITY POST_EXTRA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
 <!--<!ENTITY ANL_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">-->
 <!ENTITY ANL_RESOURCES '<walltime>02:30:00</walltime>'>
 <!ENTITY ANL2_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">
 <!ENTITY ENKF_RESOURCES "<nodes>10:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>20</value></envar>&ENKF_EXTRA;">
 <!ENTITY RECENTER_RESOURCES "<nodes>11:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>21</value></envar>&ENKF_EXTRA;">
+<!ENTITY POST_RESOURCES "<nodes>2:ppn=14</nodes><envar><name>TOTAL_TASKS</name><value>24</value></envar>&POST_EXTRA;">
 
 
 <!ENTITY HIST_RESOURCES '<walltime>00:30:00</walltime><memory>5G</memory>'>
@@ -91,7 +92,7 @@
 <!--  ******************* STARTING THE WORKFLOW ******************* -->
 
 <!-- <workflow realtime="F" scheduler="lsf" taskthrottle="11"> -->
-<workflow realtime="F" scheduler="slurm" taskthrottle="60" cyclethrottle="2" cyclelifespan="93:18:00:00">
+<workflow realtime="F" scheduler="slurm" taskthrottle="60" cyclethrottle="2" cyclelifespan="193:18:00:00">
 
   <cycledef group="regional">&STARTYEAR;&STARTMONTH;&STARTDAY;&STARTHOUR;00 &ENDYEAR;&ENDMONTH;&ENDDAY;&ENDHOUR;00 12:00:00</cycledef>
 
@@ -443,7 +444,6 @@
     <task name="post#fhr#_firstguess" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JREGIONAL_POST_FIRSTGUESS</command>
       <jobname><cyclestr>post_firstguess_@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_firstguess_@H.log</cyclestr></join>
@@ -1672,7 +1672,6 @@
     <task name="post_f#fhr#_tm#mark#" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JREGIONAL_POST</command>
       <jobname><cyclestr>post_f#fhr#_tm#mark#_@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_tm#mark#_@H.log</cyclestr></join>
@@ -2488,7 +2487,6 @@
     <task name="post#fhr#" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
       <jobname><cyclestr>fv3_postf#fhr#_@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_@H_tm00.log</cyclestr></join>

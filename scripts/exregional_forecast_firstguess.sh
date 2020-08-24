@@ -123,11 +123,12 @@ cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
 # Run the forecast
 #-----------------------------------------
 export pgm=regional_forecast.x
-. prep_step
+#cltthink . prep_step
 
-startmsg
+#cltthink startmsg
 ${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
-export err=$?;err_chk
+#${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
+export err=$?  #cltthink ;err_chk
 
 # Copy files needed for tm06 analysis
 # use grid_spec.nc file output from model in working directory,
@@ -135,15 +136,21 @@ export err=$?;err_chk
 
 cp grid_spec.nc $GUESSdir/.
 cd RESTART
-mv ${PDYtm06}.${CYCtm06}0000.coupler.res $GUESSdir/.
-mv ${PDYtm06}.${CYCtm06}0000.fv_core.res.nc $GUESSdir/.
-mv ${PDYtm06}.${CYCtm06}0000.fv_core.res.tile1.nc $GUESSdir/.
-mv ${PDYtm06}.${CYCtm06}0000.fv_tracer.res.tile1.nc $GUESSdir/.
-mv ${PDYtm06}.${CYCtm06}0000.sfc_data.nc $GUESSdir/.
+mv coupler.res $GUESSdir/${PDYtm06}.${CYCtm06}0000.coupler.res 
+#cltmv ${PDYtm06}.${CYCtm06}0000.fv_core.res.nc $GUESSdir/.
+mv fv_core.res.nc $GUESSdir/${PDYtm06}.${CYCtm06}0000.fv_core.res.nc
+#clt mv ${PDYtm06}.${CYCtm06}0000.fv_core.res.tile1.nc $GUESSdir/.
+mv fv_core.res.tile1.nc $GUESSdir/${PDYtm06}.${CYCtm06}0000.fv_core.res.tile1.nc
+#mv ${PDYtm06}.${CYCtm06}0000.fv_tracer.res.tile1.nc $GUESSdir/.
+mv fv_tracer.res.tile1.nc $GUESSdir/${PDYtm06}.${CYCtm06}0000.fv_tracer.res.tile1.nc
+#clt mv ${PDYtm06}.${CYCtm06}0000.sfc_data.nc $GUESSdir/.
+mv sfc_data.nc $GUESSdir/${PDYtm06}.${CYCtm06}0000.sfc_data.nc
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
-mv ${PDYtm06}.${CYCtm06}0000.phy_data.nc $ANLdir/phy_data.nc
-mv ${PDYtm06}.${CYCtm06}0000.fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+#mv ${PDYtm06}.${CYCtm06}0000.phy_data.nc $ANLdir/phy_data.nc
+mv phy_data.nc $ANLdir/phy_data.nc
+#clt mv ${PDYtm06}.${CYCtm06}0000.fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+mv fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
 
 exit

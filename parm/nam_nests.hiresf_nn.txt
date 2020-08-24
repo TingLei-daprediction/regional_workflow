@@ -40,7 +40,7 @@ VGRD:1 hybrid level:
 VVEL:1 hybrid level:
 TKE:1 hybrid level:
 TKE:2 hybrid level:
-CLWMR:1 hybrid level:
+CLMR:1 hybrid level:
 ICMR:1 hybrid level:
 GRLE:1 hybrid level:
 HGT:50 mb:

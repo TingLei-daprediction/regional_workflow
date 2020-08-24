@@ -87,8 +87,8 @@ cat ${domain}fv3.hiresf${fhr}.${tmmark}.nn ${domain}fv3.hiresf${fhr}.${tmmark}.b
 # Create index (idx) file
 #$WGRIB2 ${domain}fv3.hiresf${fhr}.${tmmark} -s > ${domain}fv3.hiresf${fhr}.${tmmark}.idx
 
-mv ${domain}fv3.hiresf${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.tm06ges.grib2
-mv BGDAWP${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.natprs.tm06ges.grib2
-mv BGRD3D${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.natlev.tm06ges.grib2
+mv ${domain}fv3.hiresf${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.tm06ges.${memchar:+${memchar}.}grib2
+mv BGDAWP${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.natprs.tm06ges.${memchar:+${memchar}.}grib2
+mv BGRD3D${fhr}.${tmmark} $COMOUT/${RUN}.t${cyc}z.conus.natlev.tm06ges.${memchar:+${memchar}.}grib2
 
 exit

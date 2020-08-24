@@ -408,7 +408,7 @@ fi
 export pgm=regional_forecast.x
 #clt . prep_step
 
-#clt startmsg
+#clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
 ${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
@@ -423,6 +423,7 @@ fi
 # NOT the one in the INPUT directory......
 
 # GUESSdir, ANLdir set in J-job
+if [ $tmmark = tm000 ] ; then
 
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
@@ -470,5 +471,5 @@ fi
 
 
 fi
-
+fi #=tm000
 exit

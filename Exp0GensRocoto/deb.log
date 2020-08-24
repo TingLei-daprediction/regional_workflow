@@ -30,8 +30,7 @@
 ++ : -s sh
 + eval
 + rocotorun -v 10 -w /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db
-12/31/19 21:30:37 UTC :: dev-Gens.xml :: Cycle 201912281200, Task forecast_tm00, jobid=2158980, in state FAILED (FAILED), ran for 46.0 seconds, exit status=59136, try=4 (of 6)
-12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submitting sendinibc using sbatch < /tmp/sbatch.in20191231-377662-3mcwuy with input
+08/24/20 19:10:08 UTC :: dev-Gens.xml :: Submitting sendinibc using sbatch < /tmp/sbatch.in20200824-209837-13be4to with input
 {{
 #! /bin/sh
 #SBATCH --qos=dev_transfer
@@ -39,51 +38,18 @@
 #SBATCH -t 00:30:00
 #SBATCH --mem=1024
 #SBATCH --ntasks=1
-#SBATCH --job-name=sendinibc_12
-#SBATCH -o /scratch2/NCEPDEV/stmp3/Ting.Lei/EXP0Gensregion/dr2019122812.log/sendinibc_12.log
-#SBATCH --comment=557d3220cdcf56b4d658563764c5cd5b
+#SBATCH --job-name=sendinibc_00
+#SBATCH -o /scratch1/NCEPDEV/stmp2/Ting.Lei/EXP0Gensregion/dr2020050400.log/sendinibc_00.log
+#SBATCH --comment=a2d514f129cdeca9992d7857b10615a2
 export envir='EXP0Gensregion'
 export machine='hera'
 export HOMEfv3='/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow'
 export job='sendinibc'
 export tmmark='tm00'
 export USER='Ting.Lei'
-export CYCLE='2019122812'
-export cyc='12'
-export CDATE='2019122812'
+export CYCLE='2020050400'
+export cyc='00'
+export CDATE='2020050400'
 /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/rocoto/rocoto_pre_job.sh /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/jobs/JFV3CAM_SAR_SENDINIBC
 }}
-12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submitting forecast_tm00 using sbatch < /tmp/sbatch.in20191231-377662-lmvpij with input
-{{
-#! /bin/sh
-#SBATCH --job-name=forecast_tm00_12
-#SBATCH -o /scratch2/NCEPDEV/stmp3/Ting.Lei/EXP0Gensregion/dr2019122812.log/forecast_tm00_12.log
-#SBATCH --qos=batch
-#SBATCH --account=fv3-cam
-#SBATCH --nodes=71-71
-#SBATCH --tasks-per-node=20
-#SBATCH --cpus-per-task=2
-#SBATCH -t 04:00:00
-#SBATCH --comment=1d8009c04ec9261d2e757fbc1db7aa51
-export TOTAL_TASKS='1404'
-export TASK_X='24'
-export TASK_Y='54'
-export WG='2'
-export WTPG='54'
-export NCTSK='20'
-export NCNODE='40'
-export OMP_THREADS='2'
-export envir='EXP0Gensregion'
-export machine='hera'
-export HOMEfv3='/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow'
-export job='forecast_tm00'
-export tmmark='tm00'
-export USER='Ting.Lei'
-export CYCLE='2019122812'
-export cyc='12'
-export CDATE='2019122812'
-export PDY='20191228'
-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/rocoto/rocoto_pre_job.sh /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/jobs/dev-JFV3CAM_SAR_FCST
-}}
-12/31/19 21:30:37 UTC :: dev-Gens.xml :: WARNING: job submission failed: sbatch: error: Batch job submission failed: Invalid qos specification
-12/31/19 21:30:37 UTC :: dev-Gens.xml :: Submission of sendinibc failed!  sbatch: error: Batch job submission failed: Invalid qos specification
+08/24/20 19:10:08 UTC :: dev-Gens.xml :: WARNING: job submission failed: sbatch: error: Batch job submission failed: Invalid qos specification
