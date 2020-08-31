@@ -164,8 +164,6 @@ if [ $tmmark = tm00 ] ; then
 
         cp ${PARMfv3}/input_sar_da.nml input.nml.tmp 
     fi
-    cat input.nml.tmp | \
-        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
 
     
 # Free forecast without DA (cold start)
@@ -174,7 +172,8 @@ if [ $tmmark = tm00 ] ; then
       exit 999
    if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
       cp ${PARMfv3}/input_sar_${dom}_ccpp.nml input.nml.tmp
-      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
+      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input0.nml
+      mv input0.nml input.nml.tmp
       cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
     else
       cp ${PARMfv3}/input_sar_${dom}.nml input.nml
@@ -233,16 +232,13 @@ if [ $tmmark = tm00 ] ; then
 
 # Submit post manager here
 elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
-  cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
-  cat input.nml.tmp | \
-     sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
 
 
 
       if [ $MPSUITE = thompson ] ; then
          CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
          cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
-         cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml
+         cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml.tmp
          cp ${PARMfv3}/thompson/diag_table.tmp .
          cp ${PARMfv3}/thompson/field_table .
          cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
@@ -253,9 +249,9 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
       fi
     
       if [ $MPSUITE = gfdlmp ] ; then
+        cp ${PARMfv3}/input_sar_firstguess.nml input.nml.tmp
         CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
         cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
-        cp ${PARMfv3}/input_sar_firstguess.nml input.nml
         cp ${PARMfv3}/diag_table.tmp .
 	cp ${PARMfv3}/field_table .
      fi
@@ -284,8 +280,6 @@ else
     cp ${PARMfv3}/input_sar_da_hourly.nml input.nml.tmp
   fi
 
-  cat input.nml.tmp | \
-        sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
   if [ $MPSUITE = thompson ] ; then
     cp ${PARMfv3}/thompson/diag_table.tmp .
     cp ${PARMfv3}/thompson/field_table .
@@ -342,6 +336,8 @@ else
    write_restart_with_bcs=.false.
    nrows_blend=${NROWS_BLEND:-0}
 fi
+  cat input.nml.tmp | \
+     sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
    sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
    sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
    sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
@@ -391,6 +387,7 @@ if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ]
     cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
     sed s/NHRS/$NHRSguess/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+    sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  |             \
     sed s/NCNODE/$NCNODE/  >  model_configure
 
 else
@@ -404,11 +401,14 @@ fi
 #----------------------------------------- 
 # Run the forecast
 #-----------------------------------------
-export pgm=regional_forecast.x
+#export pgm=regional_forecast.x
+export pgm=fv3_gfs.x
 #clt . prep_step
 
 #clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
-${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
+#clt ${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
+#${APRUNC} $EXECfv3/fv3_gfs.x >$pgmout 2>err
+${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
@@ -422,7 +422,6 @@ fi
 # NOT the one in the INPUT directory......
 
 # GUESSdir, ANLdir set in J-job
-if [ $tmmark = tm000 ] ; then
 
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
@@ -470,5 +469,4 @@ fi
 
 
 fi
-fi #=tm000
 exit

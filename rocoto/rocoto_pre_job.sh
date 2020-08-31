@@ -16,20 +16,30 @@ elif [ "$machine" = "jet" ] ; then
 fi
 
 module use ${HOMEfv3}/modulefiles/${machine}
+module_dir=${HOMEfv3}/modulefiles/${machine}
 jobpre=$(echo ${job} | cut -c1-17)
 if [[ "${jobpre}" =~ "forecast" ]]; then
-  module load fv3
-elif [ "${jobpre}" = "regional_post_con" ]; then
-  module load post
-elif [[ "${jobpre}" =~ "gsi" ]]; then
   module purge
-  module load regional_gsi
+  echo "module load fv3"
+#cltorg   module load fv3
+  source ${module_dir}/fv3
+elif [ "${jobpre}" = "regional_post_con" ]; then
+  module purge
+  echo "module load post"
+#clt  module load post
+  source ${module_dir}/post
+elif [[ "${jobpre}" =~ "gsi" ]]; then
+#clt  module purge
+  module purge
+  echo "module load regional_gsi"
+#clt  module load regional_gsi
+  source ${module_dir}/regional_gsi
 else
-  module load regional
+  module purge
+  echo "module load regional"
+#clt  module load regional
+  source ${module_dir}/regional
 fi
-#cltorg module load nco
-module load nco-gnu-sandybridge/4.4.4
- 
 module list
 
 exec "$@"
