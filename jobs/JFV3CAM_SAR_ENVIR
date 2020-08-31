@@ -7,13 +7,13 @@ export RUN=fv3sar
 export model=fv3sar_da	# fv3sar (cold start) or fv3sar_da (with DA)
 #cltorg export CCPP=false
 #cltorg export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
-#export CCPP=true
-#export MPSUITE=thompson
-#export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
+export CCPP=true
+export MPSUITE=thompson
+export CCPP_SUITE=FV3_GFS_v15_thompson_mynn
 
-export CCPP=false
-export MPSUITE=gfdlmp
-export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
+#export CCPP=false
+#export MPSUITE=gfdlmp
+#export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
 
 if [ ${machine} = "wcoss_dell_p3" ]
 then
@@ -49,6 +49,7 @@ export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
 export COMINbias=$COMOUT
 export fixcrtm=${fixcrtm:-/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix}
 export Fix_temp=${Fix_temp:-/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-Fix_temp}
+export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-Eric/gesroot_hold
 
 elif [ ${machine} = "hera" ]
 then
@@ -77,9 +78,11 @@ export PTMP=${PTMP:-/scratch2/NCEPDEV/stmp3/${USER}}
 export STMP=${STMP:-/scratch2/NCEPDEV/stmp3/${USER}}
 export rzdmuser=mpyle
 
+#export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-hold
 export NDATE=${NDATE:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/ndate}
 export NHOUR=${NHOUR:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/nhour}
 export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/regional_workflow}
+export Fix_temp=${Fix_temp:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/dr-Fix_temp}
 
 elif [ ${machine} = "orion" ]
 then
@@ -99,7 +102,12 @@ export CASE=C${CRES}
 export gtype=regional    # grid type = uniform, stretch, nest, or regional
 
 export PARMfv3=$HOMEfv3/parm
+if [ ${machine} = "hera" ]
+then
+export EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec
+else
 export EXECfv3=$HOMEfv3/exec
+fi
 #cltexport EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_workflow/exec/
 export USHfv3=$HOMEfv3/ush
 export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
@@ -112,8 +120,8 @@ export FIXco2=$FIXam/fix_co2_proj
 export COMROOT=${PTMP}/com
 export GESROOT=${PTMP}/nwges
 #export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
-#export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-hold
-export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-Eric/gesroot_hold
+export GESROOT_HOLD=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/dr-hold
+
 mkdir -p $GESROOT_HOLD
 export comdir=ptmp
 export gesdir=ptmp

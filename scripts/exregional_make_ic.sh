@@ -103,7 +103,7 @@ if [ $err -ne 0 ] ; then
 exit 99
 fi
 
-numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc out.atm.tile1.nc out.sfc.tile1.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc out.atm.tile1.nc out.sfc.tile1.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
   echo "Don't have all IC files at ${tmmark}, abort run"
@@ -114,7 +114,7 @@ fi
 # move output files to save directory
 #
 mv gfs_ctrl.nc $INPdir/.
-mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.000.nc
+mv gfs_bndy.nc $INPdir/gfs_bndy.tile7.000.nc
 mv out.atm.tile1.nc $INPdir/gfs_data.tile7.nc
 mv out.sfc.tile1.nc $INPdir/sfc_data.tile7.nc
 
