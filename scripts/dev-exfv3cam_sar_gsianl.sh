@@ -144,7 +144,7 @@ export fstat=.false.
 export i_gsdcldanal_type=0
 use_gfs_nemsio=.true.,
 
-export SETUP_part1=${SETUP_part1:-"miter=1,niter(1)=1,niter(2)=50"}
+export SETUP_part1=${SETUP_part1:-"miter=2,niter(1)=50,niter(2)=50"}
 if [ ${l_both_fv3sar_gfs_ens:-.false.} = ".true." ]; then  #regular  run
 export HybParam_part2="l_both_fv3sar_gfs_ens=$l_both_fv3sar_gfs_ens,n_ens_gfs=$nens_gfs,n_ens_fv3sar=$nens_fv3sar,"
 else
@@ -451,7 +451,8 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 
 # Try para RAP first
 export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
-export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
+#cltorg export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
+export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
 $ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
@@ -632,7 +633,6 @@ export fv3_case=$GUESSdir
 #  INPUT FILES FV3 NEST (single tile)
 
 #   This file contains time information
-<<<<<<< HEAD
 
 if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 	cp $fv3_case/${PDY}.${CYC}0000.coupler.res coupler.res
