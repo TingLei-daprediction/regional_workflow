@@ -114,13 +114,13 @@ exit 99
 fi
 
 if [ $REGIONAL = 1 ] ; then  
-numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc out.atm.tile1.nc out.sfc.tile1.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc out.atm.tile7.nc out.sfc.tile7.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
   echo "Don't have all IC files at ${tmmark} "
 fi
 else
-numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc  out.sfc.tile1.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc  out.sfc.tile7.nc | wc -l`
 if [ $numfiles -ne 3 ] ; then
   export err=5
   echo "Don't have all bc files at ${tmmark}, maybe false alarm when out.sfc.* could be absent "
@@ -130,7 +130,7 @@ fi
 #
 # move output files to save directory
 #
-mv gfs.bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
+mv gfs_bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 
 if [ $REGIONAL = 1 ] ; then  
@@ -138,8 +138,8 @@ if [ $REGIONAL = 1 ] ; then
     ncks -A -v phis $Fix_temp/fv3_dynvars gfs_data.tile7.nc
   fi
 mv gfs_ctrl.nc $OUTDIR/.
-mv out.atm.tile1.nc $OUTDIR/gfs_data.tile7.nc
+mv out.atm.tile7.nc $OUTDIR/gfs_data.tile7.nc
 if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
-mv out.sfc.tile1.nc $OUTDIR/sfc_data.tile7.nc
+mv out.sfc.tile7.nc $OUTDIR/sfc_data.tile7.nc
 fi
 fi

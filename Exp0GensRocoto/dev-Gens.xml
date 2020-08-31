@@ -4,13 +4,13 @@
 
 <!ENTITY EXPenvir "EXP0Gensregion">
 <!ENTITY STARTYEAR "2020">
-<!ENTITY STARTMONTH "05">
-<!ENTITY STARTDAY "04">
+<!ENTITY STARTMONTH "08">
+<!ENTITY STARTDAY "31">
 <!ENTITY STARTHOUR "00">
 
 <!ENTITY ENDYEAR "2020">
-<!ENTITY ENDMONTH "05">
-<!ENTITY ENDDAY "04">
+<!ENTITY ENDMONTH "08">
+<!ENTITY ENDDAY "31">
 <!ENTITY ENDHOUR "00">
 
 <!ENTITY USER "Ting.Lei">
@@ -226,7 +226,7 @@
 <!--  ********** Run the 6-h forecast from tm12 to tm06 *********************  -->
 
   <task name="forecast_firstguess" cycledefs="regional" maxtries="6">
-    <command>&PRE; &JOBS;/JREGIONAL_FORECAST_FIRSTGUESS</command>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
     <jobname><cyclestr>forecast_firstguess_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_firstguess_@H.log</cyclestr></join>
     &PE_EXTRA;

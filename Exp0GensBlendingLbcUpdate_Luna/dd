@@ -1,8 +1,0 @@
-    <envar>
-     <name>L_LBC_UPDATE</name>
-     <value>&L_LBC_UPDATE;</value>
-    </envar>
-    <envar>
-     <name>NROWS_BLEND</name>
-     <value>&NROWS_BLEND;</value>
-    </envar>

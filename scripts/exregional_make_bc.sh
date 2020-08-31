@@ -154,7 +154,7 @@ export pgm=regional_chgres_cube.x
 #
 # move output files to save directory
 #
-  mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+  mv gfs_bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
   err=$?
   if [ $err -ne 0 ] ; then
     echo "Don't have ${hour_name}-h BC file at ${tmmark}, abort run"

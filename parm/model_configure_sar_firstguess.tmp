@@ -20,8 +20,8 @@ restart_interval:        06
 cpl:                     .false.
 write_dopost:            .false.
 quilting:                .true.
-write_groups:            5 
-write_tasks_per_group:   24 
+write_groups:            _WG_ 
+write_tasks_per_group:   _WTPG_ 
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf'
@@ -49,7 +49,7 @@ nfhout:                  1
 nfhmax_hf:               60
 nfhout_hf:               1
 nsout:                   -1
-print_esmf:              .false.
+print_esmf:              .true.
 total_member:            1
 
 

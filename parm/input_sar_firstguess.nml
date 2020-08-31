@@ -37,7 +37,7 @@
 /
 
  &fv_core_nml
-       layout   = 12,48
+       layout   = _TASK_X_,_TASK_Y_
        io_layout = 1,1
        npx      = 1921
        npy      = 1297
@@ -202,7 +202,7 @@
        iopt_snf       = 4
        iopt_tbot      = 2
        iopt_stc       = 1
-       debug          = .false.
+       debug          = .true.
        oz_phys        = .F.
        oz_phys_2015   = .T.
        nstf_name      = 2,0,0,0,0
