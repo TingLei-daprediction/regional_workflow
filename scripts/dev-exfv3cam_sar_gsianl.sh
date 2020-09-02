@@ -832,8 +832,11 @@ if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 	fi
 
 
-
-	cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+     if [ -f $COMOUT/gfsanl.tm12/gfs_ctrl.nc ]; then
+	    cp $COMOUT/gfsanl.tm12/gfs_ctrl.nc $ANLdir/.  #tothink
+      else
+	    cp $COMOUT/gfsanl.tm06/gfs_ctrl.nc $ANLdir/.  #tothink
+      fi
   else
 	cp gfs_data.tile7.nc $ANLdir/.  #tothink
   fi

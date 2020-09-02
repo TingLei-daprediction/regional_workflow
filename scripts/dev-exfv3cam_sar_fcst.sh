@@ -28,8 +28,12 @@ tothink
 if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
 FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
 else
-FcstInDir_tm12=${FcstInDir_tm12:-${COMOUT}/gfsanl.tm12}
-ln -sf $FcstInDir_tm12/gfs_data.tile7.nc INPUT/gfs_data.nc
+if [ ${l_coldstart_anal:-FALSE} = TRUE ] ; then
+    FcstInDir_tmInit=${FcstInDir_tmInit:-${COMOUT}/gfsanl.tm06}
+else
+    FcstInDir_tmInit=${FcstInDir_tmInit:-${COMOUT}/gfsanl.tm12}
+fi
+ln -sf $FcstInDir_tmInit/gfs_data.tile7.nc INPUT/gfs_data.nc
 FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
 fi
 
@@ -239,6 +243,7 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
          CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
          cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
          cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml.tmp
+            
          cp ${PARMfv3}/thompson/diag_table.tmp .
          cp ${PARMfv3}/thompson/field_table .
          cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
@@ -253,8 +258,12 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
         CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
         cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
         cp ${PARMfv3}/diag_table.tmp .
-	cp ${PARMfv3}/field_table .
+       	cp ${PARMfv3}/field_table .
      fi
+        if [  ${l_coldstart_anal:-FALSE} = TRUE ] ; then
+            sed -i  -e "/bc_update_interval.*=/ s/=.*/= 1/"  input.nml.tmp
+        fi
+   
 	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
         cp ${PARMfv3}/data_table .
 	cp ${PARMfv3}/nems.configure .
@@ -366,12 +375,15 @@ fi
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
+  RESTART_INTERVAL=6
   NRST=12
 elif  [ $tmmark = tm12 ] ; then 
   NFCSTHRS=$NHRSguess
+  RESTART_INTERVAL=6
   NRST=6
 else
   NFCSTHRS=$NHRSda
+  RESTART_INTERVAL=1
   NRST=01
 fi
 
@@ -386,7 +398,7 @@ cat temp diag_table.tmp > diag_table
 if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
     cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
-    sed s/NHRS/$NHRSguess/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
     sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  |             \
     sed s/NCNODE/$NCNODE/  >  model_configure
 
@@ -397,6 +409,7 @@ else
     sed s/NCNODE/$NCNODE/ | sed s/NRESTART/$NRST/ | \
     sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  >  model_configure
 fi
+    sed -i -e "/restart_interval.*:/ s/:.*/: $RESTART_INTERVAL/" model_configure 
 
 #----------------------------------------- 
 # Run the forecast

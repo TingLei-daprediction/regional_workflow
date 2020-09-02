@@ -52,8 +52,12 @@ mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-if [ $tmmark = tm12 ] ; then    # SAR-DA
-  export INPdir=$COMOUT/gfsanl.$tmmark
+if [ $tmmark = tm12 -o $tmmark = tm06  ]  ; then    # SAR-DA
+ if [ ${l_coldstart_anal:-FALSE}  = TRUE  ] ; then
+    export INPdir=$COMOUT/gfsanl.$tmmark
+   else
+    export INPdir=$COMOUT/anl.${dom:+${dom}.}${tmmark}
+ fi
 else
   export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}
 fi
