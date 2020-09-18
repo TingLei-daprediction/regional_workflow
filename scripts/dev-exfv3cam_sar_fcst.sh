@@ -37,11 +37,6 @@ ln -sf $FcstInDir_tmInit/gfs_data.tile7.nc INPUT/gfs_data.nc
 FcstInDir=${FcstInDir:-${COMOUT}/anl.${tmmark}}
 fi
 
-if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
-#cltthinkdeb
-ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
-ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
-fi
 
 
 #cltorg cp ${NWGES}/anl.${tmmark}/*.nc INPUT
@@ -350,8 +345,8 @@ fi
    sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
    sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
    sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
-   sed -i  -e "/npz.*=/ s/=.*/= $((LEVS-1))/"  input.nml
-   sed -i  -e "/levp.*=/ s/=.*/= ${LEVS}/"  input.nml
+   sed -i  -e "/npz .*=/ s/=.*/= $((LEVS-1))/"  input.nml
+   sed -i  -e "/levp .*=/ s/=.*/= ${LEVS}/"  input.nml
 
 
 
@@ -414,6 +409,23 @@ fi
 #----------------------------------------- 
 # Run the forecast
 #-----------------------------------------
+if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
+ ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
+ ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
+# processing for inserting GSI into bndy files
+mkdir create_expanded_restart_files_for_DA
+cd create_expanded_restart_files_for_DA
+cp ../field_table .
+cp ../input.nml .
+cp $HOMEfv3/regional_da_imbalance/create_expanded_restart_files_for_DA.x .
+./create_expanded_restart_files_for_DA.x
+#ncltthink 
+cp fv_core.res.tile1_new.nc ../RESTART/.
+cp fv_tracer.res.tile1_new.nc ../RESTART/.
+ls -l ../RESTART/
+cd ..
+fi
+#cltsed -i '/npz_type/d' input.nml
 #export pgm=regional_forecast.x
 export pgm=fv3_gfs.x
 #clt . prep_step
@@ -421,7 +433,10 @@ export pgm=fv3_gfs.x
 #clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
 #clt ${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
 #${APRUNC} $EXECfv3/fv3_gfs.x >$pgmout 2>err
-${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
+#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
+#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec/fv3_gfs.x >$pgmout 2>err
+#clt${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
+${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
