@@ -46,7 +46,7 @@ export endianness=Big_Endian
 #   ncp is cp replacement, currently keep as /bin/cp
 ncp=/bin/cp
 
-if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
+if [ ${l_coldstart_anal:-FALSE} = TRUE ]; then
     export L_LBC_UPDATE=FALSE
 fi
 
