@@ -13,7 +13,8 @@
 # 2018-11-09  Ben Blake   - Moved various settings into J-job script
 # 2019-07-26  Ting Lei    - combine analysis scripts for tm 12 and others to one  
 #                         - modified to be used for the observation operator mode.and fv3sar ensemble based hybrid GSI
-#############################################################################
+##############################################################################
+#clt
 
 set -x
 
