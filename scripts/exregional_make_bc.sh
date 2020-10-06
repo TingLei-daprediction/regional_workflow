@@ -129,7 +129,7 @@ cat <<EOF >fort.41
  convert_atm=.true.
  convert_sfc=.false.
  convert_nst=.false.
- input_type="gaussian"
+ input_type="gaussian_nemsio"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
@@ -154,7 +154,7 @@ export pgm=regional_chgres_cube.x
 #
 # move output files to save directory
 #
-  mv gfs_bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+  mv gfs?bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
   err=$?
   if [ $err -ne 0 ] ; then
     echo "Don't have ${hour_name}-h BC file at ${tmmark}, abort run"

@@ -1,46 +1,139 @@
-             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-           2159316      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159317      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159319      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159320      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159321      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159322      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159323      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159324      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159325      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159326      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159327      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159328      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159329      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159330      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159331      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159315      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159313      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159314      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159355      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159356      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159332      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159333      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159334      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159335      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159336      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159337      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159338      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159339      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159340      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159341      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159342      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159343      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159344      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159345      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159346      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159347      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159348      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159349      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159350      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159351      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159352      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159353      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159354      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159307      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
-           2159308      hera fv3_post Ting.Lei PD       0:00      2 (Priority)
+5c5
+< <!ENTITY EXPenvir "EXP0Gensregion">
+---
+> <!ENTITY EXPenvir "Exp0GensBlendingLbcUpdate">
+20c20
+< <!ENTITY HOMEfv3 "/scratch2/NCEPDEV/fv3-cam/&USER;/dr-regional-workflow/regional_workflow">
+---
+> <!ENTITY HOMEfv3 "//scratch2/NCEPDEV/fv3-cam/&USER;/dr-regional-workflow/regional_workflow">
+27c27
+< <!ENTITY LOGDIR "/scratch1/NCEPDEV/stmp2/Ting.Lei/&EXPenvir;">
+---
+> <!ENTITY LOGDIR "&PTMP;/logs/&EXPenvir;">
+45,46c45,46
+< <!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>04:00:00</walltime>">
+< <!ENTITY FORECAST_EXTRA_DA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>00:30:00</walltime>">
+---
+>  <!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>03:00:00</walltime>">
+>   <!ENTITY FORECAST_EXTRA_DA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>01:00:00</walltime>">
+48,49c48,49
+< <!ENTITY FORECAST_RESOURCES_DA "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+< <!ENTITY FORECAST_ens_RESOURCES_DA "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+---
+> <!ENTITY FORECAST_RESOURCES_DA "<nodes>58:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>696</value></envar><envar><name>TASK_X</name><value>12</value></envar><envar><name>TASK_Y</name><value>48</value></envar><envar><name>WG</name><value>5</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
+> <!ENTITY FORECAST_ens_RESOURCES_DA "<nodes>58:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>696</value></envar><envar><name>TASK_X</name><value>12</value></envar><envar><name>TASK_Y</name><value>48</value></envar><envar><name>WG</name><value>5</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
+86c86
+< <!ENTITY nens '81'> 
+---
+> <!ENTITY nens '2'> 
+90c90
+< <!ENTITY nens_gfs '81'> 
+---
+> <!ENTITY nens_gfs '2'> 
+92a93,98
+> <!ENTITY nens_gfs '81'>
+> <!ENTITY nens_fv3sar '0'>
+> <!ENTITY l_use_other_ctrlb_opt '.true._xx'>
+> <!ENTITY envirlbctm00 'EXP0Gensregion_xxx'>
+> <!ENTITY L_LBC_UPDATE 'TRUE'>
+> <!ENTITY NROWS_BLEND '10'>
+166a173,181
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+> 
+217a233,240
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+287a311,318
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+409a441,448
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+504a544,551
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+582a630,637
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+684a740,747
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+828a892,899
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+922a994,1001
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+982a1062,1069
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>
+>     </envar>
+1095a1183,1190
+>     </envar>
+>     <envar>
+>      <name>L_LBC_UPDATE</name>
+>      <value>&L_LBC_UPDATE;</value>
+>     </envar>
+>     <envar>
+>      <name>NROWS_BLEND</name>
+>      <value>&NROWS_BLEND;</value>

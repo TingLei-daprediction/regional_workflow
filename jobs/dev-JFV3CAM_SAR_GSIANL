@@ -117,6 +117,19 @@ if [ $machine = hera -o $machine = HERA ] ; then
   export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
   export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
   export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
+elif [ $machine = wcoss_dell_p3 ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec=${EXECfv3}/gsi.x
+  export fixgsi=${HOMEfv3}/sorc/gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
+elif [ $machine = wcoss_dell_p3.5 ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=/gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
+
 elif [ $machine = WCOSS ] ; then
   export UTIL=$HOMEfv3/util/ush
   export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x

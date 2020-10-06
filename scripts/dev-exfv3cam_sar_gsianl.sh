@@ -110,7 +110,7 @@ if [[ $DOHYBVAR = "YES" ]]; then
     fi
          
        if [[ $regional_ensemble_option -eq 1  ]]; then
-        if [ $numfiles -ne $nens_gfs ]; then
+        if [ $numfiles -ne ${nens_gfs:-81} ]; then
           echo "Ensembles not found - turning off HYBENS!"
           export HYB_ENS=".false."
         else
@@ -353,7 +353,8 @@ OBS_INPUT::
  /
 
 EOF
-anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_64}
+#cltorg anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_64}
+anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_${LEVS}}
 berror=${berror:-$fixgsi/$endianness/nam_glb_berror.f77.gcv}
 emiscoef_IRwater=$fixcrtm/Nalli.IRwater.EmisCoeff.bin
 emiscoef_IRice=$fixcrtm/NPOESS.IRice.EmisCoeff.bin
@@ -453,7 +454,8 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 # Try para RAP first
 export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
 #cltorg export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
-export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+#clt for non-wcoss export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
 $ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
