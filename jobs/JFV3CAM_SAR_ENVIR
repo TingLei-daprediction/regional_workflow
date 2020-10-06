@@ -63,6 +63,7 @@ export COMINgdas=${COMINgdas:-/scratch1/NCEPDEV/rstprod/com/gfs/prod}
 #clt export COMINgfs=${COMINgfs:-/scratch2/NCEPDEV/fv3-cam/noscrub/Eric.Rogers/prfv3rt1}
 #clt fi
    export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/dr-regional-workflow/regional_workflow}
+   export EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec
 
    export COMINgfs=${COMINgfs:-/scratch1/NCEPDEV/rstprod/com/gfs/prod}
 #clt    export COMINgfs=${COMINgfs:-/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-global-data}
@@ -79,6 +80,7 @@ export STMP=${STMP:-/scratch2/NCEPDEV/stmp3/${USER}}
 export rzdmuser=mpyle
 
 #export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-hold
+export GESROOT_HOLD=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/dr-hold
 export NDATE=${NDATE:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/ndate}
 export NHOUR=${NHOUR:-/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/nhour}
 export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/regional_workflow}
@@ -88,7 +90,26 @@ elif [ ${machine} = "orion" ]
 then
 
    export COMINgfs=${COMINgfs:-/work/noaa/stmp/erogers/}
+elif [ ${machine} = "wcoss_dell_p3.5" ]
+then
 
+export EXECfv3=/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec
+export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+
+export PTMP=${PTMP:-/gpfs/dell5/ptmp/${USER}}
+export STMP=${STMP:-/gpfs/dell5/stmp/${USER}}
+export rzdmuser=bblake
+
+export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.4/exec/ips/ndate
+export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.4/exec/ips/nhour
+export HOMEfv3=${HOMEfv3:-/gpfs/dell6/emc/modeling/noscrub/$USER/fv3lamda/regional_workflow}
+export COMINrap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/prod}
+export COMINpararap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/test}
+
+export GESROOT_HOLD=${HOMEfv3}/dr-hold
+export Fix_temp=${Fix_temp:-/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-Fix_temp}
 else
 
 echo UNDEFINED ENVIRONMENT
@@ -102,15 +123,8 @@ export CASE=C${CRES}
 export gtype=regional    # grid type = uniform, stretch, nest, or regional
 
 export PARMfv3=$HOMEfv3/parm
-if [ ${machine} = "hera" ]
-then
-export EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec
-else
-export EXECfv3=$HOMEfv3/exec
-fi
-#cltexport EXECfv3=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_workflow/exec/
 export USHfv3=$HOMEfv3/ush
-export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+#cltorg export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 export FIXfv3=$HOMEfv3/fix
 export FIXsar=$FIXfv3/fix_sar/${dom:-conus}
@@ -119,8 +133,7 @@ export FIXco2=$FIXam/fix_co2_proj
 
 export COMROOT=${PTMP}/com
 export GESROOT=${PTMP}/nwges
-#export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
-export GESROOT_HOLD=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-regional-workflow/regional_workflow/dr-hold
+#clt GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
 
 mkdir -p $GESROOT_HOLD
 export comdir=ptmp

@@ -370,7 +370,7 @@ fi
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
-  RESTART_INTERVAL=6
+  RESTART_INTERVAL=24
   NRST=12
 elif  [ $tmmark = tm12 ] ; then 
   NFCSTHRS=$NHRSguess
@@ -436,7 +436,8 @@ export pgm=fv3_gfs.x
 #${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
 #${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec/fv3_gfs.x >$pgmout 2>err
 #clt${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
-${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+#clt hera ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+${APRUNC}  /gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err

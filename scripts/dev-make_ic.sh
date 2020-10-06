@@ -92,7 +92,7 @@ cat <<EOF >fort.41
  convert_atm=.true.
  convert_sfc=${CONVERT_SFC:-.true.}
  convert_nst=.true.
- input_type="gaussian"
+ input_type="gaussian_nemsio"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
@@ -114,7 +114,7 @@ exit 99
 fi
 
 if [ $REGIONAL = 1 ] ; then  
-numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc out.atm.tile7.nc out.sfc.tile7.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs?bndy.nc out.atm.tile?.nc out.sfc.tile?.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
   echo "Don't have all IC files at ${tmmark} "
@@ -130,16 +130,16 @@ fi
 #
 # move output files to save directory
 #
-mv gfs_bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
+mv gfs?bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 
 if [ $REGIONAL = 1 ] ; then  
   if [ $l_coldstart_anal = TRUE ] ; then  
-    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile7.nc
+    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile?.nc
   fi
-mv out.atm.tile7.nc $OUTDIR/gfs_data.tile7.nc
+mv out.atm.tile?.nc $OUTDIR/gfs_data.tile7.nc
 mv gfs_ctrl.nc $OUTDIR/.
 if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
-mv out.sfc.tile7.nc $OUTDIR/sfc_data.tile7.nc
+mv out.sfc.tile?.nc $OUTDIR/sfc_data.tile7.nc
 fi
 fi
