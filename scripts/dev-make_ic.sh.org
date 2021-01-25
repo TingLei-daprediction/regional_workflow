@@ -12,16 +12,11 @@
 #			from global_chgres_driver.sh
 ############################################################################
 set -ax
-cd $DATA
-pwd
+
 # gtype = regional
 echo "creating standalone regional ICs"
 export ntiles=1
 export TILE_NUM=7
-UTIL_USHnam=/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/dr-nam
-${UTIL_USHnam}/dev-getges_linkges_pgrb.sh -t natges -v $CYCLEguess -e ${envir_getges} atmf00
-export ATMANL=atmf00
-export SFCANL=sfcf00
 
 if [ $tmmark = tm00 ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
@@ -35,10 +30,10 @@ monthguess=`echo ${CDATE} | cut -c 5-6`
 dayguess=`echo ${CDATE} | cut -c 7-8`
 cycleguess=`echo ${CDATE} | cut -c 9-10`
 
-elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a $l_coldstart_anal = TRUE ] ; then
+elif [ $tmmark = tm12 ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
-export ATMANL=${ATMANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.atmanl.nemsio}
-export SFCANL=${SFCANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.sfcanl.nemsio}
+export ATMANL=${ATMANL:-$INIDIRtm12/${CDUMP}.t${cycguess}z.atmanl.nemsio}
+export SFCANL=${SFCANL:-$INIDIRtm12/${CDUMP}.t${cycguess}z.sfcanl.nemsio}
 export input_dir=$(dirname $ATMANL)
 atmfile=$(basename $ATMANL)   #${CDUMP}.t${cycguess}z.atmanl.nemsio
 sfcfile=$(basename $SFCANL)   #${CDUMP}.t${cycguess}z.sfcanl.nemsio
@@ -61,7 +56,6 @@ fi
 # set the links to use the 4 halo grid and orog files
 # these are necessary for creating the boundary data
 #
-if [ 1 -ne 1 ] ; then #cltthinkdeb now use eric's dir and skip this step
 ln -sf $FIXsar/${CASE}_grid.tile7.halo4.nc $FIXsar/${CASE}_grid.tile7.nc 
 ln -sf $FIXsar/${CASE}_oro_data.tile7.halo4.nc $FIXsar/${CASE}_oro_data.tile7.nc 
 ln -sf $FIXsar/${CASE}.vegetation_greenness.tile7.halo4.nc $FIXsar/${CASE}.vegetation_greenness.tile7.nc
@@ -72,22 +66,18 @@ ln -sf $FIXsar/${CASE}.facsf.tile7.halo4.nc $FIXsar/${CASE}.facsf.tile7.nc
 ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc
 ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
 ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
-fi
 
 #
 # create namelist and run chgres cube
 #
-pwddir=`pwd`
-#clt not sure if this CHGRESVARS  is used
- export CHGRESVARS="use_ufo=.false.,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
-cp ${CHGRESEXEC} $pwddir 
+cp ${CHGRESEXEC} .
 cat <<EOF >fort.41
 &config
  mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.nc"
  fix_dir_target_grid="$FIXsar"
  orog_dir_target_grid="$FIXsar"
  orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
- vcoord_file_target_grid="${PARMfv3}/global_hyblev.l${LEVS}.txt"
+ vcoord_file_target_grid="${FIXam}/global_hyblev.l${LEVS}.txt"
  mosaic_file_input_grid="NULL"
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
@@ -98,14 +88,13 @@ cat <<EOF >fort.41
  cycle_day=$dayguess
  cycle_hour=$cycguess
  convert_atm=.true.
- convert_sfc=${CONVERT_SFC:-.true.}
+ convert_sfc=.true.
  convert_nst=.true.
- input_type="gaussian_nemsio"
+ input_type="gaussian"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
- halo_blend=${NROWS_BLEND:-0}
 /
 EOF
 
@@ -113,7 +102,7 @@ export pgm=regional_chgres_cube.x
 #cltthinkdeb . prep_step
 
 #cltthinkdeb startmsg
-time ${APRUNC} ./regional_chgres_cube.x> stdout
+time ${APRUNC} -l ./regional_chgres_cube.x> stdout
 export err=$?
 ###export err=$?;err_chk
 
@@ -122,32 +111,28 @@ exit 99
 fi
 
 if [ $REGIONAL = 1 ] ; then  
-numfiles=`ls -1 gfs_ctrl.nc gfs?bndy.nc out.atm.tile?.nc out.sfc.tile?.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc out.atm.tile1.nc out.sfc.tile1.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
-  echo "Don't have all IC files at ${tmmark} "
+  echo "Don't have all IC files at ${tmmark}, abort run"
+  exit 99
 fi
 else
-numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc  out.sfc.tile7.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs.bndy.nc  out.sfc.tile1.nc | wc -l`
 if [ $numfiles -ne 3 ] ; then
   export err=5
-  echo "Don't have all bc files at ${tmmark}, maybe false alarm when out.sfc.* could be absent "
+  echo "Don't have all bc files at ${tmmark}, abort run"
+  exit 100 
 fi
 fi
 
 #
 # move output files to save directory
 #
-mv gfs?bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
-
+mv gfs.bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 if [ $REGIONAL = 1 ] ; then  
-  if [ $l_coldstart_anal = TRUE ] ; then  
-    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile?.nc
-  fi
-mv out.atm.tile?.nc $OUTDIR/gfs_data.tile7.nc
 mv gfs_ctrl.nc $OUTDIR/.
-if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
-mv out.sfc.tile?.nc $OUTDIR/sfc_data.tile7.nc
-fi
+mv out.atm.tile1.nc $OUTDIR/gfs_data.tile7.nc
+mv out.sfc.tile1.nc $OUTDIR/sfc_data.tile7.nc
 fi

@@ -17,7 +17,6 @@ set -ax
 echo "creating standalone regional ICs"
 export ntiles=1
 export TILE_NUM=7
-
 if [ $tmmark = tm00 ] ; then
   # input data is FV3GFS (ictype is 'pfv3gfs')
   export ANLDIR=$INIDIR

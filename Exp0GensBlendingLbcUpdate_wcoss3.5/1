@@ -1,0 +1,48 @@
+8c8
+< <!ENTITY STARTDAY "25">
+---
+> <!ENTITY STARTDAY "17">
+13c13
+< <!ENTITY ENDDAY "25">
+---
+> <!ENTITY ENDDAY "17">
+17,18c17,18
+< <!ENTITY machine "wcoss_dell_p3.5">
+< <!ENTITY ACCOUNT "HREF-T2O">
+---
+> <!ENTITY machine "hera">
+> <!ENTITY ACCOUNT "fv3-cam">
+20c20
+< <!ENTITY HOMEfv3 "/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-new-regional-workflow/regional_workflow">
+---
+> <!ENTITY HOMEfv3 "//scratch2/NCEPDEV/fv3-cam/&USER;/dr-regional-workflow/regional_workflow">
+23,24c23,24
+<  <!ENTITY PTMP "/gpfs/dell5/ptmp/&USER;">
+<  <!ENTITY STMP "/gpfs/dell5/stmp/&USER;">
+---
+>  <!ENTITY PTMP "/scratch2/NCEPDEV/stmp3/&USER;">
+>  <!ENTITY STMP "/scratch2/NCEPDEV/stmp3/&USER;">
+30c30
+< <!ENTITY QUEUE_PE        "dev">
+---
+> <!ENTITY QUEUE_PE        "batch">
+33c33
+< <!ENTITY QUEUE_SERIAL    "dev"> 
+---
+> <!ENTITY QUEUE_SERIAL    "batch"> 
+36c36
+< <!ENTITY QUEUE_SHARED    "dev">
+---
+> <!ENTITY QUEUE_SHARED    "batch">
+41c41
+< <!ENTITY RESERVATION '<queue>dev</queue><account>&ACCOUNT;</account>'>
+---
+> <!ENTITY RESERVATION '<queue>batch</queue><account>&ACCOUNT;</account>'>
+84c84
+< <!ENTITY gsiexec '/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-github-gsi/dr-gsi-dualmix1/GSI/exec/global_gsi.x'>
+---
+> <!ENTITY gsiexec '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM_new/dr-add_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
+107c107
+< <workflow realtime="F" scheduler="lsf" taskthrottle="60" cyclethrottle="2" cyclelifespan="193:18:00:00">
+---
+> <workflow realtime="F" scheduler="slurm" taskthrottle="60" cyclethrottle="2" cyclelifespan="193:18:00:00">

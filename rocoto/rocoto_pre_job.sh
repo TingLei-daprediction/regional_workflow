@@ -33,7 +33,11 @@ if [[ "${jobpre}" =~ "forecast" ]]; then
   echo "module load fv3"
    module load fv3
 #clt  source ${module_dir}/fv3
-elif [ "${jobpre}" = "regional_post_con" ]; then
+elif [[ "${jobpre}" =~ "chg" ]]; then
+  module purge
+  echo "module load chgres_cube"
+  module load chgres_cube 
+elif [[ "${jobpre}" =~ "post" ]]; then
   module purge
   echo "module load post"
   module load post

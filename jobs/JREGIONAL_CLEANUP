@@ -18,10 +18,11 @@ export pgmerr=errfile
 # Working directories
 #####################################
 #clt #DIR are still needed?
-export PTMPDIR=${PTMPDIR:-${mainroot}/ptmp/${USER}/${envir}}
-export STMPDIR=${STMPDIR:-${mainroot}/stmp/${USER}/${envir}}
-export PTMP=${PTMP:-""}
-export STMP=${STMP:-""}
+#export PTMPDIR=${PTMPDIR:-${mainroot}/ptmp/${USER}/${envir}}
+#export STMPDIR=${STMPDIR:-${mainroot}/stmp/${USER}/${envir}}
+#export PTMP=${PTMP:-""}
+#export STMP=${STMP:-""}
+export DATAROOT=${DATAROOT:-${STMP}/tmpnwprd-${CDATE}/}
 
 #####################################
 # Execute the script.

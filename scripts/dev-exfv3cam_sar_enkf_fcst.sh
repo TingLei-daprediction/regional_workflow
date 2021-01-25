@@ -38,7 +38,7 @@ for imem in $(seq $ENSBEG $ENSEND); do
    if [ $imem -eq 0 ] ; then
    memchar=ensmean
 #use the lbc from the control runs
-       if [ $tmmark = tm12 ] ; then
+       if [ $tmmark = tm12  ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
           export ensmemINPdir=${ensmemINPdir:-${COMOUT}/gfsanl.${tmmark}}
           else
           export ensmemINPdir=${ensmemINPdir:-${COMOUT}/anl.${tmmark}}
@@ -49,7 +49,7 @@ for imem in $(seq $ENSBEG $ENSEND); do
    fi
   
    echo "Processing MEMBER: $cmem"
-   if [ $tmmark = tm12 ] ; then 
+   if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ]; then 
    export FcstInDir=$ensmemINPdir
    else
    export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memchar

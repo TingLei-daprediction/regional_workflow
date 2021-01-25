@@ -18,8 +18,8 @@
 !
       integer,parameter :: ndims_bc=8                                   &  !<-- # of dimensions in the BC files
                           ,ndims_res=6                                  &  !<-- # of dimensions in the core restart file
-                          ,num_fields_update_core=5                     &  !<-- # of updated fields in the core restart file
-                          ,num_fields_core_bc=5                            !<-- # of core fields copied into the BC files
+                          ,num_fields_update_core=6                     &  !<-- # of updated fields in the core restart file
+                          ,num_fields_core_bc=6                            !<-- # of core fields copied into the BC files
 !
       real,parameter :: ptop=200.                                          !<-- The domain's top pressure (Pa)
       real,parameter :: grav=9.81                                          !<-- g from fv_diagnostics
@@ -37,7 +37,7 @@
                 ,nctype,ndims,ngatts,nrows_blend                        &
                 ,nrows_bndry,num_vars_bc,num_tracers_bc                 &
                 ,nvars_res,unlimdimid                                   &
-                ,var_id_bc,var_id_delp,var_id_phis,var_id_ps            &
+                ,var_id_bc,var_id_delp,var_id_delz,var_id_phis,var_id_ps            &
                 ,var_id_res,var_id_sphum,var_id_t,var_id_tracer         &
                 ,width_halo_total
 !
@@ -98,6 +98,7 @@
                                                                                  ,'v'    &
                                                                                  ,'T'    &
                                                                                  ,'delp' &
+                                                                                 ,'DZ'   &
                                                                                  ,'W'    &  !<-- Not updated but needed in BC file.
                                                                                  /)
 !
@@ -106,6 +107,7 @@
                                                                                 ,'v'    &
                                                                                 ,'t'    & 
                                                                                 ,'delp' &
+                                                                                ,'delz' &
                                                                                 ,'w'    &
                                                                                 /)
 !
@@ -251,6 +253,10 @@
             je_combined=dimsize_combined(4)
 !
           case ('delp')
+            ie_combined=dimsize_combined(1)
+            je_combined=dimsize_combined(4)
+
+          case ('DZ')
             ie_combined=dimsize_combined(1)
             je_combined=dimsize_combined(4)
 !
