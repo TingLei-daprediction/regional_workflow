@@ -48,7 +48,7 @@ export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
 
 export COMINbias=$COMOUT
 export fixcrtm=${fixcrtm:-/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix}
-export Fix_temp=${Fix_temp:-/gpfs/hps3/emc/meso/save/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-Fix_temp}
+export Fix_temp=${Fix_temp:-/gpfs/hps3/emc/meso/save/Ting.Lei/dr-newESG-regional-workflow/regional_workflow/dr-Fix_temp-ESG}
 export GESROOT_HOLD=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-Eric/gesroot_hold
 
 elif [ ${machine} = "hera" ]
@@ -93,10 +93,11 @@ then
 elif [ ${machine} = "wcoss_dell_p3.5" ]
 then
 
-export EXECfv3=/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec
+export EXECfv3=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamdax/regional_workflow/exec
 export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMINrtma=/gpfs/dell2/nco/ops/com/rtma/prod
 
 export PTMP=${PTMP:-/gpfs/dell5/ptmp/${USER}}
 export STMP=${STMP:-/gpfs/dell5/stmp/${USER}}
@@ -109,7 +110,7 @@ export COMINrap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/prod}
 export COMINpararap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/test}
 
 export GESROOT_HOLD=${HOMEfv3}/dr-hold
-export Fix_temp=${Fix_temp:-/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-new-regional-workflow/regional_workflow/dr-Fix_temp}
+export Fix_temp=${Fix_temp:-/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-newESG-regional-workflow/regional_workflow/dr-Fix_temp-ESG}
 else
 
 echo UNDEFINED ENVIRONMENT
@@ -118,7 +119,8 @@ exit 77
 fi
 
 
-export CRES=768          #-- FV3 equivalent to 13-km global resolution
+#clt export CRES=768          #-- FV3 equivalent to 13-km global resolution
+export CRES=3357              #- FV3-LAM  equivalent to 3-km conus resolution
 export CASE=C${CRES}
 export gtype=regional    # grid type = uniform, stretch, nest, or regional
 
@@ -127,7 +129,8 @@ export USHfv3=$HOMEfv3/ush
 #cltorg export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 export FIXfv3=$HOMEfv3/fix
-export FIXsar=$FIXfv3/fix_sar/${dom:-conus}
+#clt export FIXsar=$FIXfv3/fix_sar/${dom:-conus}
+export FIXsar=$FIXfv3/fix_sar_C3357
 export FIXam=$FIXfv3/fix_am
 export FIXco2=$FIXam/fix_co2_proj
 
@@ -144,6 +147,7 @@ export NHRSguess=06	#-- Forecast length for 1st guess generation
 export NHRSda=01	#-- Forecast length for cycled DA
 export NHRS=48          #-- Forecast length for free fcst
 
+export envir_getges=${envir_getges:-prod}
 export jlogfile=${STMP}/jlogfile.$envir.${RUN}.jlog
 export LEVS=${LEVS:-61}
 L_LBC_UPDATE=${L_LBC_UPDATE:-FALSE}

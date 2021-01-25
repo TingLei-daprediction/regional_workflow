@@ -29,7 +29,7 @@ export hhcyc=`echo $CDATE | cut -c 9-10`
 #####################################
 # Obtain unique process id (pid) and make temp directory
 #####################################
-export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
+export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}-grp${HRGRP:-00}}
 mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA

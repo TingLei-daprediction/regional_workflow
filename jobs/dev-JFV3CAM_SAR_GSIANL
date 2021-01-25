@@ -179,9 +179,9 @@ fi
 export gsianlsh=${gsianlsh:-${HOMEfv3}/scripts/dev-exfv3cam_sar_gsianl.sh}
 #cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
 $gsianlsh
-
-cat $pgmout
-cat stderr
+export err=$?;err_chk
+#cat $pgmout
+#cat stderr
 
 #cltorg if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
 #cltif [ ${RM_TMPDIR:-YES} = YES ] ; then mv  $DATA ${DATA}_bak ; fi

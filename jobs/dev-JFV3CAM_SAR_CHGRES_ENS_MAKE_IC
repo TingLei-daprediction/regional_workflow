@@ -72,59 +72,44 @@ export CDATE=$CYCLEguess
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
 
-if [ $machine = WCOSS_C ]; then
- export KMP_AFFINITY=disabled
- export FIXgsm=/gpfs/hps/emc/global/noscrub/emc.glopara/svn/fv3gfs/fix/fix_am
- export DATA=/gpfs/hps/ptmp/${LOGNAME}/wrk.chgres
- export APRUNC="aprun -n 1 -N 1 -j 1 -d $OMP_NUM_THREADS_CH -cc depth"
- export INIDIR=/gpfs/hps/nco/ops/com/gfs/prod/gfs.$ymd
- export HOMEgfs=$LS_SUBCWD/..
-  export UTIL=/scratch4/NCEPDEV/meso/save/$USER/run_it_regional/exec
-elif [ $machine = WCOSS ]; then
- export INIDIR=/ptmpp2/$USER/prfv3rt1/gfs.$ymd/$hhcyc
-
+if [ $machine = hera -o $machine = HERA ] ; then
+#clthinkdeb are the bloak needed? 
   export UTIL=$HOMEfv3/util/ush
-#export INIDIR=/gpfs/dell3/ptmp/emc.glopara/ROTDIRS/prfv3rt1/gfs.$ymd/$hhcyc
-elif [ $machine = DELL ]; then
-#####################################
-# Define COM directories
-#####################################
-export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export COMgfs=${COMgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
-#cltthink set +x
-  
+  export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
+elif [ $machine = wcoss_dell_p3 ] ; then
   export UTIL=$HOMEfv3/util/ush
-#cltthink set -x
- export KMP_AFFINITY=disabled
- export INIDIR=${COMgfs}/gfs.$ymd/$hhcyc
- 
-elif [ $machine = HERA -o $machine = hera ]; then
- export UTIL=$HOMEfv3/util/ush
- export CDUMP=${CDUMP:-gdas}                   # gfs or gdas
- COMROOTp2=/scratch1/NCEPDEV/rstprod/com
- export ymd=`echo $CDATE | cut -c 1-8`
- export INIDIR=$COMgfs/gfs/prod/${CDUMP}.$ymd
- ulimit -a
- ulimit -s unlimited
+  export gsiexec=${EXECfv3}/gsi.x
+  export fixgsi=${HOMEfv3}/sorc/gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
+elif [ $machine = wcoss_dell_p3.5 ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=/gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
 
-elif [ $machine = wcoss_cray -o $machine = WCOSS_CRAY ]; then
-    export UTIL=$HOMEfv3/util/ush
-    export CDUMP=${CDUMP:-gdas}                   # gfs or gdas
-    export ymd=`echo $CDATE | cut -c 1-8`
-    export INIDIR=$COMgfs/gfs/prod/${CDUMP}.$ymd
-    ulimit -a
-    ulimit -s unlimited
+elif [ $machine = WCOSS ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
+  export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
+  export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
+elif [ $machine = wcoss_cray ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi="/gpfs/hps3/emc/meso/save/Eric.Rogers/regional_workflow/regional_gsi.fd/fix"
+  export fixcrtm=/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix
+  export gsiexec0=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-mixdual/ProdGSI/exec/global_gsi.x
 
-else
- echo "$machine not supported, exit"
- exit
+elif [ $machine = DELL ] ; then
+  export UTIL=${HOMEfv3}/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
+#clt 20200424   export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.7/fix
 fi
-#
-
-
 
 
 
