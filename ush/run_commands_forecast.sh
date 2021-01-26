@@ -21,6 +21,13 @@ elif [ "$machine" = wcoss_dell_p3 ]; then
   export APRUNC=${APRUNC:-"mpirun"}
   export APRUNO="time"
   export BACKGROUND=""
+elif [ "$machine" = wcoss_dell_p3.5 ]; then
+  export APRUNS=${APRUNS:-"time"}
+  export APRUNF=${APRUNF:-"mpirun cfp"}
+  export APRUNC=${APRUNC:-"mpirun"}
+  export APRUNO="time"
+  export BACKGROUND=""
+
 elif [ "$machine" = hera ]; then
   export APRUNS=${APRUNS:-"srun --ntasks=1 --ntasks-per-node=1 --cpus-per-task=1"}
   #export APRUNF=${APRUNF:-"srun --ntasks=${TOTAL_TASKS} --ntasks-per-node=${NCTSK} --cpus-per-task=${OMP_NUM_THREADS} --multi-prog"}

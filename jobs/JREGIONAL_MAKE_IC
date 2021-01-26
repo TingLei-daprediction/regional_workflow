@@ -105,9 +105,10 @@ mv user_coupler.res $OUTDIR
   
 fi
 
-
+echo "xxxx"
 #####################################o
 exit #clthinkdeb
+echo "xxxx2"
 #####################################
 # Generate BCs for NHRSguess for SAR-DA
 #####################################

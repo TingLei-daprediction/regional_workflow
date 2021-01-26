@@ -119,20 +119,17 @@ export err=$?; err_chk
 #cat ${domain}${RUN}.f${fhr}.${tmmark}.ffair ${domain}${RUN}.f${fhr}.${tmmark}.budget > ${domain}${RUN}.f${fhr}.${tmmark}.ffair
 
 #export err=$?; err_chk
-#thinkdeb
-COMOUT=/scratch1/NCEPDEV/stmp2/Ting.Lei/com/$envir
-mkdir -p $COMOUT
 if [ $SENDCOM = YES ]
 then
   if [ $tmmark = tm00 ] ; then
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain:+${domain}.}f${fhr}..${memchar:+${memchar}.}grib2
+    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain:+${domain}.}f${fhr}.${memchar:+${memchar}.}grib2
 #    mv ${domain}${RUN}.f${fhr}.${tmmark}.ffair ${COMOUT}/${RUN}.t${cyc}z.${domain}.ffair.f${fhr}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}..${memchar:+${memchar}.}grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}..${memchar:+${memchar}.}grib2
+    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}.${memchar:+${memchar}.}grib2
+    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}.${memchar:+${memchar}.}grib2
   else
     mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}f${fhr}.${tmmark}..${memchar:+${memchar}.}grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}.${tmmark}..${memchar:+${memchar}.}grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}.${tmmark}..${memchar:+${memchar}.}grib2
+    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natprs.f${fhr}.${tmmark}.${memchar:+${memchar}.}grib2
+    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain+${domain}.}natlev.f${fhr}.${tmmark}.${memchar:+${memchar}.}grib2
   fi
 fi
 

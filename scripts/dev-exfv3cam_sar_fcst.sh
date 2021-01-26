@@ -93,14 +93,14 @@ cp $FIXam/seaice_newland.grb .
 cp $FIXam/global_shdmin.0.144x0.144.grb .
 cp $FIXam/global_shdmax.0.144x0.144.grb .
 
-ln -sf $FIXsar/C768.maximum_snow_albedo.tile7.halo0.nc C768.maximum_snow_albedo.tile1.nc
-ln -sf $FIXsar/C768.snowfree_albedo.tile7.halo0.nc C768.snowfree_albedo.tile1.nc
-ln -sf $FIXsar/C768.slope_type.tile7.halo0.nc C768.slope_type.tile1.nc
-ln -sf $FIXsar/C768.soil_type.tile7.halo0.nc C768.soil_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_type.tile7.halo0.nc C768.vegetation_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_greenness.tile7.halo0.nc C768.vegetation_greenness.tile1.nc
-ln -sf $FIXsar/C768.substrate_temperature.tile7.halo0.nc C768.substrate_temperature.tile1.nc
-ln -sf $FIXsar/C768.facsf.tile7.halo0.nc C768.facsf.tile1.nc
+ln -sf $FIXsar/C${CRES}.maximum_snow_albedo.tile7.halo0.nc C${CRES}.maximum_snow_albedo.tile1.nc
+ln -sf $FIXsar/C${CRES}.snowfree_albedo.tile7.halo0.nc C${CRES}.snowfree_albedo.tile1.nc
+ln -sf $FIXsar/C${CRES}.slope_type.tile7.halo0.nc C${CRES}.slope_type.tile1.nc
+ln -sf $FIXsar/C${CRES}.soil_type.tile7.halo0.nc C${CRES}.soil_type.tile1.nc
+ln -sf $FIXsar/C${CRES}.vegetation_type.tile7.halo0.nc C${CRES}.vegetation_type.tile1.nc
+ln -sf $FIXsar/C${CRES}.vegetation_greenness.tile7.halo0.nc C${CRES}.vegetation_greenness.tile1.nc
+ln -sf $FIXsar/C${CRES}.substrate_temperature.tile7.halo0.nc C${CRES}.substrate_temperature.tile1.nc
+ln -sf $FIXsar/C${CRES}.facsf.tile7.halo0.nc C${CRES}.facsf.tile1.nc
 
 
 for file in `ls $FIXco2/global_co2historicaldata* ` ; do
@@ -342,6 +342,7 @@ else
 fi
   cat input.nml.tmp | \
      sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+   sed -i  -e "s/XCRESX/${CRES}/"   input.nml
    sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
    sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
    sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
@@ -370,7 +371,7 @@ fi
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
-  RESTART_INTERVAL=6
+  RESTART_INTERVAL=24
   NRST=12
 elif  [ $tmmark = tm12 ] ; then 
   NFCSTHRS=$NHRSguess
@@ -384,7 +385,7 @@ fi
 
 cat > temp << !
 ${yr}${mn}${dy}.${cyc}Z.${CASE}.32bit.non-hydro
-$yr $mn $dy $cyc 0 0
+$yr $mn $dy $hr 0 0
 !
 
 cat temp diag_table.tmp > diag_table
@@ -410,14 +411,15 @@ fi
 # Run the forecast
 #-----------------------------------------
 if [ ${L_LBC_UPDATE:-FALSE} = TRUE   ];then
- ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
- ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
+#cltorg before 20201210  ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_core.res.tile1.nc ./INPUT/fv_core.res.temp.nc  
+#cltorg before 20201210  ln -sf $FIXfv3/save_RESTART_${MPSUITE}/fv_tracer.res.tile1.nc ./INPUT/fv_tracer.res.temp.nc 
 # processing for inserting GSI into bndy files
 mkdir create_expanded_restart_files_for_DA
 cd create_expanded_restart_files_for_DA
 cp ../field_table .
 cp ../input.nml .
 cp $HOMEfv3/regional_da_imbalance/create_expanded_restart_files_for_DA.x .
+ls -l create_expanded_restart_files_for_DA.x
 ./create_expanded_restart_files_for_DA.x
 #ncltthink 
 cp fv_core.res.tile1_new.nc ../RESTART/.
@@ -427,7 +429,13 @@ cd ..
 fi
 #cltsed -i '/npz_type/d' input.nml
 #export pgm=regional_forecast.x
-export pgm=fv3_gfs.x
+export OMP_NUM_THREADS=4
+export pgm=regional_forecast.x
+
+. prep_step
+
+startmsg
+
 #clt . prep_step
 
 #clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
@@ -436,11 +444,14 @@ export pgm=fv3_gfs.x
 #${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
 #${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec/fv3_gfs.x >$pgmout 2>err
 #clt${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
-${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+#clt hera ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+#${APRUNC}  /gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
+${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamdax/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
+#${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_forecast.fd_jim/tests/fv3_2.exe_debug >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
-export err=$? #cltthink ;err_chk
+export err=$? ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
 fi
