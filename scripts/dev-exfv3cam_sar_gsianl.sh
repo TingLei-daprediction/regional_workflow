@@ -13,7 +13,8 @@
 # 2018-11-09  Ben Blake   - Moved various settings into J-job script
 # 2019-07-26  Ting Lei    - combine analysis scripts for tm 12 and others to one  
 #                         - modified to be used for the observation operator mode.and fv3sar ensemble based hybrid GSI
-#############################################################################
+##############################################################################
+#clt
 
 set -x
 
@@ -85,7 +86,50 @@ if [[ $DOHYBVAR = "YES" ]]; then
     ##typeset -Z2 nhr_assimilation
 
     if [ ${l_use_own_glb_ensemble:-.true.} = .true. ] ;then
-    python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+      if [ ${L_GensExpand_Opt:-0} = 1 ] ;then
+	vlddatebgn=`$NDATE -3 $vlddate`
+	vlddateend=`$NDATE +3 $vlddate`
+	rm -f filelist4d
+        python $UTIL/getbest_EnKF_FV3GDAS_v1.py -v $vlddate --exact=yes --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist4d --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes --4d=[$vlddatebgn,$vlddateend,1]
+        
+        cat filelist4d* >filelist4d
+        numfiles0=`cat filelist4d | wc -l`
+	rm -f filelist03
+        if [ $numfiles0 -gt ${nens_gfs:-81} ]; then
+
+            grep $vlddate filelist4d > filelist03
+	  
+            numfiles1=`cat filelist03 | wc -l`
+
+            if [ $numfiles1 -gt 0 ]; then
+	      ntmp=41
+	   
+	     vlddate1=`$NDATE -1 $vlddate`
+	     grep $vlddate1 filelist4d > filelisttmp
+	     head -$ntmp filelisttmp >> filelist03
+	     vlddate2=`$NDATE +1 $vlddate`
+	     grep $vlddate2 filelist4d >filelisttmp
+	     head -$ntmp filelisttmp >> filelist03
+
+           else
+	     tail -162 filelist4d >flielist03
+
+ 	   fi
+
+	    
+
+      else 
+
+	cp filelist4d filelist03
+      fi  # numfiles0 -gt nens_gfs:-81
+
+
+
+
+      else  #L_GensExpanse_opt
+     
+        python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+    fi
 #cltthink      if [[ $l_both_fv3sar_gfs_ens = ".true."  ]]; then
 #cltthink        sed '1d;$d' filelist${nhr_assimilation} > d.txt  #don't use the ensemble mean
 #cltthink        cp d.txt filelist${nhr_assimilation}
@@ -95,7 +139,10 @@ if [[ $DOHYBVAR = "YES" ]]; then
     #Check to see if ensembles were found
     numfiles=`cat filelist03 | wc -l`
     cp filelist${nhr_assimilation} $COMOUT/${RUN}.t${CYCrun}z.filelist03.${tmmark}
-    else
+          nens_gfs=`cat filelist03 | wc -l`
+  else
+
+
     cp  $COMOUT_ctrl/${RUN}.t${CYCrun}z.filelist03.${tmmark} tmp_filelist${nhr_assimilation}
         glb_dir=$(dirname $(head -1 tmp_filelist${nhr_assimilation})) 
         echo glbdir is $glb_dir 
@@ -109,13 +156,13 @@ if [[ $DOHYBVAR = "YES" ]]; then
     fi
          
        if [[ $regional_ensemble_option -eq 1  ]]; then
-        if [ $numfiles -ne $nens_gfs ]; then
+        if [ $numfiles -lt 1 ]; then
           echo "Ensembles not found - turning off HYBENS!"
           export HYB_ENS=".false."
-        else
+ #cltorg       else
           # we have 81 files, figure out if they are all the right size
           # if not, set HYB_ENS=false
-          . $UTIL/check_enkf_size.sh
+#cltorg          . $UTIL/check_enkf_size.sh
         fi
           nens_gfs=`cat filelist03 | wc -l`
           nens=$nens_gfs
@@ -151,6 +198,16 @@ else
 export HybParam_part2=" "
 
 fi
+if [ ${l_reg_update_hydro_delz:-.true.} = ".true." ]; then  #regular  run
+export SETUP_part2=${SETUP_part2:-"l_reg_update_hydro_delz=.true."}
+export gsiexec=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamda/regional_workflow/exec/regional_gsi.x
+else
+export SETUP_part2=""
+
+fi
+
+
+
 
 
 # Make gsi namelist
@@ -175,6 +232,7 @@ cat << EOF > gsiparm.anl
    lread_obs_save=${lread_obs_save:-".true."}, 
    lread_obs_skip=${lread_obs_skip:-".false."}, 
    ens_nstarthr=$ens_nstarthr,
+   $SETUP_part2,
    $SETUP
  /
  &GRIDOPTS
@@ -352,7 +410,8 @@ OBS_INPUT::
  /
 
 EOF
-anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_64}
+#cltorg anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_64}
+anavinfo=${anavinfo:-$PARMfv3/anavinfo_fv3_${LEVS}}
 berror=${berror:-$fixgsi/$endianness/nam_glb_berror.f77.gcv}
 emiscoef_IRwater=$fixcrtm/Nalli.IRwater.EmisCoeff.bin
 emiscoef_IRice=$fixcrtm/NPOESS.IRice.EmisCoeff.bin
@@ -452,7 +511,8 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 # Try para RAP first
 export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
 #cltorg export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
-export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+#clt for non-wcoss export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
 $ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
@@ -607,11 +667,11 @@ listdiag=$(tar xvf radstat.gdas | cut -d' ' -f2 | grep _ges)
 fi # if [ $USE_RADSTAT = "YES" ]
 #Aircraft bias corrections always cycled through 6-h DA
  if [ $tmmark = "tm06" ]; then  #regular  run
-   $ncp $MYGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
+   $ncp $COMINgdas/gdas.t${cya}z.abias_air ./aircftbias_in
     err4=$?
     if [ $err4 -ne 0 ] ; then
-       $ncp $GBGDAS/gdas.t${cya}z.abias_air ./aircftbias_in
-     fi
+       $ncp $COMgfs/gfs.t${cya}z.abias_air ./aircftbias_
+    fi
     err3=$?
 
   else

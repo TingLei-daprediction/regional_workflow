@@ -84,7 +84,7 @@ elif [[ -L /usrx && "$( readlink /usrx 2> /dev/null )" =~ dell ]] ; then
 	echo load the module command 1>&2
 	source /usrx/local/prod/lmod/lmod/init/$__ms_shell
     fi
-    target=wcoss_dell_p3
+    target=wcoss_dell_p3.5 #cltthinkto be p3 vs p3.5
     module purge 
 
 elif [[ -d /dcom && -d /hwrf ]] ; then

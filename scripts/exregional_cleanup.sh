@@ -9,17 +9,11 @@
 set -x
 
 # Remove temporary working directories
-cd ${STMP}
-if [ $RUN = fv3sar ]; then
-  cd tmpnwprd
-elif [ $RUN = fv3nest ]; then
-  cd tmpnwprd_nest
-fi
-
-rm -rf regional_make_bc_${dom}_${CDATE}
-rm -rf regional_make_ic_${dom}_${CDATE}
-rm -rf regional_forecast_tm00_${dom}_${CDATE}
-rm -rf regional_post_${dom}_f*_${CDATE}
-rm -rf regional_post_goes_${dom}_f*_${CDATE}
+cd ${DATAROOT}
+rm -fr *forecast* 
+rm -fr *gsianl* 
+rm -fr *post* 
+rm -fr *ic* 
+rm -fr *bc* 
 
 exit

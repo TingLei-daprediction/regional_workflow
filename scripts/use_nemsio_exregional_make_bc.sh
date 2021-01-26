@@ -95,13 +95,10 @@ while (test "$hour" -le "$end_hour")
   hhstart=`echo ${CDATE} | cut -c 9-10`
   fi
 
-export CHGRESVARS="use_ufo=.false.,nst_anl=$nst_anl,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
 # force tm00 to get ontime FV3GFS run
   if [ $tmmark != tm00 -o  1 = 1 ] ; then #cltthinkdeb
-#clt use_nemsio    $GETGES -t natcur -v $VDATE -e prod atmf${hour_name}.nemsio
-    $GETGES -t pg2cur -v $VDATE -e prod atmf${hour_name}.pg2cur
-#clt use_nemsio    atmfile=atmf${hour_name}.nemsio
-    atmfile=atmf${hour_name}.pg2cur
+    $GETGES -t natcur -v $VDATE -e prod atmf${hour_name}.nemsio
+    atmfile=atmf${hour_name}.nemsio
   else
     export PDYgfs=`echo $CDATE | cut -c 1-8`
     export CYCgfs=`echo $CDATE | cut -c 9-10`
@@ -124,16 +121,17 @@ cat <<EOF >fort.41
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
  data_dir_input_grid="${DATA}"
- grib2_file_input_grid="$atmfile"
- varmap_file="$PARMfv3/GFSphys_var_map.txt"
+ atm_files_input_grid="$atmfile"
  sfc_files_input_grid="NULL"
  cycle_mon=$mmstart
  cycle_day=$ddstart
  cycle_hour=$hhstart
- input_type="grib2"  
  convert_atm=.true.
  convert_sfc=.false.
  convert_nst=.false.
+ input_type="gaussian_nemsio"
+ tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
+ tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
  halo_blend=${NROWS_BLEND:-0}
