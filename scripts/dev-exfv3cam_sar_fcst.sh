@@ -404,7 +404,7 @@ else
     sed s/NCNODE/$NCNODE/ | sed s/NRESTART/$NRST/ | \
     sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  >  model_configure
 fi
-    sed -i -e "/restart_interval.*:/ s/:.*/: $RESTART_INTERVAL/" model_configure 
+#cltthinkdeb    sed -i -e "/restart_interval.*:/ s/:.*/: $RESTART_INTERVAL/" model_configure 
 
 #----------------------------------------- 
 # Run the forecast
