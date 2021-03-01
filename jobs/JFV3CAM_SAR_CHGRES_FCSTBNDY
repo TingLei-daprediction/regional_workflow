@@ -53,7 +53,7 @@ mkdir -p $NWGES
 
 export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}
 mkdir -p ${INPdir}
-export FIXsar=/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_oct2018/fv3gfs/fix/fix_fv3/C768 #clt temperary work-around
+export FIXsar=/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_oct2018/fv3gfs/fix/fix_fv3/C${CRES:-768} #clt temperary work-around
 #####################################
 # WCOSS environment settings
 #####################################

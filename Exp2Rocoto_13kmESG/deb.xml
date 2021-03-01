@@ -2,15 +2,15 @@
 <!DOCTYPE workflow
 [
 
-<!ENTITY EXPenvir "EXP2region">
-<!ENTITY STARTYEAR "2019">
-<!ENTITY STARTMONTH "10">
-<!ENTITY STARTDAY "03">
+<!ENTITY EXPenvir "EXP2region_13kmESG">
+<!ENTITY STARTYEAR "2021">
+<!ENTITY STARTMONTH "02">
+<!ENTITY STARTDAY "18">
 <!ENTITY STARTHOUR "00">
 
-<!ENTITY ENDYEAR "2019">
-<!ENTITY ENDMONTH "10">
-<!ENTITY ENDDAY "03">
+<!ENTITY ENDYEAR "2021">
+<!ENTITY ENDMONTH "02">
+<!ENTITY ENDDAY "18">
 <!ENTITY ENDHOUR "00">
 
 <!ENTITY USER "Ting.Lei">
@@ -20,11 +20,11 @@
 <!ENTITY HOMEfv3 "/scratch2/NCEPDEV/fv3-cam/&USER;/dr-regional-workflow/regional_workflow">
 <!ENTITY JOBS "&HOMEfv3;/jobs">
 <!ENTITY SCRIPTS "&HOMEfv3;/scripts">
- <!ENTITY PTMP "/scratch2/NCEPDEV/stmp3/&USER;/&EXPenvir;/fv3sartest">
- <!ENTITY STMP "/scratch2/NCEPDEV/stmp3/&USER;/&EXPenvir;/fv3sartest">
+ <!ENTITY PTMP "/scratch2/NCEPDEV/stmp3/&USER;">
+ <!ENTITY STMP "/scratch2/NCEPDEV/stmp3/&USER;">
 <!ENTITY COMDIR "&PTMP;/com">
-<!ENTITY COMINgfs "/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-global-data/gpfs/dell1/nco/ops/com/gfs/prod/">
-<!ENTITY LOGDIR "&PTMP;/&USER;/&EXPenvir;">
+<!ENTITY COMINgfs "">
+<!ENTITY LOGDIR "&PTMP;/logs/&EXPenvir;">
 <!ENTITY DATAROOT "&STMP;/&USER;/tmpnwprd_hourly/&EXPenvir;">
 <!ENTITY PRE "&HOMEfv3;/rocoto/rocoto_pre_job.sh">
 <!ENTITY QUEUE_PE        "batch">
@@ -38,15 +38,18 @@
 <!ENTITY QUEUE_SERVICE   "service">
 <!ENTITY SERVICE_EXTRA   "">
 
+
 <!ENTITY RESERVATION '<queue>batch</queue><account>&ACCOUNT;</account>'>
 <!ENTITY RESERVATION_ANL '<queue>debug</queue><account>&ACCOUNT;</account>'>
 <!ENTITY RESERVATION_TRANSFER '<queue>dev_transfer</queue><account>&ACCOUNT;</account>'>
-
 <!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>04:00:00</walltime>">
+<!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>5</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>4</value></envar><walltime>00:30:00</walltime>">
 <!ENTITY FORECAST_EXTRA_DA "<envar><name>NCTSK</name><value>20</value></envar><envar><name>NCNODE</name><value>40</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>00:30:00</walltime>">
 <!ENTITY FORECAST_RESOURCES "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
-<!ENTITY FORECAST_RESOURCES_DA "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+<!ENTITY FORECAST_RESOURCES_DA "<nodes>34:ppn=5</nodes><envar><name>TOTAL_TASKS</name><value>170</value></envar><envar><name>TASK_X</name><value>16</value></envar><envar><name>TASK_Y</name><value>10</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>10</value></envar>&FORECAST_EXTRA;">
+<!ENTITY FORECAST_RESOURCES_DA_deb "<cores>170</cores> <native>--cpus-per-task 4 --exclusive</native><envar><name>TOTAL_TASKS</name><value>170</value></envar><envar><name>TASK_X</name><value>16</value></envar><envar><name>TASK_Y</name><value>10</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>10</value></envar>&FORECAST_EXTRA_deb;">
 <!ENTITY FORECAST_ens_RESOURCES_DA "<nodes>71:ppn=20:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>1404</value></envar><envar><name>TASK_X</name><value>24</value></envar><envar><name>TASK_Y</name><value>54</value></envar><envar><name>WG</name><value>2</value></envar><envar><name>WTPG</name><value>54</value></envar>&FORECAST_EXTRA;">
+
 
 
 
@@ -54,7 +57,9 @@
 <!ENTITY SCRUB_RESOURCES '<walltime>00:10:00</walltime><memory>1G</memory>'>
 <!ENTITY SENDINIBC_RESOURCES '<walltime>00:30:00</walltime><memory>1G</memory>'>
 <!ENTITY CHGRES_IC_RESOURCES "<nodes>4:ppn=3</nodes><envar><name>TOTAL_TASKS</name><value>12</value></envar><envar><name>NCTSK</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
+<!ENTITY CHGRES_IC_RESOURCES_tm00 "<nodes>4:ppn=3</nodes><envar><name>TOTAL_TASKS</name><value>12</value></envar><envar><name>NCTSK</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>03:30:00</walltime>">
 <!ENTITY CHGRES_ens_IC_RESOURCES "<nodes>4:ppn=3</nodes><envar><name>TOTAL_TASKS</name><value>12</value></envar><envar><name>NCTSK</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:30:00</walltime>">
+<!ENTITY PREP_GLBENSMEAN_RESOURCES "<nodes>20:ppn=4:tpp=6</nodes><envar><name>TOTAL_TASKS</name><value>80</value></envar><envar><name>NCTSK</name><value>8</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:30:00</walltime>">
 
 <!ENTITY CHGRES_ENS_IC_RESOURCES '<walltime>02:30:00</walltime>'>
 <!ENTITY CHGRES_BC_RESOURCES '<walltime>00:20:00</walltime>'>
@@ -62,27 +67,31 @@
 <!ENTITY FCST_RESOURCES_GUESS '<walltime>01:00:00</walltime>'>
 <!ENTITY FCST_RESOURCES_DA '<walltime>00:10:00</walltime>'>
 <!ENTITY FCST_RESOURCES '<walltime>01:35:00</walltime>'>
-<!ENTITY POST_RESOURCES '<walltime>00:20:00</walltime>'>
 
 <!ENTITY ANL_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:30:00</walltime>">
 <!ENTITY ENKF_EXTRA "<envar><name>NCTSK</name><value>2</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
+<!ENTITY POST_EXTRA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>01:30:00</walltime>">
 <!--<!ENTITY ANL_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">-->
 <!ENTITY ANL_RESOURCES '<walltime>02:30:00</walltime>'>
-<!ENTITY ANL2_RESOURCES "<nodes>10:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>240</value></envar>&ANL_EXTRA;">
-<!ENTITY ENKF_RESOURCES "<nodes>10:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>20</value></envar>&ENKF_EXTRA;">
-<!ENTITY RECENTER_RESOURCES "<nodes>11:ppn=2</nodes><envar><name>TOTAL_TASKS</name><value>21</value></envar>&ENKF_EXTRA;">
+<!ENTITY ANL2_RESOURCES "<nodes>5:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>120</value></envar>&ANL_EXTRA;">
+<!ENTITY ENKF_RESOURCES "<nodes>5:ppn=4</nodes><envar><name>TOTAL_TASKS</name><value>20</value></envar>&ENKF_EXTRA;">
+<!ENTITY RECENTER_RESOURCES "<nodes>6:ppn=4</nodes><envar><name>TOTAL_TASKS</name><value>21</value></envar>&ENKF_EXTRA;">
+<!ENTITY POST_RESOURCES "<nodes>2:ppn=14</nodes><envar><name>TOTAL_TASKS</name><value>24</value></envar>&POST_EXTRA;">
 
+
+<!ENTITY HIST_RESOURCES '<walltime>00:30:00</walltime><memory>5G</memory>'>
 
 <!ENTITY HIST_RESOURCES '<walltime>00:30:00</walltime><memory>5G</memory>'>
 <!-- <!ENTITY gsiexec '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/dr-CAM/dr-add_ensemble/ProdGSI/build/bin/gsi.x'> -->
 <!-- <!ENTITY gsianlsh '/gpfs/dell2/emc/modeling/noscrub/Ting.Lei/fv3reg_da_hourly_rocoto/scripts/single-exfv3sar_gsianl.sh'> -->
-<!ENTITY ENKFEXEC '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM/dr-witaker/dr-gsi-enkf_fv3native_t2/ProdGSI/build/bin/enkf_fv3reg.x'>
-<!ENTITY gsiexec ' /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-CAM/dr-add_ensemble_dualv1mix1/ProdGSI/build/bin/gsi.x'>
+<!ENTITY ENKFEXEC '/scratch2/NCEPDEV/fv3-cam/Ting.Lei/./dr-github-enkf-t2_new/GSI/build/bin/enkf_fv3reg.x'>
+<!ENTITY gsiexec ' /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-github-gsi-dualmix1/GSI/build_debug/bin/gsi_DBG.x'>
 <!ENTITY gsianlsh ''> 
-<!ENTITY nens '100'> 
-<!ENTITY l_both_fv3sar_gfs_ens '.true.'> 
-<!ENTITY nens_gfs '80'> 
+<!ENTITY nens '20'> 
+<!ENTITY l_both_fv3sar_gfs_ens '.false.'> 
+<!ENTITY nens_gfs '0'> 
 <!ENTITY nens_fv3sar '20'> 
+<!ENTITY CRES '775'> 
 
 ]>
 
@@ -96,7 +105,7 @@
   <cycledef group="regional">&STARTYEAR;&STARTMONTH;&STARTDAY;&STARTHOUR;00 &ENDYEAR;&ENDMONTH;&ENDDAY;&ENDHOUR;00 12:00:00</cycledef>
 
   <log>
-    <cyclestr>&LOGDIR;/testlogs_hourly_rocoto/workflow_regional_@Y@m@d@H.log</cyclestr>
+    <cyclestr>&LOGDIR;/dr@Y@m@d@H.log/workflow_regional_@Y@m@d@H.log</cyclestr>
   </log>
 
 
@@ -116,7 +125,7 @@
   &CHGRES_IC_RESOURCES;
     <command>&PRE; &JOBS;/JREGIONAL_MAKE_IC</command>
     <jobname><cyclestr>chgres_firstguess_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/chgres_firstguess_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_firstguess_@H.log</cyclestr></join>
 
     <envar>
       <name>HOMEfv3</name>
@@ -158,6 +167,10 @@
       <name>COMINgfs</name>
       <value>&COMINgfs;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
   </task>
 <!-- Create the boundary conditions for the tm12 6-h forecast -->
@@ -167,7 +180,7 @@
   &CHGRES_IC_RESOURCES;
     <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
     <jobname><cyclestr>chgres_fcstbndy_tm12_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/chgres_fcstbndy_tm12_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_fcstbndy_tm12_@H.log</cyclestr></join>
 
     <envar>
      <name>HOMEfv3</name>
@@ -209,6 +222,10 @@
       <name>COMINgfs</name>
       <value>&COMINgfs;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
         <taskdep task="chgres_firstguess"/>
     </dependency>
@@ -223,7 +240,7 @@
   &CHGRES_ens_IC_RESOURCES;
     <command>&PRE;  &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_MAKE_IC</command>
     <jobname><cyclestr>chgres_ens#ENSGRP#_guess_@H_tm12</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_ens#ENSGRP#_@H_firstguess.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_ens#ENSGRP#_@H_firstguess.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -281,9 +298,18 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
+    <dependency>
+        <taskdep task="chgres_firstguess"/>
+    </dependency>
 
 
     </task>
+
+
    </metatask>
 
 
@@ -291,9 +317,9 @@
 <!--  ********** Run the 6-h forecast from tm12 to tm06 *********************  -->
 
   <task name="forecast_firstguess" cycledefs="regional" maxtries="6">
-    <command>&PRE; &JOBS;/JREGIONAL_FORECAST_FIRSTGUESS</command>
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
     <jobname><cyclestr>forecast_firstguess_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_firstguess_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_firstguess_@H.log</cyclestr></join>
     &PE_EXTRA;
     &RESERVATION;
     &FORECAST_RESOURCES_DA;
@@ -350,6 +376,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
 
     <dependency>
@@ -366,11 +396,10 @@
   <task name="forecast_ens_firstguess_grp#ENSGRP#" cycledefs="regional" maxtries="6">
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
     <jobname><cyclestr>forecast_ens#ENSGRP#_firstguess_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_firstguess_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_ens#ENSGRP#_firstguess_@H.log</cyclestr></join>
     &PE_EXTRA;
     &RESERVATION;
-    &FORECAST_ens_RESOURCES_DA;
-
+    &FORECAST_RESOURCES_DA;
 
 
 
@@ -428,6 +457,10 @@
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
 
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="chgres_ens_firstguess"/>
@@ -443,10 +476,9 @@
     <task name="post#fhr#_firstguess" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JFV3CAM_SAR_POST_FIRSTGUESS</command>
       <jobname><cyclestr>post_firstguess_@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_firstguess_@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/post_firstguess_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -489,6 +521,10 @@
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
 
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
       <dependency>
         <taskdep task="forecast_firstguess"/>
       </dependency>
@@ -504,7 +540,7 @@
      &CHGRES_IC_RESOURCES;
     <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
     <jobname><cyclestr>chgres_fcstbndy_tm#mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_fcstbndy_tm#mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_fcstbndy_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -550,6 +586,10 @@
       <name>COMINgfs</name>
       <value>&COMINgfs;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="forecast_firstguess"/>
@@ -569,7 +609,7 @@
   &CHGRES_ens_IC_RESOURCES;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_CHGRES_ENS_FCSTBNDY</command>
     <jobname><cyclestr>chgres_ens#ENSGRP#_fcstbndy_tm#mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_ens#ENSGRP#_fcstbndy_tm#mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_ens#ENSGRP#_fcstbndy_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -624,6 +664,10 @@
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
 
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
         <metataskdep metatask="forecast_ens_firstguess"/>
     </dependency>
@@ -639,7 +683,7 @@
   <task name="analysis_tm06" cycledefs="regional" maxtries="6">
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
     <jobname><cyclestr>gsianl_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_firstguess_tm06_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/deb-gsianl_firstguess_tm06_@H.log</cyclestr></join>
      &RESERVATION;
     &ANL2_RESOURCES;
     <envar>
@@ -706,6 +750,10 @@
       <name>COMINgfs</name>
       <value>&COMINgfs;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
       <and>
@@ -723,7 +771,7 @@
   &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>epost2mean_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/dd-epost2mean_tm06_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/dd-epost2mean_tm06_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -778,6 +826,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
       <and>
         <metataskdep metatask="chgres_fcstbndy_da"/>
@@ -792,7 +844,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
     <jobname><cyclestr>emean_obs_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm06_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/emean_obs_tm06_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -838,6 +890,10 @@
       <name>gsiexec</name>
       <value>&gsiexec;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="epost2mean_tm06"/>
@@ -855,7 +911,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
     <jobname><cyclestr>enkf_obs_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm06_grp#ENSGRP#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/enkf_obs_tm06_grp#ENSGRP#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -913,6 +969,10 @@
       <name>gsiexec</name>
       <value>&gsiexec;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="emean_obs_tm06"/>
@@ -929,7 +989,7 @@
   &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>enkf_eupd_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_eupd_tm06_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/enkf_eupd_tm06_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -983,6 +1043,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm06"/>
@@ -996,7 +1060,7 @@
   &RECENTER_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>recenter_tm06_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm06_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/recenter_tm06_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1054,6 +1118,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
       <and>
         <metataskdep metatask="EnKF_analysis_tm06"/>
@@ -1079,7 +1147,7 @@
     &FORECAST_RESOURCES_DA;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
      <jobname><cyclestr>forecast_tm#mark#_@H</cyclestr></jobname>
-     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm#mark#_@H.log</cyclestr></join>
+     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1135,6 +1203,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
      <dependency>
       <and>
@@ -1156,7 +1228,7 @@
     &FORECAST_RESOURCES_DA;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
     <jobname><cyclestr>forecast_ens#ENSGRP#_tm#mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1210,6 +1282,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
 
     <dependency>
@@ -1226,7 +1302,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
     <jobname><cyclestr>gsianl_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/gsianl_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1302,6 +1378,10 @@
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
 
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
 
     <dependency>
@@ -1322,7 +1402,7 @@
   &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>epost2mean_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
      <envar>
       <name>ldo_enscalc_option</name>
       <value>1</value>
@@ -1376,6 +1456,10 @@
       <name>nens </name>
       <value>&nens_fv3sar; </value>
      </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="forecast_ens_tm#mark#"/>
@@ -1387,7 +1471,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
     <jobname><cyclestr>emean_obs_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1434,6 +1518,10 @@
       <name>gsiexec</name>
       <value>&gsiexec;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="epost2mean_tm#next_mark#"/>
@@ -1453,7 +1541,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
     <jobname><cyclestr>enkf_obs_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1511,6 +1599,10 @@
       <name>gsiexec</name>
       <value>&gsiexec;</value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="emean_obs_tm#next_mark#"/>
@@ -1525,7 +1617,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>enkf_eupd_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1579,6 +1671,10 @@
       <name>nens </name>
       <value>&nens_fv3sar; </value>
      </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>
@@ -1594,7 +1690,7 @@
   &RECENTER_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>recenter_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/recenter_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1648,6 +1744,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
       <and>
         <metataskdep metatask="EnKF_analysis_tm#next_mark#"/>
@@ -1672,10 +1772,9 @@
     <task name="post_f#fhr#_tm#mark#" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
       <jobname><cyclestr>post_f#fhr#_tm#mark#_@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_tm#mark#_@H.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/post_f#fhr#_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1717,6 +1816,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
       <dependency>
          <metataskdep metatask="da_fcst_analysis_set"/>
@@ -1739,7 +1842,7 @@
     &FORECAST_RESOURCES_DA;
      <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
      <jobname><cyclestr>forecast_tm#mark#_@H</cyclestr></jobname>
-     <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm#mark#_@H.log</cyclestr></join>
+     <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1795,6 +1898,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
      <dependency>
       <and>
@@ -1815,7 +1922,7 @@
     &FORECAST_RESOURCES_DA;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_ENKF_FCST</command>
     <jobname><cyclestr>forecast_ens#ENSGRP#_tm#mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_ens#ENSGRP#_tm#mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1869,6 +1976,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
 
     <dependency>
@@ -1883,7 +1994,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_GSIANL</command>
     <jobname><cyclestr>gsianl_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/gsianl_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/gsianl_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -1952,6 +2063,10 @@
     </envar>
 
 
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <and>
@@ -1969,7 +2084,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>epost2mean_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/epost2mean_tm#next_mark#_@H.log</cyclestr></join>
      <envar>
       <name>ldo_enscalc_option</name>
       <value>1</value>
@@ -2023,6 +2138,10 @@
       <name>nens </name>
       <value>&nens_fv3sar; </value>
      </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="forecast_ens_tm#mark#"/>
@@ -2034,7 +2153,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_ENSMEAN_OBS</command>
     <jobname><cyclestr>emean_obs_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/emean_obs_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2077,6 +2196,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="epost2mean_tm#next_mark#"/>
@@ -2096,7 +2219,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/JFVCAM_SAR_ENKF_OBS</command>
     <jobname><cyclestr>enkf_obs_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/enkf_obs_tm#next_mark#_grp#ENSGRP#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2150,6 +2273,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <taskdep task="emean_obs_tm#next_mark#"/>
@@ -2164,7 +2291,7 @@
   &ENKF_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>enkf_eupd_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/eenkf_eupd_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2218,6 +2345,10 @@
       <name>nens </name>
       <value>&nens_fv3sar; </value>
      </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
         <metataskdep metatask="enkf_obs_tm#next_mark#"/>
@@ -2232,7 +2363,7 @@
   &ANL2_RESOURCES;
     <command>&PRE; &JOBS;/dev-FV3CAM_SAR_EFCSTPOST</command>
     <jobname><cyclestr>recenter_tm#next_mark#_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/recenter_tm#next_mark#_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/recenter_tm#next_mark#_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2286,6 +2417,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
       <and>
         <metataskdep metatask="EnKF_analysis_tm#next_mark#"/>
@@ -2311,10 +2446,10 @@
   <task name="chgres_fcstbndy_tm00" cycledefs="regional" maxtries="6">
     &PE_EXTRA;
     &RESERVATION;
-    &CHGRES_IC_RESOURCES;
-    <command>&PRE; &JOBS;/JFV3CAM_SAR_CHGRES_FCSTBNDY</command>
+    &CHGRES_IC_RESOURCES_tm00;
+    <command>&PRE; &JOBS;/JREGIONAL_MAKE_BC</command>
     <jobname><cyclestr> chgres_fcstbndy_tm00_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/chgres_fcstbndy.tm00_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/chgres_fcstbndy.tm00_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2356,6 +2491,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
        <taskdep task="analysis_tm00"/>
@@ -2371,7 +2510,7 @@
   <cores>1</cores>
     <command>&PRE; &JOBS;/JFV3CAM_SAR_SENDINIBC</command>
     <jobname><cyclestr> sendinibc_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/sendinibc_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/sendinibc_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2409,6 +2548,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
       <and>
@@ -2428,7 +2571,7 @@
     &FORECAST_RESOURCES_DA;
     <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_FCST</command>
     <jobname><cyclestr>forecast_tm00_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/forecast_tm00_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/forecast_tm00_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2470,6 +2613,10 @@
       <name>PDY</name>
       <value><cyclestr>@Y@m@d</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
     <dependency>
       <and>
@@ -2488,10 +2635,9 @@
     <task name="post#fhr#" cycledefs="regional" maxtries="6">
     &RESERVATION;
     &POST_RESOURCES;
-    <nodes>2:ppn=14</nodes>
       <command>&PRE; &JOBS;/JFV3CAM_SAR_POST</command>
       <jobname><cyclestr>fv3_postf#fhr#_@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/post_f#fhr#_@H_tm00.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/post_f#fhr#_@H_tm00.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2533,6 +2679,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
 
       <dependency>
         <datadep age="00:00:05:00"><cyclestr>&DATAROOT;/forecast_tm00_@H_@Y@m@d/logf0#fhr#</cyclestr></datadep>
@@ -2549,7 +2699,7 @@
   <cores>1</cores>
     <command>&PRE; &JOBS;/JFV3CAM_SAR_CLEANUP</command>
     <jobname><cyclestr>cleanup_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/cleanup_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/cleanup_@H.log</cyclestr></join>
     <envar>
       <name>envir</name>
       <value>&EXPenvir;</value>
@@ -2583,6 +2733,10 @@
       <name>CDATE</name>
       <value><cyclestr>@Y@m@d@H</cyclestr></value>
     </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
     <dependency>
        <metataskdep metatask="post_tm00"/>
     </dependency>
@@ -2600,7 +2754,7 @@
   <cores>1</cores>
     <command>&JOBS;/JFV3SAR_RHIST</command>
     <jobname><cyclestr>run_history_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/testlogs_hourly_rocoto/rhist_@H.log</cyclestr></join>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/rhist_@H.log</cyclestr></join>
 
     <envar>
      <name>HOMEfv3</name>

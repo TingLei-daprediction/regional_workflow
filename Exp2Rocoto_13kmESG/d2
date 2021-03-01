@@ -1,0 +1,2 @@
+elif [ ${machine} = "wcoss_cray" ]
+then

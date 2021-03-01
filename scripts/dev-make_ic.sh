@@ -18,10 +18,6 @@ pwd
 echo "creating standalone regional ICs"
 export ntiles=1
 export TILE_NUM=7
-UTIL_USHnam=/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/dr-nam
-${UTIL_USHnam}/dev-getges_linkges_pgrb.sh -t natges -v $CYCLEguess -e ${envir_getges} atmf00
-export ATMANL=atmf00
-export SFCANL=sfcf00
 
 if [ $tmmark = tm00 ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
@@ -61,7 +57,6 @@ fi
 # set the links to use the 4 halo grid and orog files
 # these are necessary for creating the boundary data
 #
-if [ 1 -ne 1 ] ; then #cltthinkdeb now use eric's dir and skip this step
 ln -sf $FIXsar/${CASE}_grid.tile7.halo4.nc $FIXsar/${CASE}_grid.tile7.nc 
 ln -sf $FIXsar/${CASE}_oro_data.tile7.halo4.nc $FIXsar/${CASE}_oro_data.tile7.nc 
 ln -sf $FIXsar/${CASE}.vegetation_greenness.tile7.halo4.nc $FIXsar/${CASE}.vegetation_greenness.tile7.nc
@@ -72,18 +67,15 @@ ln -sf $FIXsar/${CASE}.facsf.tile7.halo4.nc $FIXsar/${CASE}.facsf.tile7.nc
 ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc
 ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
 ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
-fi
 
 #
 # create namelist and run chgres cube
 #
 pwddir=`pwd`
-#clt not sure if this CHGRESVARS  is used
- export CHGRESVARS="use_ufo=.false.,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
 cp ${CHGRESEXEC} $pwddir 
 cat <<EOF >fort.41
 &config
- mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.nc"
+ mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.halo${HALO}.nc"
  fix_dir_target_grid="$FIXsar"
  orog_dir_target_grid="$FIXsar"
  orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
@@ -100,7 +92,7 @@ cat <<EOF >fort.41
  convert_atm=.true.
  convert_sfc=${CONVERT_SFC:-.true.}
  convert_nst=.true.
- input_type="gaussian_nemsio"
+ input_type="gaussian"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
@@ -122,7 +114,7 @@ exit 99
 fi
 
 if [ $REGIONAL = 1 ] ; then  
-numfiles=`ls -1 gfs_ctrl.nc gfs?bndy.nc out.atm.tile?.nc out.sfc.tile?.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc out.atm.tile7.nc out.sfc.tile7.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
   echo "Don't have all IC files at ${tmmark} "
@@ -138,16 +130,16 @@ fi
 #
 # move output files to save directory
 #
-mv gfs?bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
+mv gfs_bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 
 if [ $REGIONAL = 1 ] ; then  
   if [ $l_coldstart_anal = TRUE ] ; then  
-    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile?.nc
+    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile7.nc
   fi
-mv out.atm.tile?.nc $OUTDIR/gfs_data.tile7.nc
+mv out.atm.tile7.nc $OUTDIR/gfs_data.tile7.nc
 mv gfs_ctrl.nc $OUTDIR/.
 if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
-mv out.sfc.tile?.nc $OUTDIR/sfc_data.tile7.nc
+mv out.sfc.tile7.nc $OUTDIR/sfc_data.tile7.nc
 fi
 fi

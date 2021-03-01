@@ -35,6 +35,3 @@ export WGRIB2_LIB="/apps/wgrib2/2.0.8/intel/18.0.3.222/lib/libwgrib2.a"
 module load wgrib2
 module load  nco/4.9.1
 
-module use -a /contrib/miniconda3/modulefiles
-module load miniconda3
-conda activate regional_workflow

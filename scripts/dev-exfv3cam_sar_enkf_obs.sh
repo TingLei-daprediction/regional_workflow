@@ -141,7 +141,7 @@ export DATA=$DATATOP/$memstr
 rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
-anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_${LEVS}
 cp $anavinfo ./anavinfo
 $gsianlsh
 done

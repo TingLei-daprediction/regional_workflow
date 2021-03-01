@@ -112,11 +112,13 @@ done
 #---------------------------------------------- 
 ntiles=1
 tile=7
+HALO=4
+NH3=3
 cp $FIXsar/${CASE}_grid.tile${tile}.halo3.nc INPUT/.
 cp $FIXsar/${CASE}_grid.tile${tile}.halo4.nc INPUT/.
 cp $FIXsar/${CASE}_oro_data.tile${tile}.halo0.nc INPUT/.
 cp $FIXsar/${CASE}_oro_data.tile${tile}.halo4.nc INPUT/.
-cp $FIXsar/${CASE}_mosaic.nc INPUT/.
+cp $FIXsar/${CASE}_mosaic.halo${NH3}.nc INPUT/${CASE}_mosaic.nc
   
 cd INPUT
 ln -sf ${CASE}_mosaic.nc grid_spec.nc
@@ -188,7 +190,7 @@ if [ $tmmark = tm00 ] ; then
   fi
    
 
-  cp ${PARMfv3}/model_configure_sar.tmp_${dom:-conus} model_configure.tmp
+  cp ${PARMfv3}/model_configure_sar.tmp_${dom:-conus}_${CASE} model_configure.tmp
 
 	if [ ${dom:-conus} = "conus" ]
 	then
@@ -258,8 +260,8 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
         if [  ${l_coldstart_anal:-FALSE} = TRUE ] ; then
             sed -i  -e "/bc_update_interval.*=/ s/=.*/= 1/"  input.nml.tmp
         fi
-   
-	cp ${PARMfv3}/model_configure_sar_firstguess.tmp model_configure.tmp
+  #cltthinkdeb tothink 
+	cp ${PARMfv3}/model_configure_sar_firstguess.tmp_${CASE} model_configure.tmp
         cp ${PARMfv3}/data_table .
 	cp ${PARMfv3}/nems.configure .
 #thinkdeb do we need consider  if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
@@ -299,7 +301,7 @@ else
   fi
   
 
-  cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
+  cp ${PARMfv3}/model_configure_sar_da_hourly.tmp_${CASE} model_configure.tmp
 
   cp ${PARMfv3}/data_table .
   cp ${PARMfv3}/nems.configure .
@@ -346,6 +348,8 @@ fi
    sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
    sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
    sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
+   sed -i  -e "/npx .*=/ s/=.*/= ${NPX}/"  input.nml
+   sed -i  -e "/npy .*=/ s/=.*/= ${NPY}/"  input.nml
    sed -i  -e "/npz .*=/ s/=.*/= $((LEVS-1))/"  input.nml
    sed -i  -e "/levp .*=/ s/=.*/= ${LEVS}/"  input.nml
 
@@ -429,12 +433,11 @@ cd ..
 fi
 #cltsed -i '/npz_type/d' input.nml
 #export pgm=regional_forecast.x
-export OMP_NUM_THREADS=4
 export pgm=regional_forecast.x
 
-. prep_step
+#. prep_step
 
-startmsg
+#startmsg
 
 #clt . prep_step
 
@@ -446,12 +449,16 @@ startmsg
 #clt${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
 #clt hera ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
 #${APRUNC}  /gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
-${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamdax/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
+#wcoss ${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamdax/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
+#clt ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/dr-debug/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
+#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric//dr-test/regional_forecast.fd/tests/fv3_32bit.exe >$pgmout 2>err
+
 #${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_forecast.fd_jim/tests/fv3_2.exe_debug >$pgmout 2>err
 #cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
 #cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
-export err=$? ;err_chk
+export err=$? #cltthinkdeb ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
 fi
@@ -485,7 +492,9 @@ if [ $tmmark != tm00 ] ; then
 # so they go directly into ANLdir
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
   mv phy_data.nc $FcstOutDir/phy_data.nc
+if [[ ! $memstr =~ mem ]];then  #for control run
   mv fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+fi
 
 if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
   #Move enlarged restart files for 00-h BC's

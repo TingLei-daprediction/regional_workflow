@@ -55,11 +55,11 @@ if [ $tmmark = tm00 ]; then
   # if model=fv3sar_da, need to make 0-h BC file, otherwise it is made
   # in MAKE_IC job for fv3sar coldstart fcst off GFS anl
   if [ $model = fv3sar_da ] ; then
-    hour=${HRBGN:-0}  #  0
+    hour=0
   else
-    hour=${HRBGN:-3} #  3
+    hour=3
   fi
-  end_hour=${HREND:-$NHRS}
+  end_hour=$NHRS
   hour_inc=3
 elif [ $tmmark = tm12 ] ; then
   hour=3
@@ -95,13 +95,10 @@ while (test "$hour" -le "$end_hour")
   hhstart=`echo ${CDATE} | cut -c 9-10`
   fi
 
-export CHGRESVARS="use_ufo=.false.,nst_anl=$nst_anl,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
 # force tm00 to get ontime FV3GFS run
-  if [ $tmmark != tm00 -o  1 = 1 ] ; then #cltthinkdeb
-#clt use_nemsio    $GETGES -t natcur -v $VDATE -e prod atmf${hour_name}.nemsio
-    $GETGES -t pg2cur -v $VDATE -e prod atmf${hour_name}.pg2cur
-#clt use_nemsio    atmfile=atmf${hour_name}.nemsio
-    atmfile=atmf${hour_name}.pg2cur
+  if [ $tmmark != tm00 ] ; then
+    $GETGES -t natcur -v $VDATE -e prod atmf${hour_name}.nemsio
+    atmfile=atmf${hour_name}.nemsio
   else
     export PDYgfs=`echo $CDATE | cut -c 1-8`
     export CYCgfs=`echo $CDATE | cut -c 9-10`
@@ -115,7 +112,7 @@ export CHGRESVARS="use_ufo=.false.,nst_anl=$nst_anl,idvc=2,nvcoord=2,idvt=21,ids
 
 cat <<EOF >fort.41
 &config
- mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.nc"
+ mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.halo${HALO}.nc"
  fix_dir_target_grid="$FIXsar"
  orog_dir_target_grid="$FIXsar"
  orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
@@ -124,16 +121,17 @@ cat <<EOF >fort.41
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
  data_dir_input_grid="${DATA}"
- grib2_file_input_grid="$atmfile"
- varmap_file="$PARMfv3/GFSphys_var_map.txt"
+ atm_files_input_grid="$atmfile"
  sfc_files_input_grid="NULL"
  cycle_mon=$mmstart
  cycle_day=$ddstart
  cycle_hour=$hhstart
- input_type="grib2"  
  convert_atm=.true.
  convert_sfc=.false.
  convert_nst=.false.
+ input_type="gaussian"
+ tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
+ tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
  halo_blend=${NROWS_BLEND:-0}
@@ -156,7 +154,7 @@ export pgm=regional_chgres_cube.x
 #
 # move output files to save directory
 #
-  mv gfs?bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+  mv gfs_bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
   err=$?
   if [ $err -ne 0 ] ; then
     echo "Don't have ${hour_name}-h BC file at ${tmmark}, abort run"
