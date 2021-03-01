@@ -11,6 +11,8 @@ set -x
 # Script history log:
 # 2018-10-30  $USER - Modified based on original GSI script
 #
+
+function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
 export  HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
 
 
@@ -81,9 +83,14 @@ ensmeanchar="ensmean"  #cltthinkto
          echo axis >>tmp.txt
 #cltNote:  for newer nco pacakge , should add --trd option
 #cltorg          ncks --trd -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
-         ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
+#cltoeg         ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
+      ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
+tothink
+         ncvarlst_noaxis_time fv3sar_tile1_${ensmeanchar}_dynvars >  nck_dynvar_list.txt 
+ 
 #clt          ncks --trd -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
-         ncks  -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
+#clt         ncks  -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
+         ncvarlst_noaxis_time  fv3sar_tile1_${ensmeanchar}_tracer > nck_tracer_list.txt
          user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," - `
          user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," - ` 
 
@@ -207,9 +214,9 @@ fi
 #cltthinkdeb nens=`cat filelist03 | wc -l`
 if [ $ldo_enscalc_option -eq 1 -o $ldo_enscalc_option -eq 2 ]; then
 tothink
-anavinfo=$PARMfv3/anavinfo_fv3_enkf_ensmean_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_ensmean_${LEVS}
 else
-anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_${LEVS}
 fi
 satinfo=$PARMfv3/fv3sar_satinfo.txt
 scaninfo=$fixgsi/global_scaninfo.txt
@@ -249,7 +256,7 @@ use_gfs_nemsio=.true.,
 	obtimelnh=1.e30,obtimelsh=1.e30,obtimeltr=1.e30,
 	saterrfact=1.0,numiter=1,
 	sprd_tol=1.e30,paoverpb_thresh=0.98,
-	nlons=1920,nlats=1296,nlevs=64,nanals=$nens,
+	nlons=${NX_RES},nlats= ${NY_RES}, nlevs= $(( LEVS - 1)),nanals=$nens,
 	deterministic=.true.,sortinc=.true.,lupd_satbiasc=.false.,
 	reducedgrid=.true.,readin_localization=.false.,
 	use_gfs_nemsio=.true.,imp_physics=99,lupp=.false.,
@@ -259,9 +266,6 @@ use_gfs_nemsio=.true.,
 	netcdf_diag=.false.,
 	ldo_enscalc_option=${ldo_enscalc_option},
 	$NAM_ENKF
-	/
-	&nam_fv3
-	nx_res=1920,ny_res=1296,ntiles=1,
 	/
 	&satobs_enkf
 	sattypes_rad(1) = 'amsua_n15',     dsis(1) = 'amsua_n15',
@@ -340,6 +344,9 @@ use_gfs_nemsio=.true.,
 	sattypes_oz(7) = 'gome_metop-b',
 	sattypes_oz(8) = 'mls30_aura',
 	$OZOBS_ENKF
+	/
+	&nam_fv3
+	nx_res=$NX_RES,ny_res=$NY_RES,ntiles=1,
 	/
 EOFnml
 

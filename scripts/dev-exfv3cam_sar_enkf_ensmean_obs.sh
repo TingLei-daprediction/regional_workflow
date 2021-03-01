@@ -115,7 +115,7 @@ export nhr_assimilation=03
 export DOHYBVAR=NO
 export HX_ONLY=TRUE
 #cltthinkdeb nens=`cat filelist03 | wc -l`
-anavinfo=$PARMfv3/anavinfo_fv3_enkf_64
+anavinfo=$PARMfv3/anavinfo_fv3_enkf_${LEVS}
 cp $anavinfo ./anavinfo
 
 # Set parameters

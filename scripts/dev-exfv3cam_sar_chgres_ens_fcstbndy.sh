@@ -19,7 +19,7 @@ export NODES=1
 # the following exports can all be set or just will default to what is in global_chgres_driver.sh
 #
 export OMP_NUM_THREADS_CH=24       # default for openMP threads
-export CASE=C768                   # resolution of tile: 48, 96, 192, 384, 768, 1152, 3072
+export CASE=C${CRES:-768}                  # resolution of tile: 48, 96, 192, 384, 768, 1152, 3072
 export ymd=`echo $CDATE | cut -c 1-8`
 export hhcyc=`echo $CDATE | cut -c 9-10`
 ###export LEVS=64
@@ -91,7 +91,7 @@ fi
 #
 #execute the chgres driver
 #
-export res=768            #-- FV3 equivalent to 13-km global resolution
+export res=${CRES:-768}            #-- FV3 equivalent to 13-km global resolution
 export RES=C$res
 export RUN=${RES}_nest_$CDATE
 

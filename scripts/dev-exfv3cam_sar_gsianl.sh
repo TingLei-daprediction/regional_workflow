@@ -61,7 +61,9 @@ fi
 
 # Run gsi under Parallel Operating Environment (poe) on NCEP IBM
 
-
+echo "thinkdeb"
+which python
+python -VV
 export HYB_ENS=".true."
 export HX_ONLY=${HX_ONLY:-FALSE}
 
@@ -182,6 +184,7 @@ if [[ $DOHYBVAR = "YES" ]]; then
 
  
 fi  # DO_HYB_ENS
+nens=$((  $nens_gfs + $nens_fv3sar ))
 
 # Set parameters
 export USEGFSO3=.false.
@@ -198,8 +201,8 @@ else
 export HybParam_part2=" "
 
 fi
-if [ ${l_reg_update_hydro_delz:-.true.} = ".true." ]; then  #regular  run
-export SETUP_part2=${SETUP_part2:-"l_reg_update_hydro_delz=.true."}
+if [ ${l_reg_update_hydro_delz:-.false.} = ".true." ]; then  #regular  run
+export SETUP_part2=${SETUP_part2:-"l_reg_update_hydro_delz=.true.",}
 export gsiexec=/gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamda/regional_workflow/exec/regional_gsi.x
 else
 export SETUP_part2=""
@@ -232,7 +235,7 @@ cat << EOF > gsiparm.anl
    lread_obs_save=${lread_obs_save:-".true."}, 
    lread_obs_skip=${lread_obs_skip:-".false."}, 
    ens_nstarthr=$ens_nstarthr,
-   $SETUP_part2,
+   $SETUP_part2
    $SETUP
  /
  &GRIDOPTS
@@ -270,6 +273,9 @@ OBS_INPUT::
    prepbufr       dw          null      dw                   1.0     0     0
    l2rwbufr       rw          null      l2rw                 1.0     0     0
    prepbufr       sst         null      sst                  1.0     0     0
+   prepbufr_profl t           null      t                    1.0     0     0
+   prepbufr_profl q           null      q                    1.0     0     0
+   prepbufr_profl uv          null      uv                    1.0     0     0
    gpsrobufr      gps_ref     null      gps                  1.0     0     0
    ssmirrbufr     pcp_ssmi    dmsp      pcp_ssmi             1.0    -1     0
    tmirrbufr      pcp_tmi     trmm      pcp_tmi              1.0    -1     0
@@ -512,7 +518,6 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
 #cltorg export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
 #clt for non-wcoss export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
-export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
 $ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
 $ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr

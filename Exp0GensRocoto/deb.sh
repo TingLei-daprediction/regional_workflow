@@ -1,11 +1,11 @@
 #!/bin/bash -l
 set -x
 module load  rocoto/1.3.1
-rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008260000 -t forecast_firstguess 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008310000 -t forecast_firstguess 
 exit
-rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008260000 -t forecast_firstguess 
+rocotorewind -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008310000 -t forecast_firstguess 
 exit
-rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008260000 -t chgres_fcstbndy_tm12 
+rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202008310000 -t chgres_fcstbndy_tm12 
 exit
 rocotoboot -v 10 -w /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.xml -d /scratch2/NCEPDEV/fv3-cam/${USER}/dr-regional-workflow/regional_workflow/Exp0GensRocoto/dev-Gens.db -c 202004081200 -t analysis_tm06 
 exit
