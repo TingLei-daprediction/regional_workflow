@@ -15,25 +15,28 @@
 !
       integer,parameter :: double=selected_real_kind(p=13,r=200)           !<-- Define KIND for double precision real
 !
-      integer,parameter :: num_dims_sfc=4
+!cltorg      integer,parameter :: num_dims_sfc=4
+      integer::  num_dims_sfc
       integer,parameter :: num_dims_grid=5
       integer,parameter :: halo=3
 !
       integer :: i,iend_new,istart_new,j,jend_new,jstart_new,k,kend
 !
-      integer :: n,na,natts,nd,ndims,nctype,ngatts,nvars,var_id
+      integer :: n,na,natts,nd,ndims,nctype,ngatts,nvars,var_id,var_id_new
+      integer :: nglobalatts,iunlimdimid
 !
       integer :: ncid_grid_spec_new,ncid_grid_spec_orig,ncid_grid_tile  &
                 ,ncid_sfc_new,ncid_sfc_orig
 !
       integer,dimension(:),allocatable :: dimids
 !
-      integer,dimension(num_dims_sfc) :: dimid_sfc 
+      integer,allocatable  :: dimid_sfc(:)
       integer,dimension(num_dims_grid) :: dimid_grid
 !
       integer,dimension(:),allocatable :: dimsize_new                   &
                                          ,dimsize_orig
 !
+      integer:: ii
       real :: zero=0.
 !
       real(kind=double),dimension(:,:),allocatable :: field_dbl
@@ -51,12 +54,12 @@
 !
       character(len=20) :: filename_grid_tile='grid.tile7.halo3.nc'        !<-- The grid file from regional pre-processing.
 !
-      character(len=20),dimension(num_dims_sfc) :: dimname_sfc=(/          &
-                                                                 'xaxis_1' &
-                                                                ,'yaxis_1' &
-                                                                ,'zaxis_1' &
-                                                                ,'Time'    &
-                                                                /)
+      character(len=20),allocatable   :: dimname_sfc(:)       !=(/          &
+                                                             !    'xaxis_1' &
+                                                             !   ,'yaxis_1' &
+                                                             !   ,'zaxis_1' &
+                                                             !   ,'Time'    &
+                                                             !   /)
 !
       character(len=20),dimension(num_dims_grid) :: dimname_grid=(/        &
                                                                  'grid_x'  &
@@ -65,7 +68,9 @@
                                                                 ,'grid_xt' &
                                                                 ,'grid_yt' &
                                                                  /)
+     character(len=20):: xx1
 !
+      integer idimid
 !-----------------------------------------------------------------------
 !***********************************************************************
 !-----------------------------------------------------------------------
@@ -79,6 +84,13 @@
 !-----------------------------------------------------------------------
 !
       call check(nf90_open(filename_sfc_data_orig,nf90_nowrite,ncid_sfc_orig))
+ 
+      call check(nf90_inquire(ncid_sfc_orig, num_dims_sfc, nvars, nglobalatts, iunlimdimid))
+      allocate  (dimname_sfc(1:num_dims_sfc))
+      do i=1,num_dims_sfc
+         idimid=i
+         call check(nf90_inquire_dimension(ncid_sfc_orig, idimid, dimname_sfc(i)))
+      enddo
 !
 !-----------------------------------------------------------------------
 !***  We must reproduce the original sfc_data file in an enlarged
@@ -92,9 +104,12 @@
 !*** Dimensions
 !---------------
 !
+      allocate  (dimid_sfc(1:num_dims_sfc))
       allocate(dimsize_orig(1:num_dims_sfc))
       allocate(dimsize_new(1:num_dims_sfc))
-      allocate(dimids(1:num_dims_sfc))
+      allocate(dimids(1:NF90_MAX_VAR_DIMS))
+!
+!cltorg      allocate(dimids(1:num_dims_sfc))
       dimids(:)=0
 !
       do n=1,num_dims_sfc                                                  !<-- The # of dimensions in the sfc_data file
@@ -108,10 +123,13 @@
       enddo
 !
       dimsize_new(1)=dimsize_orig(1)+2*halo
+      write(6,*)'dimsiz new 1 ',dimsize_new(1)
       dimsize_new(2)=dimsize_orig(2)+2*halo
-      dimsize_new(3)=dimsize_orig(3)
-      dimsize_new(4)=dimsize_orig(4)
-!
+      do i=3,num_dims_sfc
+        dimsize_new(i)=dimsize_orig(i)
+      enddo
+     
+
       do n=1,num_dims_sfc                                                  !<-- The # of dimensions in the sfc_data file
         call check(nf90_def_dim(ncid_sfc_new,dimname_sfc(n),dimsize_new(n),dimid_sfc(n)))  !<-- Define dims in the enlarged sfc file.
       enddo
@@ -127,7 +145,9 @@
         call check(nf90_inquire_variable(ncid_sfc_orig,var_id,name_var,nctype &  !<-- Name and type of this variable
                   ,ndims,dimids,natts))                                          !<-- # of dimensions and attributes in this variable
 !
-        call check(nf90_def_var(ncid_sfc_new,name_var,nctype,dimids(1:ndims),var_id)) !<-- Define the variable in the new sfc file.
+!clt        call check(nf90_def_var(ncid_sfc_new,name_var,nctype,dimids(1:ndims),var_id_new)) !<-- Define the variable in the new sfc file.
+        var_id_new=var_id
+        call check(nf90_def_var(ncid_sfc_new,name_var,nctype,dimids(1:ndims),var_id_new)) !<-- Define the variable in the new sfc file.
 !
 !-----------------------------------------------------------------------
 !***  Copy this variable's attributes to the new file's variable.
@@ -136,7 +156,7 @@
         if(natts>0)then
           do na=1,natts
             call check(nf90_inq_attname(ncid_sfc_orig,var_id,na,name_att))                !<-- Get the attribute's name and ID from original
-            call check(nf90_copy_att(ncid_sfc_orig,var_id,name_att,ncid_sfc_new,var_id))  !<-- Copy to the new sfc_data file
+            call check(nf90_copy_att(ncid_sfc_orig,var_id,name_att,ncid_sfc_new,var_id_new))  !<-- Copy to the new sfc_data file
           enddo
         endif
 !

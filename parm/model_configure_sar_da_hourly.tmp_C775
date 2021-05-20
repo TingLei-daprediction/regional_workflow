@@ -18,7 +18,8 @@ ncores_per_node:         NCNODE
 debug_affinity:          .true.
 restart_interval:        NRESTART
 cpl:                     .false.
-write_dopost:            .false.
+write_dopost:            .true.
+output_history:          .false.
 quilting:                .true.
 write_groups:            _WG_ 
 write_tasks_per_group:   _WTPG_ 

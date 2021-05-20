@@ -46,10 +46,11 @@ state_vector::
 
 control_vector_enkf::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- snowwat       61      0       0.70        -1.0     state snowwat   
- graupel      61      0       0.70        -1.0     state  graupel  
- oz       61      0       0.70        -1.0     state    oz 
- cld_amt      61      0       0.70        -1.0     state cld_amt   
+ u       61      0       0.5         -1.0     state    u,v
+ v       61      0       0.5         -1.0     state    u,v
+ tsen    61      0       0.5         -1.0     state    tsen 
+ delp      61      0       0.70        -1.0     state   delp 
+ sphum      61      0       0.70        -1.0     state   sphum 
 ::
 control_vector::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof

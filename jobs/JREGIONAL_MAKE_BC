@@ -9,6 +9,7 @@ set -xe
 ####################################
 export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
 export GETGES=$HOMEfv3/util/ush/getges_linkges_hourlypgrb_new.sh
+export UtilUshfv3=$HOMEfv3/util/ush/
 
 ####################################
 # Run setpdy and initialize PDY variables
@@ -44,8 +45,8 @@ export pgmerr=errfile
 export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
-export INIDIRtm12=${COMINgfs}/gfs.$PDYtm12/$cycguess
+export INIDIR=${COMINgfs}/gfs.$PDY/$cyc/atmos  #clttothink
+export INIDIRtm12=${COMINgfs}/gfs.$PDYtm12/$cycguess/atmos   #clttothink
 
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $COMOUT

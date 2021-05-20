@@ -16,9 +16,10 @@ atmos_nthreads:          NTHRD
 use_hyper_thread:        .false.
 ncores_per_node:         NCNODE
 debug_affinity:          .true.
-restart_interval:        0.01 06
+restart_interval:         06
 cpl:                     .false.
-write_dopost:            .false.
+write_dopost:            .true.
+output_history:          .false.
 quilting:                .true.
 write_groups:            _WG_ 
 write_tasks_per_group:   _WTPG_ 

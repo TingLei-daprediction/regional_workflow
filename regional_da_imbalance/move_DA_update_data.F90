@@ -357,7 +357,7 @@
 !***  North
 !-----------
 !
-   write(0,*)' p2.2 vbl=',trim(varname_update_core(n)),' k=',k
+   write(0,*)' p2.2 vbl=',trim(varname_update_core_bc(n)),' k=',k
           call get_bc_limits(varname_update_core_bc(n),'north',nrows_blend &
                             ,istart_res,iend_res,jstart_res,jend_res       &
                             ,istart_bc,jstart_bc,len_x,len_y               &
@@ -387,9 +387,9 @@
 !
               call check(nf90_inq_varid(ncid_bc,'ps_bottom',var_id_ps))
               call check(nf90_put_var(ncid_bc_new,var_id_ps                             &  !<-- Write psfc into the new BC file
-                                     ,ps_north(istart_res-1:iend_res+1,jstart_res-1:jend_res) &
-                                     ,start=(/istart_bc-1,jstart_bc-1,k/)                   &
-                                     ,count=(/len_x+2,len_y+1,1/)))
+                                    ,ps_north(istart_res-1:iend_res+1,jstart_res-1:jend_res) &
+                                    ,start=(/istart_bc-1,jstart_bc-1,k/)                   &
+                                    ,count=(/len_x+2,len_y+1,1/)))
             endif
           endif
 !
@@ -453,9 +453,9 @@
 !
               call check(nf90_inq_varid(ncid_bc,'ps_top',var_id_ps))
               call check(nf90_put_var(ncid_bc_new,var_id_ps                             &
-                                     ,ps_south(istart_res-1:iend_res+1,jstart_res:jend_res+1) &
-                                     ,start=(/istart_bc-1,jstart_bc,k/)                   &
-                                     ,count=(/len_x+2,len_y+1,1/)))
+                                    ,ps_south(istart_res-1:iend_res+1,jstart_res:jend_res+1) &
+                                    ,start=(/istart_bc-1,jstart_bc,k/)                   &
+                                    ,count=(/len_x+2,len_y+1,1/)))
             endif
           endif
 !
@@ -512,11 +512,11 @@
                                           -ps_east(istart_res+1,j)
               enddo
 !
-              call check(nf90_inq_varid(ncid_bc,'ps_left',var_id_ps))
-              call check(nf90_put_var(ncid_bc_new,var_id_ps                            &
-                                     ,ps_east(istart_res-1:iend_res,jstart_res:jend_res) &
-                                     ,start=(/istart_bc-1,jstart_bc,k/)                  &
-                                     ,count=(/len_x+1,len_y,1/)))
+             call check(nf90_inq_varid(ncid_bc,'ps_left',var_id_ps))
+             call check(nf90_put_var(ncid_bc_new,var_id_ps                            &
+                                    ,ps_east(istart_res-1:iend_res,jstart_res:jend_res) &
+                                    ,start=(/istart_bc-1,jstart_bc,k/)                  &
+                                    ,count=(/len_x+1,len_y,1/)))
             endif
           endif
 !
@@ -566,11 +566,11 @@
                                         -ps_west(iend_res-1,j)
               enddo
 !
-              call check(nf90_inq_varid(ncid_bc,'ps_right',var_id_ps))
-              call check(nf90_put_var(ncid_bc_new,var_id_ps                                   &
-                                     ,ps_west(istart_res:iend_res+1,jstart_res:jend_res) &
-                                     ,start=(/istart_bc,jstart_bc,k/)                         &
-                                     ,count=(/len_x+1,len_y,1/)))
+             call check(nf90_inq_varid(ncid_bc,'ps_right',var_id_ps))
+             call check(nf90_put_var(ncid_bc_new,var_id_ps                                   &
+                                    ,ps_west(istart_res:iend_res+1,jstart_res:jend_res) &
+                                    ,start=(/istart_bc,jstart_bc,k/)                         &
+                                    ,count=(/len_x+1,len_y,1/)))
             endif
           endif
 !
@@ -856,25 +856,25 @@
 !***  North
 !-----------
 !
-      call write_delz_to_bc_file('north',nrows_blend)
+!x      call write_delz_to_bc_file('north',nrows_blend)
 !
 !-----------
 !***  South
 !-----------
 !
-      call write_delz_to_bc_file('south',nrows_blend)
+!x      call write_delz_to_bc_file('south',nrows_blend)
 !
 !----------
 !***  East
 !----------
 !
-      call write_delz_to_bc_file('east ',nrows_blend)
+!x      call write_delz_to_bc_file('east ',nrows_blend)
 !
 !----------
 !***  West
 !----------
 !
-      call write_delz_to_bc_file('west ',nrows_blend)
+!x      call write_delz_to_bc_file('west ',nrows_blend)
 !
 !-----------------------------------------------------------------------
 !

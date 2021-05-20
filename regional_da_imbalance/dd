@@ -1,0 +1,3 @@
+        call check(nf90_inq_dimid(ncid_sfc_orig                         &  !<-- The file ID
+                                 ,dimname_sfc(n)                        &  !<-- The dimension's name
+                                 ,dimid_sfc(n)))                           !<-- The dimensions's ID

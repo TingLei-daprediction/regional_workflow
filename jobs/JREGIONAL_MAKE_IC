@@ -7,7 +7,9 @@ set -xe
 ####################################
 # Specify Execution Areas
 ####################################
+
 export CHGRESEXEC=$EXECfv3/regional_chgres_cube.x
+export GETGES=$HOMEfv3/util/ush/getges_linkges_pgrb_new.sh
 export l_coldstart_anal=${l_coldstart_anal:-FALSE}
 
 ####################################
@@ -48,7 +50,7 @@ export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
-export INIDIRguess=${COMINgfs}/gfs.$PDYguess/$cycguess
+export INIDIRguess=${COMINgfs}/gfs.$PDYguess/$cycguess/atmos
 
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $COMOUT
@@ -95,9 +97,9 @@ export err=$?
 if [ ${l_coldstart_anal:-FALSE} = TRUE ] ; then
 #generate a fv3sar time files to be used by GSI
   cat << EOF > user_coupler.res
-      2        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
-  $PDY0guess  $monthguess  $dayguess  $cycguess  0     0        Model start time:   year, month, day, hour, minute, second
-  $PDY0guess  $monthguess  $dayguess  $cycguess  0     0  Current model time: year, month, day, hour, minute, second
+     2        (Calendar: no_calendar=0, thirty_day_months=1, julian=2, gregorian=3, noleap=4)
+  $PDY0guess    $monthguess    $dayguess    $cycguess     0     0        Model start time:   year, month, day, hour, minute, second
+  $PDY0guess    $monthguess    $dayguess    $cycguess     0     0        Current model time: year, month, day, hour, minute, second
 
 EOF
 mv user_coupler.res $OUTDIR
@@ -107,7 +109,6 @@ fi
 
 echo "xxxx"
 #####################################o
-exit #clthinkdeb
 echo "xxxx2"
 #####################################
 # Generate BCs for NHRSguess for SAR-DA
@@ -118,9 +119,10 @@ if [ $tmmark = tm12 -o $tmmark = tm06 ] ; then
 # NHRSguess comes from JREGIONAL_ENVIR
   if [ $tmmark = tm12  ] ; then
     hour=3
+     end_hour=6
   elif [ $tmmark = tm06  ] ; then
      hour=1
-     end_hour=1
+     end_hour=0  # now taken by bc tasks using grib2 input
   else
     echo "other choices are not available yet, exit" 
     exit 12

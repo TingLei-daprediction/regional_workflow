@@ -46,21 +46,27 @@ for imem in $(seq $ENSBEG $ENSEND); do
    else
    memchar="mem$cmem"
    export ensmemINPdir=${ensINPdir}/${memchar} 
+       if [ $tmmark = tm12  ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
+          export ensmemINPdirLBC=${ensINPdirLBC}/${memchar} 
+       fi
    fi
   
    echo "Processing MEMBER: $cmem"
    if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ]; then 
-   export FcstInDir=$ensmemINPdir
-   else
-   export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memchar
-   if [ $imem -eq 0 ] ; then
-   export FcstInDir=$EnsAnMeanDir
-   else
-   export FcstInDir=$EnsRecDir
-     if [ ${l_use_other_ctrlb_opt:-.false.} = .false. ] ; then
-      cp $ensmemINPdir/*bndy*nc $FcstInDir
+     export FcstInDir=$ensmemINPdir
+     if  [ $tmmark = tm06  ]; then 
+       cp $ensmemINPdirLBC/*bndy*nc $FcstInDir
      fi
-   fi
+   else
+     export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memchar
+     if [ $imem -eq 0 ] ; then
+       export FcstInDir=$EnsAnMeanDir
+     else
+       export FcstInDir=$EnsRecDir
+       if [ ${l_use_other_ctrlb_opt:-.false.} = .false. ] ; then
+         cp $ensmemINPdir/*bndy*nc $FcstInDir
+        fi
+     fi
    fi
    export FcstOutDir=$NWGES_ens/${tmmark_next}/$memchar
    mkdir -p $FcstOutDir

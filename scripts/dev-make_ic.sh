@@ -18,11 +18,19 @@ pwd
 echo "creating standalone regional ICs"
 export ntiles=1
 export TILE_NUM=7
+if [ -z ${ATMANL+x} ]; then
+rm -f atmf00
+rm -f sfcf00
+$GETGES -t natges -v $CYCLEguess -e ${envir_getges} atmf00
+$GETGES -t sfcges -v $CYCLEguess -e ${envir_getges} sfcf00
+export ATMANL=atmf00
+export SFCANL=sfcf00
+fi
 
 if [ $tmmark = tm00 ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
-export ATMANL=${ATMANL:-$INIDIR/${CDUMP}.t${cyc}z.atmanl.nemsio}
-export SFCANL=${SFCANL:-$INIDIR/${CDUMP}.t${cyc}z.sfcanl.nemsio}
+export ATMANL=${ATMANL:-$INIDIR/${CDUMP}.t${cyc}z.atmanl.nc}
+export SFCANL=${SFCANL:-$INIDIR/${CDUMP}.t${cyc}z.sfcanl.nc}
 export input_dir=$(dirname ATMANL)
 atmfile="$(basename  $ATMANL)"   #${CDUMP}.t${cyc}z.atmanl.nemsio
 sfcfile="$(basename  $SFCANL)"   #${CDUMP}.t${cyc}z.sfcanl.nemsio
@@ -33,8 +41,8 @@ cycleguess=`echo ${CDATE} | cut -c 9-10`
 
 elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a $l_coldstart_anal = TRUE ] ; then
 # input data is FV3GFS (ictype is 'pfv3gfs')
-export ATMANL=${ATMANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.atmanl.nemsio}
-export SFCANL=${SFCANL:-$INIDIRguess/${CDUMP}.t${cycguess}z.sfcanl.nemsio}
+export ATMANL=${ATMANL:-$INIDIRguess/atmos/${CDUMP}.t${cycguess}z.atmanl.nc}
+export SFCANL=${SFCANL:-$INIDIRguess/atmos/${CDUMP}.t${cycguess}z.sfcanl.nc}
 export input_dir=$(dirname $ATMANL)
 atmfile=$(basename $ATMANL)   #${CDUMP}.t${cycguess}z.atmanl.nemsio
 sfcfile=$(basename $SFCANL)   #${CDUMP}.t${cycguess}z.sfcanl.nemsio
@@ -48,7 +56,6 @@ atmfile=$(basename $ATMANL)   #${CDUMP}.t${cycguess}z.atmanl.nemsio
 sfcfile=$(basename $SFCANL)   #${CDUMP}.t${cycguess}z.sfcanl.nemsio
 monthguess=`echo ${CYCLEguess} | cut -c 5-6`
 dayguess=`echo ${CYCLEguess} | cut -c 7-8`
-
 
 
 fi
@@ -68,11 +75,21 @@ ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximu
 ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
 ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
 
+if [ "$ATMANL" != "$atmfile" ]; then
+ln -sf $ATMANL $atmfile
+fi
+if [ "$SFCANL" != "$sfcfile" ]; then
+ln -sf $SFCANL $sfcfile
+fi
+
 #
 # create namelist and run chgres cube
 #
 pwddir=`pwd`
 cp ${CHGRESEXEC} $pwddir 
+#clt not sure if this CHGRESVARS  is used
+export CHGRESVARS="use_ufo=.false.,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
+
 cat <<EOF >fort.41
 &config
  mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.halo${HALO}.nc"
@@ -92,7 +109,7 @@ cat <<EOF >fort.41
  convert_atm=.true.
  convert_sfc=${CONVERT_SFC:-.true.}
  convert_nst=.true.
- input_type="gaussian"
+ input_type="gaussian_netcdf"
  tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
  tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
@@ -114,13 +131,13 @@ exit 99
 fi
 
 if [ $REGIONAL = 1 ] ; then  
-numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc out.atm.tile7.nc out.sfc.tile7.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs*bndy.nc out.atm.tile7.nc out.sfc.tile7.nc | wc -l`
 if [ $numfiles -ne 4 ] ; then
   export err=4
   echo "Don't have all IC files at ${tmmark} "
 fi
 else
-numfiles=`ls -1 gfs_ctrl.nc gfs_bndy.nc  out.sfc.tile7.nc | wc -l`
+numfiles=`ls -1 gfs_ctrl.nc gfs*bndy.nc  out.sfc.tile7.nc | wc -l`
 if [ $numfiles -ne 3 ] ; then
   export err=5
   echo "Don't have all bc files at ${tmmark}, maybe false alarm when out.sfc.* could be absent "
@@ -130,12 +147,12 @@ fi
 #
 # move output files to save directory
 #
-mv gfs_bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
+mv gfs*bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 
 if [ $REGIONAL = 1 ] ; then  
   if [ $l_coldstart_anal = TRUE ] ; then  
-    ncks -A -v phis $Fix_temp/fv3_dynvars out.atm.tile7.nc
+    ncks -A -v phis $Fix_temp/${CASE+"${CASE}_"}fv3_dynvars out.atm.tile7.nc
   fi
 mv out.atm.tile7.nc $OUTDIR/gfs_data.tile7.nc
 mv gfs_ctrl.nc $OUTDIR/.

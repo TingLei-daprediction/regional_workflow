@@ -67,7 +67,7 @@ export nhr_assimilation=03
 export nens=${nens:-20}
 rm -f filelist${nhr_assimilation}_tmp_ens$ENSGRP 
 echo "UTIL 0 is "$UTIL
-python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs0}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_netcdf=yes
 
 sed '/ensmean/d'  filelist${nhr_assimilation}_tmp0_ens$ENSGRP> filelist${nhr_assimilation}_tmp_ens$ENSGRP 
 cat filelist${nhr_assimilation}_tmp_ens$ENSGRP
@@ -138,7 +138,7 @@ do
    mkdir -p ${ensmemINPdir}
    export  ATMANL=$line
    export  SFCANL=${ATMANL/atmf/sfcf} 
-   export  SFCANL=${SFCANL/s.nemsio/.nemsio} 
+   export  SFCANL=${SFCANL/s.netcdf/.netcdf} 
    if [[ ! -e "$DATAFILE" ]];then
      SFCANL="NULL"
      export CONVERT_SFC=.false.
@@ -204,8 +204,17 @@ export convert_nst=.false.
 
 #NHRSguess comes from JFV3SAR_ENVIR
 
-hour=3
 end_hour=$NHRSguess
+  if [ $tmmark = tm12  ] ; then
+    hour=3
+     end_hour=6
+  elif [ $tmmark = tm06  ] ; then
+     hour=1
+     end_hour=0  # now taken by bc tasks using grib2 input
+  else
+    echo "other choices are not available yet, exit" 
+    exit 12
+  fi
 while (test "$hour" -le "$end_hour")
  do
   if [ $hour -lt 10 ]; then  #clt to rewrite using printi command
@@ -220,7 +229,7 @@ while (test "$hour" -le "$end_hour")
 #cltthink    unset SFCANL
 #cltthink  else
     export vlddateLbcHr=`$NDATE +$hour $vlddate` 
-      python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddateLbcHr --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+      python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddateLbcHr --exact=yes --minsize=${nens} -d ${COMINgfs0}/enkfgdas -o filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} --o3fname=gfs_sigf${nhr_assimilation} --gfs_netcdf=yes
 numfiles=`cat  filelist${nhr_assimilation}_tmp_ens${ENSGRP}_LbcHr${hour} | wc -l`
 L_USE_CONTROL_LBC=.false.
 if [ $numfiles -lt ${nens:-20} ]; then

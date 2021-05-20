@@ -73,8 +73,13 @@ DOHYBVAR=NO
 export HYB_ENS=".false."
 
 fi
+
+ if [[ $l_coldstart_anal == TRUE  &&  $tmmark == tm06  ]]; then
+     regional_ensemble_option=1
+     l_both_fv3sar_gfs_ens=.false.
+     nens_fv3sar=0
+ fi
 regional_ensemble_option=${regional_ensemble_option:-5}
-export nens=${nens:-81}
 export nens_gfs=${nens_gfs:-$nens}
 export nens_fv3sar=${nens_fv3sar:-$nens}
 export l_both_fv3sar_gfs_ens=${l_both_fv3sar_gfs_ens:-.false.}
@@ -92,7 +97,7 @@ if [[ $DOHYBVAR = "YES" ]]; then
 	vlddatebgn=`$NDATE -3 $vlddate`
 	vlddateend=`$NDATE +3 $vlddate`
 	rm -f filelist4d
-        python $UTIL/getbest_EnKF_FV3GDAS_v1.py -v $vlddate --exact=yes --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist4d --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes --4d=[$vlddatebgn,$vlddateend,1]
+        python $UTIL/getbest_EnKF_FV3GDAS_v1.py -v $vlddate --exact=yes --minsize=${nens_gfs} -d ${COMINgfs0}/enkfgdas -o filelist4d --o3fname=gfs_sigf${nhr_assimilation} --gfs_netcdfo=yes --4d=[$vlddatebgn,$vlddateend,1]
         
         cat filelist4d* >filelist4d
         numfiles0=`cat filelist4d | wc -l`
@@ -130,7 +135,7 @@ if [[ $DOHYBVAR = "YES" ]]; then
 
       else  #L_GensExpanse_opt
      
-        python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+        python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=no --minsize=${nens_gfs} -d ${COMINgfs0}/enkfgdas -o filelist${nhr_assimilation} --o3fname=gfs_sigf${nhr_assimilation} --gfs_netcdf=yes
     fi
 #cltthink      if [[ $l_both_fv3sar_gfs_ens = ".true."  ]]; then
 #cltthink        sed '1d;$d' filelist${nhr_assimilation} > d.txt  #don't use the ensemble mean
@@ -192,7 +197,8 @@ export nhr_assimilation=3
 export vs=1.
 export fstat=.false.
 export i_gsdcldanal_type=0
-use_gfs_nemsio=.true.,
+use_gfs_nemsio=.false.,
+use_gfs_netcdf=.true.,
 
 export SETUP_part1=${SETUP_part1:-"miter=2,niter(1)=50,niter(2)=50"}
 if [ ${l_both_fv3sar_gfs_ens:-.false.} = ".true." ]; then  #regular  run
@@ -227,7 +233,8 @@ cat << EOF > gsiparm.anl
    oneobtest=.false.,retrieval=.false.,
    nhr_assimilation=${nhr_assimilation},l_foto=.false.,
    use_pbl=.false.,gpstop=30.,
-   use_gfs_nemsio=.true.,
+   use_gfs_nemsio=.false.,
+   use_gfs_ncio=.true.,
    print_diag_pcg=.true.,
    newpc4pred=.true., adp_anglebc=.true., angord=4,
    passive_bc=.true., use_edges=.false., emiss_bc=.true.,
@@ -718,10 +725,11 @@ if [ ${l_coldstart_anal:-FALSE} != TRUE ]; then
 	#   This file contains surface fields (vert dims of 3, 4, and 63)
 else
 	#   This file contains vertical weights for defining hybrid volume hydrostatic pressure interfaces 
-	cp $Fix_temp/fv_core.res.nc fv3_akbk
+	cp $Fix_temp/${CASE+"${CASE}_"}fv_core.res.nc fv3_akbk
 	#   This file contains horizontal grid information
 	cp $fv3_case/user_coupler.res coupler.res
-	cp $Fix_temp/grid_spec.nc fv3_grid_spec
+	cp $Fix_temp/${CASE+"${CASE}_"}grid_spec${lbcupdt_str}.nc fv3_grid_spec
+#cltorg	cp $Fix_temp/grid_spec.nc fv3_grid_spec
         cp $fv3_case/sfc_data.tile7.nc fv3_sfcdata
         cp $fv3_case/gfs_data.tile7.nc . 
 	ln -sf gfs_data.tile7.nc  fv3_dynvars

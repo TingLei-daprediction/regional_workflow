@@ -22,7 +22,7 @@ export pgmerr=errfile
 #export STMPDIR=${STMPDIR:-${mainroot}/stmp/${USER}/${envir}}
 #export PTMP=${PTMP:-""}
 #export STMP=${STMP:-""}
-export DATAROOT=${DATAROOT:-${STMP}/tmpnwprd-${CDATE}/}
+export DATAROOT=${DATAROOT:-${STMP}/tmpnwprd-${CDATE}/${envir}}
 
 #####################################
 # Execute the script.

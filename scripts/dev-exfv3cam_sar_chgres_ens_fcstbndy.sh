@@ -138,7 +138,7 @@ export PDYrun=`echo $CYCLE | cut -c 1-8`
 export PDYa=`echo $vlddate | cut -c 1-8`
 export CYCrun=`echo $CYCLE | cut -c 9-10`
 rm -f filelist${nhr_assimilation}_tmp0_ens$ENSGRP
-python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_nemsio=yes
+python $UTIL/getbest_EnKF_FV3GDAS.py -v $vlddate --exact=yes --minsize=${nens} -d ${COMINgfs}/enkfgdas -o filelist${nhr_assimilation}_tmp0_ens$ENSGRP --o3fname=gfs_sigf${nhr_assimilation} --gfs_netcdf=yes
 
 sed '/ensmean/d'  filelist${nhr_assimilation}_tmp0_ens$ENSGRP> filelist${nhr_assimilation}_tmp_ens$ENSGRP 
 cat  filelist${nhr_assimilation}_tmp_ens$ENSGRP 
@@ -189,7 +189,7 @@ do
      esac 
    export  ATMANL=$line
    export  SFCANL=${ATMANL/atmf/sfcf} 
-   export  SFCANL=${SFCANL/s.nemsio/.nemsio} 
+   export  SFCANL=${SFCANL/s.netcdf/.netcdf} 
    echo ATMANL and SFCANL are
    echo $ATMANL
    echo $SFCANL

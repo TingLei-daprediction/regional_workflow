@@ -41,8 +41,10 @@ mkdir -p $NWGES_ens
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-if [ $tmmark = tm12 ] ; then
+#cltorg if [ $tmmark = tm12 ] ; then
+if [ $tmmark = tm12 ] || [  $tmmark = tm06 -a ${l_coldstart_anal:-FALSE}  = TRUE ]  ; then    # SAR-DA
 export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/$tmmark
+export ensINPdirLBC=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/dirLBC/$tmmark
 else
 export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/dirLBC/$tmmark
 fi

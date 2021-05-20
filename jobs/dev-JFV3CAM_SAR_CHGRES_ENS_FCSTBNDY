@@ -144,7 +144,7 @@ mkdir -p $NWGES
 #mkdir -p $COMOUT/gfsanl.tm12
 #cltorg export INPdir=$COMOUT/gfsanl.tm12
 export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDYrun}/${cyc}/dirLBC/$tmmark
-if [ $tmmark = tm12 ] ; then    # SAR-DA
+if [ $tmmark = tm12 ] || [  $tmmark = tm06 -a ${l_coldstart_anal:-FALSE}  = TRUE ]  ; then    # SAR-DA
   export INPdir=$COMOUT/gfsanl.$tmmark
 else
   export INPdir=${COMOUT}/anl.${dom:+${dom}.}${tmmark}

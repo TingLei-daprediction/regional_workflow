@@ -1,2 +1,0 @@
-if [ ${machine} = "wcoss_dell_p3" ]
-then

@@ -32,7 +32,7 @@ case $tmmark in
   tm01) export tmmark_prev=tm02;;
   tm00) export tmmark_prev=tm01;;
 esac
-
+NDATE=/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/ndate
 export vlddate=`$NDATE -${offset} $CYCLE`
 export SDATE=$vlddate
 export cyc=`echo $vlddate | cut -c 9-10`
@@ -60,7 +60,7 @@ ncp=/bin/cp
 export HYB_ENS=".true."
 
 # We expect 81 total files to be present (80 enkf + 1 mean)
-export nens=${nens:-8}  #tothink
+export nens=${nens:-4}  #tothink
 
 # Not using FGAT or 4DEnVar, so hardwire nhr_assimilation to 3
 export nhr_assimilation=03
@@ -69,7 +69,7 @@ export EnsMeanDir=$NWGES_ens/enkf_mean${tmmark}/ensmean
 mkdir -p $EnsMeanDir
 export EnsAnMeanDir=$NWGES_ens/enkf_AnMean${tmmark}/ensmean
 mkdir -p $EnsAnMeanDir
-
+cd $DATA
 if [ $ldo_enscalc_option -ne 2  ] ; then
 memchar="mem001"  #cltthinkto
 ensmeanchar="ensmean"  #cltthinkto
@@ -85,7 +85,7 @@ ensmeanchar="ensmean"  #cltthinkto
 #cltorg          ncks --trd -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
 #cltoeg         ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
       ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
-tothink
+#clttothink
          ncvarlst_noaxis_time fv3sar_tile1_${ensmeanchar}_dynvars >  nck_dynvar_list.txt 
  
 #clt          ncks --trd -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
@@ -184,7 +184,13 @@ str3=${str##*mem}
 memid=${str3:0:3}
 #   echo "str3 is " $str3 #diag_conv_anl.2019042419
 #   echo "memid is " $memid
+
+if [[ $str2 == *".nc4" ]]; then
+newdiagfile=${str1}${str2%".nc4"*}_mem${memid}.nc4
+export netcdf_diag=.true.
+else
 newdiagfile=${str1}${str2}_mem$memid
+fi
 #   newdiagfile=${newdiagfile/_ges/.ges} 
 #   echo newfile is $newfile
 mv $diagfile $newdiagfile
@@ -198,7 +204,12 @@ str1=${str%ensmean*}
 str2=${str##*_}
 #   echo "str3 is " $str3 #diag_conv_anl.2019042419
 #   echo "memid is " $memid
+if [[ $str2 == *".nc4" ]]; then
+newdiagfile=${str1}${str2%".nc4"*}_ensmean.nc4
+export netcdf_diag=.true.
+else
 newdiagfile=${str1}${str2}_ensmean
+fi
 #   newdiagfile=${newdiagfile/_ges/.ges} 
 #   echo newfile is $newfile
 mv $diagfile $newdiagfile
@@ -213,7 +224,6 @@ fi
 
 #cltthinkdeb nens=`cat filelist03 | wc -l`
 if [ $ldo_enscalc_option -eq 1 -o $ldo_enscalc_option -eq 2 ]; then
-tothink
 anavinfo=$PARMfv3/anavinfo_fv3_enkf_ensmean_${LEVS}
 else
 anavinfo=$PARMfv3/anavinfo_fv3_enkf_${LEVS}
@@ -263,7 +273,7 @@ use_gfs_nemsio=.true.,
 	univaroz=.false.,adp_anglebc=.true.,angord=4,use_edges=.false.,emiss_bc=.true.,
 	lobsdiag_forenkf=.false.,
 	write_spread_diag=.false.,
-	netcdf_diag=.false.,
+	netcdf_diag=${netcdf_diag:-.false.},
 	ldo_enscalc_option=${ldo_enscalc_option},
 	$NAM_ENKF
 	/
@@ -346,7 +356,7 @@ use_gfs_nemsio=.true.,
 	$OZOBS_ENKF
 	/
 	&nam_fv3
-	nx_res=$NX_RES,ny_res=$NY_RES,ntiles=1,
+	fv3fixpath="XXX",nx_res=$NX_RES,ny_res=$NY_RES,ntiles=1,
 	/
 EOFnml
 
@@ -367,28 +377,31 @@ EOFnml
 	echo after  ulimit 
 	ulimit -a
 
+#thinkdeb
 
 #cltthinkdeb try /usrx/local/prod/intel/2018UP01/compilers_and_libraries/linux/mpi/bin64/mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
 	echo pwd is `pwd`
 	cd $DATA
 	ENKFEXEC=${ENKFEXEC:-$HOMEgsi/exec/global_enkf}
 	export pgm=`basename $ENKFEXEC`
-	. prep_step
+#cltthinkdeb	. prep_step
 
-	startmsg
+#cltthinkdeb	startmsg
 	cp $ENKFEXEC $DATA/enkf.x
 #cltorg mpirun -l -n  240  $DATA/enkf.x < enkf.nml 1>stdout 2>stderr
 	if [ $ldo_enscalc_option -ne 0  ] ; then
 	let i=1
-	for infile in `ls ${anavinfo}_p*`
+#cltthink tothink 	for infile in `ls ${anavinfo}_p*`
+	for infile in `ls ${anavinfo}`
 	do
 	cp $infile anavinfo 
-	cat anavinfo >>$pgmout
+	cat anavinfo >anavinfo_part_${i}
 	${APRUNC}  $DATA/enkf.x < enkf.nml 1>>part_${i}_$pgmout 2>>part_${i}_stderr
 	let i=i+1
 	done
 	else
 	${APRUNC}  $DATA/enkf.x < enkf.nml 1>$pgmout 2>stderr
+#cltthinkdeb    srun --label --ntasks=6 --ntasks-per-node=3 $DATA/enkf.x<enkf.nml 1>stdout 2>stderr
 fi
 rc=$?
 

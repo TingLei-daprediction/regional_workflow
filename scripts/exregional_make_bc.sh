@@ -18,28 +18,7 @@ echo "creating standalone regional BCs"
 export ntiles=1
 export TILE_NUM=7
 
-if [ $tmmark = tm00 ] ; then
-# input data is FV3GFS (ictype is 'pfv3gfs')
-export ATMANL=$INIDIR/${CDUMP}.t${cyc}z.atmanl.nemsio
-export SFCANL=$INIDIR/${CDUMP}.t${cyc}z.sfcanl.nemsio
-atmfile=${CDUMP}.t${cyc}z.atmanl.nemsio
-sfcfile=${CDUMP}.t${cyc}z.sfcanl.nemsio
 export input_dir=$INIDIR
-monthguess=`echo ${CDATE} | cut -c 5-6`
-dayguess=`echo ${CDATE} | cut -c 7-8`
-cycleguess=`echo ${CDATE} | cut -c 9-10`
-fi
-if [ $tmmark = tm12 ] ; then
-# input data is FV3GFS (ictype is 'pfv3gfs')
-# not needed in this job as tm12 IC/00-h BC made in make_ic job
-##export ATMANL=$INIDIRtm12/${CDUMP}.t${cycguess}z.atmanl.nemsio
-##export SFCANL=$INIDIRtm12/${CDUMP}.t${cycguess}z.sfcanl.nemsio
-##export input_dir=$INIDIRtm12
-##atmfile=${CDUMP}.t${cycguess}z.atmanl.nemsio
-##sfcfile=${CDUMP}.t${cycguess}z.sfcanl.nemsio
-monthguess=`echo ${CYCLEguess} | cut -c 5-6`
-dayguess=`echo ${CYCLEguess} | cut -c 7-8`
-fi
 
 #
 # create namelist and run chgres cube
@@ -55,11 +34,11 @@ if [ $tmmark = tm00 ]; then
   # if model=fv3sar_da, need to make 0-h BC file, otherwise it is made
   # in MAKE_IC job for fv3sar coldstart fcst off GFS anl
   if [ $model = fv3sar_da ] ; then
-    hour=0
+    hour=${HRBGN:-0}  #  0
   else
-    hour=3
+    hour=${HRBGN:-3} #  3
   fi
-  end_hour=$NHRS
+  end_hour=${HREND:-$NHRS}
   hour_inc=3
 elif [ $tmmark = tm12 ] ; then
   hour=3
@@ -95,20 +74,29 @@ while (test "$hour" -le "$end_hour")
   hhstart=`echo ${CDATE} | cut -c 9-10`
   fi
 
+export CHGRESVARS="use_ufo=.false.,nst_anl=$nst_anl,idvc=2,nvcoord=2,idvt=21,idsl=1,IDVM=0,nopdpvv=$nopdpvv"
 # force tm00 to get ontime FV3GFS run
-  if [ $tmmark != tm00 ] ; then
-    $GETGES -t natcur -v $VDATE -e prod atmf${hour_name}.nemsio
-    atmfile=atmf${hour_name}.nemsio
+  if [ $tmmark != tm00  ] ; then #cltthinkdeb
+   $GETGES -t pg2cur -v $VDATE -e prod -c $COMINgfs0 atmf${hour_name}.pg2cura
+    $GETGES -t pg2curb -v $VDATE -e prod atmf${hour_name}.pg2curb
+    cat atmf${hour_name}.pg2cura atmf${hour_name}.pg2curb > atmf${hour_name}.pg2comb
+    rm atmf${hour_name}.pg2cura atmf${hour_name}.pg2curb
+    echo "thinkdeb"
+    wgrib2 atmf${hour_name}.pg2comb -submsg 1 | $UtilUshfv3/grib2_unique.pl | wgrib2 -i atmf${hour_name}.pg2comb -GRIB atmf${hour_name}.pg2cur
+
   else
     export PDYgfs=`echo $CDATE | cut -c 1-8`
     export CYCgfs=`echo $CDATE | cut -c 9-10`
-    if [ $hour_name -eq 000 ] ; then
-      cp $COMINgfs/gfs.${PDYgfs}/${CYCgfs}/gfs.t${CYCgfs}z.atmanl.nemsio atmf${hour_name}.nemsio
-    else
-      cp $COMINgfs/gfs.${PDYgfs}/${CYCgfs}/gfs.t${CYCgfs}z.atmf${hour_name}.nemsio atmf${hour_name}.nemsio
-    fi
-    atmfile=atmf${hour_name}.nemsio
+   cp $COMINgfs0/gfs.${PDYgfs}/${CYCgfs}/atmos/gfs.t${CYCgfs}z.pgrb2.0p25.f${hour_name} atmf${hour_name}.pg2cura
+cp $COMINgfs/gfs.${PDYgfs}/${CYCgfs}/atmos/gfs.t${CYCgfs}z.pgrb2b.0p25.f${hour_name} atmf${hour_name}.pg2curb
+
+cat atmf${hour_name}.pg2cura atmf${hour_name}.pg2curb > atmf${hour_name}.pg2comb
+rm atmf${hour_name}.pg2cura atmf${hour_name}.pg2curb
+
+wgrib2 atmf${hour_name}.pg2comb -submsg 1 | $UtilUshfv3/grib2_unique.pl | wgrib2 -i atmf${hour_name}.pg2comb -GRIB atmf${hour_name}.pg2cur
+
   fi
+atmfile=atmf${hour_name}.pg2cur
 
 cat <<EOF >fort.41
 &config
@@ -121,17 +109,16 @@ cat <<EOF >fort.41
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
  data_dir_input_grid="${DATA}"
- atm_files_input_grid="$atmfile"
+ grib2_file_input_grid="$atmfile"
+ varmap_file="$PARMfv3/GFSphys_var_map.txt"
  sfc_files_input_grid="NULL"
  cycle_mon=$mmstart
  cycle_day=$ddstart
  cycle_hour=$hhstart
+ input_type="grib2"  
  convert_atm=.true.
  convert_sfc=.false.
  convert_nst=.false.
- input_type="gaussian"
- tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
- tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
  regional=${REGIONAL}
  halo_bndy=${HALO}
  halo_blend=${NROWS_BLEND:-0}
@@ -139,9 +126,7 @@ cat <<EOF >fort.41
 EOF
 
 export pgm=regional_chgres_cube.x
-. prep_step
 
-  startmsg
   time ${APRUNC}  ./regional_chgres_cube.x
   export err=$?
   ###export err=$?;err_chk
@@ -154,7 +139,7 @@ export pgm=regional_chgres_cube.x
 #
 # move output files to save directory
 #
-  mv gfs_bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+  mv gfs?bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
   err=$?
   if [ $err -ne 0 ] ; then
     echo "Don't have ${hour_name}-h BC file at ${tmmark}, abort run"

@@ -1,0 +1,192 @@
+#!/bin/ksh
+ 
+set -x
+
+
+. $HOMEfv3/jobs/JFV3CAM_SAR_ENVIR
+. $USHfv3/run_commands_forecast.sh
+# Determine which WCOSS platform we are on
+hostname > hname
+hl=`cut -c 1-1 hname`
+
+if [ $hl = m ] ; then
+  wcoss=tp
+fi
+if [ $hl = v ] ; then
+  wcoss=gp
+fi
+##############################################
+# Initialize PDY variables
+##############################################
+# PDY, CDATE, and tmmark are passed in through Rocoto xml
+#setpdy.sh
+#. ./PDY
+
+offset=`echo $tmmark | cut -c 3-4`
+export vlddate=`$NDATE -${offset} $CDATE`
+export SDATE=$vlddate
+export cyc=`echo $vlddate | cut -c 9-10`
+export cya=$cyc
+export CYC=$cyc
+export PDY=`echo $vlddate | cut -c 1-8`
+export PDYa=$PDY
+export PDYrun=`echo $CDATE | cut -c 1-8`
+export CYCrun=`echo $CDATE | cut -c 9-10`
+
+export CYCLEtm12=`$NDATE -12 $CYCLE`
+export CYCLEtm06=`$NDATE -06 $CYCLE`
+export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
+export PDYtm06=`echo $CYCLEtm06 | cut -c 1-8`
+export cyctm06=`echo $CYCLEtm06 | cut -c 9-10`
+
+
+
+##############################################
+# Obtain unique process id (pid) and make temp directory
+##############################################
+export DATA=${STMP}//${envir}/tmpnwprd-${CDATE}/${job}_${CYCrun}_ioda
+mkdir -p $DATA
+cd $DATA
+
+export pid=$$
+export pgmout="OUTPUT.${pid}"
+
+
+
+##############################################
+# Define COM directories
+##############################################
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
+export COMOUT_ctrl=${COMROOT}/${NET}/${envir_ctrl:-$envir}/${RUN}.${PDYrun}/${CYCrun}
+export global_ens_dir_backup=/scratch2/NCEPDEV/stmp1/Ting.Lei/dr-global-data/
+mkdir -p $COMOUT
+export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
+mkdir -p $NWGES
+if [ ${l_twoway_hybrid_opt:-.true.} = ".true". ] ; then 
+export NWGES_ens=${NWGES_ens:-${GESROOT}/${NET}/${envir}/${RUN}_ens.${PDYrun}/${CYCrun}}
+else
+export NWGES_ens=${NWGES_ens:-${GESROOT}/${NET}/${envir4ens}/${RUN}_ens.${PDYrun}/${CYCrun}}
+fi
+export COMIN_GES_ENS=${NWGES_ens}/$tmmark
+mkdir -p $NWGES
+if [ ${l_coldstart_anal:-FLASE} != TRUE ]; then
+  export GUESSdir=$COMOUT/guess.${tmmark}
+  export ANLdir=$COMOUT/anl.${tmmark}
+else
+  export fv3sar_bg_opt=1
+  export GUESSdir=$COMOUT/gfsguess.$tmmark
+  export ANLdir=$COMOUT/gfsanl.$tmmark
+  cp `ls $GUESSdir/* |grep -v gfs_data.tile7.nc ` $ANLdir
+  
+fi
+
+mkdir -p $GUESSdir
+
+mkdir -p $ANLdir
+IODAdir=$ANLdir/ioda_convert_obs
+mkdir -p $IODAdir
+
+##############################################
+# Specify Execution Areas
+##############################################
+# Set path/file for gsi executable
+if [ $tmmark = tm06 ] ; then
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+   export COMOUTtm06=${COMROOT}/${NET}/${envir}/${RUN}.${PDYtm06}/${cyctm06}
+   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
+   export COMINbias=$COMOUTtm06
+   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+   export MYGDAS=$COMINgfs/gdas.${PDYa}/${cya}
+   export GBGDAS=$COMINgfs/gdas.${PDYa}/${cya}
+fi
+else
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+   export COMINbias=$COMOUT
+   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+fi
+fi
+
+
+if [ $machine = hera -o $machine = HERA ] ; then
+#clthinkdeb are the bloak needed? 
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/scratch2/NCEPDEV/meso/noscrub/Wanshu.Wu/build/bin/gsi.x
+  export fixgsi=$HOMEfv3/sorc/regional_gsi.fd/fix/
+  export fixcrtm=${fixcrtm:-/scratch2/NCEPDEV/da/save/Michael.Lueken/nwprod/lib/crtm/2.2.3/fix_update}
+elif [ $machine = wcoss_dell_p3 ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec=${EXECfv3}/gsi.x
+  export fixgsi=${HOMEfv3}/sorc/gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
+elif [ $machine = wcoss_dell_p3.5 ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=/gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_gsi.fd/fix
+  #export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/usrx/local/nceplibs/dev/NCEPLIBS/src/crtm_v2.3.0/fix
+
+elif [ $machine = WCOSS ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/build/bin/gsi.x
+  export fixgsi=/meso/save/${USER}/fv3reg_aug2018/fv3gsi_reg/ProdGSI/fix
+  export fixcrtm=/da/save/Michael.Lueken/CRTM_REL-2.2.3/crtm_v2.2.3/fix_update
+elif [ $machine = wcoss_cray ] ; then
+  export UTIL=$HOMEfv3/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi="/gpfs/hps3/emc/meso/save/Eric.Rogers/regional_workflow/regional_gsi.fd/fix"
+  export fixcrtm=/gpfs/hps/nco/ops/nwpara/lib/crtm/v2.2.7/fix
+  export gsiexec0=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-gsi-mixdual/ProdGSI/exec/global_gsi.x
+
+elif [ $machine = DELL ] ; then
+  export UTIL=${HOMEfv3}/util/ush
+  export gsiexec0=${EXECfv3}/regional_gsi.x
+  export fixgsi=${HOMEfv3}/sorc/regional_gsi.fd/fix
+#clt 20200424   export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.6/fix
+  export fixcrtm=/gpfs/dell1/nco/ops/nwprod/lib/crtm/v2.2.7/fix
+fi
+
+
+
+
+gsiexec=${gsiexec:-$gsiexec0}
+
+# setup ensemble filelist03
+
+if [ $machine = hera -o $machine = HERA ] ; then
+   export COMINgfs=${COMINgfs:-/scratch2/NCEPDEV/rstprod/com/gfs/prod}
+   export COMINnam=/scratch2/NCEPDEV/rstprod/com/nam/prod
+   export COMINrap=${COMINrap:-/scratch4/NCEPDEV/rstprod/com/rap/prod}
+   COMINrtma=/scratch2/NCEPDEV/rstprod/com/rtma2p5/prod
+   # bias correction files from prev cycle
+   export COMINbias=$COMOUT
+fi
+if [ $machine = WCOSS_C -o $machine = WCOSS -o $machine = DELL ] ; then
+   export COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+   export COMINnam=/gpfs/${wcoss}2/nco/ops/com/nam/prod
+   export COMINrap=/gpfs/hps/nco/ops/com/rap/prod
+   export COMINbias=$COMOUT
+   export COMINrtma=/gpfs/${wcoss}2/nco/ops/com/rtma/prod
+fi
+
+
+#run script
+#cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
+export jedi_iodash=${jediiodash:-${HOMEfv3}/scripts/dev-exfv3cam_sar_jedi_ioda.sh}
+#cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
+$jedi_iodash
+export err=$?;err_chk
+#cat $pgmout
+#cat stderr
+
+#cltorg if [ ${RM_TMPDIR:-YES} = YES ] ; then rm -rf $DATA ; fi
+#cltif [ ${RM_TMPDIR:-YES} = YES ] ; then mv  $DATA ${DATA}_bak ; fi
+
+date
+
+exit

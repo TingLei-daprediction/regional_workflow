@@ -31,8 +31,8 @@ export CYCrun=`echo $CDATE | cut -c 9-10`
 
 #COMROOT and GESROOT are the same dirs
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDYrun}/${CYCrun}
-mkdir -p $GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
-export NWGES=$GESROOT/${RUN}/${envir}/${RUN}.${PDY}/${cyc}
+export NWGES=$GESROOT/${RUN}/${envir}/${RUN}.${PDYrun}/${CYCrun}
+mkdir -p $NWGES
 
 mkdir -p $COMOUT/guess.${tmmark}
 mkdir -p $COMOUT/anl.${tmmark}

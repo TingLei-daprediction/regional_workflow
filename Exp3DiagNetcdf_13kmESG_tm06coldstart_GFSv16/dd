@@ -1,0 +1,176 @@
+  <task name="jedi-ioda_convert_tm06" cycledefs="regional" maxtries="6">
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_JEDI_IODA</command>
+    <jobname><cyclestr>ioda_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/jedi-ioda_firstguess_tm06_@H.log</cyclestr></join>
+     &RESERVATION_test;
+    &ANLtest_RESOURCES;
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>ioda_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+     <envar>
+      <name>gsiexec</name>
+      <value>&gsiexec;</value>
+     </envar>
+  
+    <envar>
+      <name>nens </name>
+      <value>&nens; </value>
+     </envar>
+    <envar>
+      <name>l_both_fv3sar_gfs_ens </name>
+      <value>&l_both_fv3sar_gfs_ens; </value>
+     </envar>
+
+    
+    <envar>
+      <name>nens_gfs </name>
+      <value>&nens_gfs; </value>
+    </envar>
+    <envar>
+      <name>nens_fv3sar </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>COMINgfs</name>
+      <value>&COMINgfs;</value>
+    </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
+    <envar>
+      <name>l_coldstart_anal</name>
+      <value>&l_coldstart_anal;</value>
+    </envar>
+     <envar>
+      <name>gsianlsh</name>
+      <value>&gsianlsh;</value>
+     </envar>
+
+    <dependency>
+        <taskdep task="analysis_tm06s"/>
+    </dependency>
+
+  </task>
+  <task name="jedi_analysis_tm06" cycledefs="regional" maxtries="6">
+    <command>&PRE; &JOBS;/dev-JFV3CAM_SAR_JEDI_ANL</command>
+    <jobname><cyclestr>jedianl_tm06_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/dr@Y@m@d@H.log/jedianl_firstguess_tm06_@H.log</cyclestr></join>
+     &RESERVATION;
+    &ANL2_RESOURCES;
+    <envar>
+      <name>envir</name>
+      <value>&EXPenvir;</value>
+    </envar>
+      <envar>
+       <name>machine</name>
+         <value>&machine;</value>
+    </envar>
+
+    <envar>
+      <name>HOMEfv3</name>
+      <value>&HOMEfv3;</value>
+    </envar>
+    <envar>
+      <name>job</name>
+      <value>jedianl_tm06</value>
+    </envar>
+    <envar>
+      <name>tmmark</name>
+      <value>tm06</value>
+    </envar>
+    <envar>
+      <name>USER</name>
+      <value>&USER;</value>
+    </envar>
+    <envar>
+      <name>CYCLE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>cyc</name>
+      <value><cyclestr>@H</cyclestr></value>
+    </envar>
+     <envar>
+      <name>jediexec</name>
+      <value></value>
+     </envar>
+  
+    <envar>
+      <name>nens </name>
+      <value>&nens; </value>
+     </envar>
+    <envar>
+      <name>l_both_fv3sar_gfs_ens </name>
+      <value>&l_both_fv3sar_gfs_ens; </value>
+     </envar>
+
+    
+    <envar>
+      <name>nens_gfs </name>
+      <value>&nens_gfs; </value>
+    </envar>
+    <envar>
+      <name>nens_fv3sar </name>
+      <value>&nens_fv3sar; </value>
+     </envar>
+      <envar>
+      <name>CDATE</name>
+      <value><cyclestr>@Y@m@d@H</cyclestr></value>
+    </envar>
+    <envar>
+      <name>COMINgfs</name>
+      <value>&COMINgfs;</value>
+    </envar>
+    <envar>
+      <name>CRES</name>
+      <value>&CRES;</value>
+    </envar>
+    <envar>
+      <name>l_coldstart_anal</name>
+      <value>&l_coldstart_anal;</value>
+    </envar>
+     <envar>
+      <name>jedianlsh</name>
+      <value></value>
+     </envar>
+
+    <dependency>
+        <taskdep task="jedi-ioda_convert_tm06"/>
+    </dependency>
+
+  </task>

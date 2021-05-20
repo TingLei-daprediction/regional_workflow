@@ -14,7 +14,7 @@
 #                       Adapted for stand-alone regional configuration
 ############################################################################
 #set -eux
-set -ux
+set -x
 
 export KMP_AFFINITY=scatter
 export OMP_NUM_THREADS=2
@@ -148,7 +148,7 @@ cd ..
 
 if [ $tmmark = tm00 ] ; then
 	if [ $MPSUITE = thompson ] ; then
-	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn_lam3km"}
 	  cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
 	fi
 	if [ $MPSUITE = gfdlmp ] ; then
@@ -237,7 +237,7 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
 
 
       if [ $MPSUITE = thompson ] ; then
-         CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+         CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn_lam3km"}
          cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
          cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml.tmp
             
@@ -268,7 +268,7 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
 
 else
 	if [ $MPSUITE = thompson ] ; then
-	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
+	  CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn_lam3km"}
 	  cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
 	fi
 	if [ $MPSUITE = gfdlmp ] ; then
@@ -306,6 +306,13 @@ else
   cp ${PARMfv3}/data_table .
   cp ${PARMfv3}/nems.configure .
 fi
+#Copy UPP parm files for inline post
+cp ${PARMfv3}/post_itag                 ./itag
+cp ${PARMfv3}/nam_micro_lookup.dat      ./eta_micro_lookup.dat
+cp ${PARMfv3}/postxconfig-NT-fv3lam.txt ./postxconfig-NT.txt
+cp ${PARMfv3}/postxconfig-NT-fv3lam.txt ./postxconfig-NT_FH00.txt
+cp ${PARMfv3}/params_grib2_tbl_new      ./params_grib2_tbl_new
+
 
 if [ ${L_LBC_UPDATE:-FALSE} = TRUE -a $tmmark != tm00  ];then
  if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
@@ -344,7 +351,7 @@ else
 fi
   cat input.nml.tmp | \
      sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
-   sed -i  -e "s/XCRESX/${CRES}/"   input.nml
+   sed -i  -e "s/XCRESX/${CASE}/"   input.nml
    sed -i  -e "/regional_bcs_from_gsi.*=/ s/=.*/= $regional_bcs_from_gsi/"  input.nml
    sed -i  -e "/write_restart_with_bcs.*=/ s/=.*/= $write_restart_with_bcs/"  input.nml
    sed -i  -e "/nrows_blend.*=/ s/=.*/= $nrows_blend/"  input.nml
@@ -372,6 +379,7 @@ mn=`echo $CYCLEanl | cut -c5-6`
 dy=`echo $CYCLEanl | cut -c7-8`
 hr=`echo $CYCLEanl | cut -c9-10`
 fi
+
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
@@ -409,7 +417,7 @@ else
     sed s/NCNODE/$NCNODE/ | sed s/NRESTART/$NRST/ | \
     sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  >  model_configure
 fi
-#cltthinkdeb    sed -i -e "/restart_interval.*:/ s/:.*/: $RESTART_INTERVAL/" model_configure 
+    sed -i -e "/restart_interval.*:/ s/:.*/: $RESTART_INTERVAL/" model_configure 
 
 #----------------------------------------- 
 # Run the forecast
@@ -441,23 +449,7 @@ export pgm=regional_forecast.x
 
 #clt . prep_step
 
-#clt ${APRUNC} /home/Raghu.Reddy/hello/hello_mpi_c-intel-impi >$pgmout 2>err
-#clt ${APRUNC} $EXECfv3/regional_forecast.x_thompson >$pgmout 2>err
-#${APRUNC} $EXECfv3/fv3_gfs.x >$pgmout 2>err
-#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-beck/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
-#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/exec/fv3_gfs.x >$pgmout 2>err
-#clt${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-regional-workflow/ufs-srweather-app/src/ufs_weather_model/tests/fv3.exe >$pgmout 2>err
-#clt hera ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
-#${APRUNC}  /gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-eric/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
-#wcoss ${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/emc.campara/fv3lamdax/regional_workflow/exec/regional_forecast.x >$pgmout 2>err
-#clt ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
-${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric/dr-debug/regional_forecast.fd/build/NEMS.exe >$pgmout 2>err
-#${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-eric//dr-test/regional_forecast.fd/tests/fv3_32bit.exe >$pgmout 2>err
-
-#${APRUNC}   /gpfs/dell6/emc/modeling/noscrub/Eric.Rogers/fv3lam_for_dellp3.5/sorc/regional_forecast.fd_jim/tests/fv3_2.exe_debug >$pgmout 2>err
-#cltthink ${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
-#${APRUNC} /scratch2/NCEPDEV/fv3-cam/James.A.Abeles/ufs-weather-model/tests/fv3_32bit.exe  >$pgmout 2>err
-#cltthinkdeb mpirun -l -n 144 $EXECfv3/global_fv3gfs_maxhourly.x >$pgmout 2>err
+${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-GFSV16-unified-workflow/ufs-weather-model/tests/fv3_32bit.exe >$pgmout 2>err
 export err=$? #cltthinkdeb ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -486,14 +478,16 @@ if [ $tmmark != tm00 ] ; then
   mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
   mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
   cp sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+  cp fv_srf_wnd.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_srf_wnd.res.tile1.nc
 
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
   mv phy_data.nc $FcstOutDir/phy_data.nc
-if [[ ! $memstr =~ mem ]];then  #for control run
-  mv fv_srf_wnd.res.tile1.nc $ANLdir/fv_srf_wnd.res.tile1.nc
+
+if [[ ! $FcstOutDir =~ mem ]];then  #for control run
+  mv fv_srf_wnd.res.tile1.nc $ANLdir/${PDYfcst}.${CYCfcst}0000.fv_srf_wnd.res.tile1.nc
 fi
 
 if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
@@ -505,7 +499,7 @@ if [[ ${L_LBC_UPDATE:-FALSE} = TRUE ]];then
   mv grid_spec.nc grid_spec_orig.nc
 
   cp $HOMEfv3/regional_da_imbalance/prep_for_regional_DA.x .
-  cp $HOMEfv3/regional_da_imbalance/grid.tile7.halo3_${CASE}.nc grid.tile7.halo3.nc
+  cp $FIXsar/${CASE}_grid.tile7.halo3.nc grid.tile7.halo3.nc
   ./prep_for_regional_DA.x
 
   mv sfc_data_new.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data_new.nc

@@ -1147,8 +1147,12 @@ elif [[ "$netwk" = "global" ]];then
    fhinc=06
    ;;
   natges) geslist='
-   $COMINgdas/gdas.${day}/${cyc}/gdas.t${cyc}z.atmf$gh.nemsio
-   $COMINgfs/gfs.${day}/${cyc}/gfs.t${cyc}z.atmf$gh.nemsio'
+   $COMINgdas/gdas.${day}/${cyc}/atmos/gdas.t${cyc}z.atmf$gh.nc
+   $COMINgfs/gfs.${day}/${cyc}/atmos/gfs.t${cyc}z.atmf$gh.nc'
+   ;;
+  sfcges) geslist='
+   $COMINgdas/gdas.${day}/${cyc}/atmos/gdas.t${cyc}z.sfcf$gh.nc
+   $COMINgfs/gfs.${day}/${cyc}/atmos/gfs.t${cyc}z.sfcf$gh.nc'
    ;;
   natgm3) geslist='
    $GETGES_NWG/$envir/gdas.$day/gdas.t${cyc}z.atmf$ghm3.nemsio
