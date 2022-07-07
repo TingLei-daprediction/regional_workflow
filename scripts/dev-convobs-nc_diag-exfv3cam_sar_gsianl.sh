@@ -47,7 +47,7 @@ echo "tothink"
 #gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-shun/dr-HAFS/GSI/exec/gsi.x  #this generated diag in netcdf not compatible for enkf's
 #gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-HAFS/GSI/exec/gsi_DBG.x  #this generated diag in netcdf not compatible for enkf's
 gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-shun/dr-HAFS/GSI/build/bin/gsi.x  #this generated diag in netcdf not compatible for enkf's
-gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-shun/dr-HAFS/GSI/build_debug/bin/gsi_DBG.x  #this generated diag in netcdf not compatible for enkf's
+#gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-shun/dr-HAFS/GSI/build_bak/bin/gsi_DBG.x  #this generated diag in netcdf not compatible for enkf's
 #gsiexec=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-daprediction-github-GSI/GSI/build/bin/gsi_DBG.x  #this generated diag in netcdf not compatible for enkf's
 fi
 # Set runtime and save directories
@@ -297,7 +297,6 @@ OBS_INPUT::
    prepbufr       t           null      t                    1.0     0     0
    prepbufr       q           null      q                    1.0     0     0
    prepbufr       pw          null      pw                   1.0     0     0
-   satwndbufr     uv          null      uv                   1.0     0     0
    prepbufr       uv          null      uv                   1.0     0     0
    prepbufr       spd         null      spd                  1.0     0     0
    prepbufr       dw          null      dw                   1.0     0     0
@@ -306,82 +305,6 @@ OBS_INPUT::
    prepbufr_profl t           null      t                    1.0     0     0
    prepbufr_profl q           null      q                    1.0     0     0
    prepbufr_profl uv          null      uv                    1.0     0     0
-   gpsrobufr      gps_ref     null      gps                  1.0     0     0
-   ssmirrbufr     pcp_ssmi    dmsp      pcp_ssmi             1.0    -1     0
-   tmirrbufr      pcp_tmi     trmm      pcp_tmi              1.0    -1     0
-   sbuvbufr       sbuv2       n16       sbuv8_n16            0.0     0     0
-   sbuvbufr       sbuv2       n17       sbuv8_n17            0.0     0     0
-   sbuvbufr       sbuv2       n18       sbuv8_n18            0.0     0     0
-   hirs3bufr      hirs3       n16       hirs3_n16            0.0     1     0
-   hirs3bufr      hirs3       n17       hirs3_n17            0.0     1     0
-   hirs4bufr      hirs4       metop-a   hirs4_metop-a        0.0     2     0
-   hirs4bufr      hirs4       n18       hirs4_n18            0.0     1     0
-   hirs4bufr      hirs4       n19       hirs4_n19            0.0     2     0
-   hirs4bufr      hirs4       metop-b   hirs4_metop-b        0.0     2     0
-   gimgrbufr      goes_img    g11       imgr_g11             0.0     1     0
-   gimgrbufr      goes_img    g12       imgr_g12             0.0     1     0
-   airsbufr       airs        aqua      airs_aqua            0.0     2     0
-   amsuabufr      amsua       n15       amsua_n15            0.0     2     0
-   amsuabufr      amsua       n18       amsua_n18            0.0     2     0
-   amsuabufr      amsua       n19       amsua_n19            0.0     2     0
-   amsuabufr      amsua       metop-a   amsua_metop-a        0.0     2     0
-   amsuabufr      amsua       metop-b   amsua_metop-b        0.0     2     0
-   airsbufr       amsua       aqua      amsua_aqua           0.0     2     0
-   amsubbufr      amsub       n17       amsub_n17            0.0     1     0
-   mhsbufr        mhs         n18       mhs_n18              0.0     2     0
-   mhsbufr        mhs         n19       mhs_n19              0.0     2     0
-   mhsbufr        mhs         metop-a   mhs_metop-a          0.0     2     0
-   mhsbufr        mhs         metop-b   mhs_metop-b          0.0     2     0
-   ssmitbufr      ssmi        f13       ssmi_f13             0.0     2     0
-   ssmitbufr      ssmi        f14       ssmi_f14             0.0     2     0
-   ssmitbufr      ssmi        f15       ssmi_f15             0.0     2     0
-   amsrebufr      amsre_low   aqua      amsre_aqua           0.0     2     0
-   amsrebufr      amsre_mid   aqua      amsre_aqua           0.0     2     0
-   amsrebufr      amsre_hig   aqua      amsre_aqua           0.0     2     0
-   ssmisbufr      ssmis       f16       ssmis_f16            0.0     2     0
-   ssmisbufr      ssmis       f17       ssmis_f17            0.0     2     0
-   ssmisbufr      ssmis       f18       ssmis_f18            0.0     2     0
-   ssmisbufr      ssmis       f19       ssmis_f19            0.0     2     0
-   gsnd1bufr      sndrd1      g12       sndrD1_g12           0.0     1     0
-   gsnd1bufr      sndrd2      g12       sndrD2_g12           0.0     1     0
-   gsnd1bufr      sndrd3      g12       sndrD3_g12           0.0     1     0
-   gsnd1bufr      sndrd4      g12       sndrD4_g12           0.0     1     0
-   gsnd1bufr      sndrd1      g11       sndrD1_g11           0.0     1     0
-   gsnd1bufr      sndrd2      g11       sndrD2_g11           0.0     1     0
-   gsnd1bufr      sndrd3      g11       sndrD3_g11           0.0     1     0
-   gsnd1bufr      sndrd4      g11       sndrD4_g11           0.0     1     0
-   gsnd1bufr      sndrd1      g13       sndrD1_g13           0.0     1     0
-   gsnd1bufr      sndrd2      g13       sndrD2_g13           0.0     1     0
-   gsnd1bufr      sndrd3      g13       sndrD3_g13           0.0     1     0
-   gsnd1bufr      sndrd4      g13       sndrD4_g13           0.0     1     0
-   gsnd1bufr      sndrd1      g15       sndrD1_g15           0.0     2     0
-   gsnd1bufr      sndrd2      g15       sndrD2_g15           0.0     2     0
-   gsnd1bufr      sndrd3      g15       sndrD3_g15           0.0     2     0
-   gsnd1bufr      sndrd4      g15       sndrD4_g15           0.0     2     0
-   iasibufr       iasi        metop-a   iasi_metop-a         0.0     2     0
-   gomebufr       gome        metop-a   gome_metop-a         0.0     2     0
-   omibufr        omi         aura      omi_aura             0.0     2     0
-   sbuvbufr       sbuv2       n19       sbuv8_n19            0.0     0     0
-   tcvitl         tcp         null      tcp                  0.0     0     0
-   seviribufr     seviri      m08       seviri_m08           0.0     2     0
-   seviribufr     seviri      m09       seviri_m09           0.0     2     0
-   seviribufr     seviri      m10       seviri_m10           0.0     2     0
-   iasibufr       iasi        metop-b   iasi_metop-b         0.0     2     0
-   gomebufr       gome        metop-b   gome_metop-b         0.0     2     0
-   atmsbufr       atms        npp       atms_npp             0.0     2     0
-   atmsbufr       atms        n20       atms_n20             0.0     2     0
-   crisbufr       cris        npp       cris_npp             0.0     2     0
-   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0 
-   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0 
-   abibufr        abi         g16       abi_g16              0.0     2     0
-   abibufr        abi         g17       abi_g17              0.0     2     0
-   mlsbufr        mls30       aura      mls30_aura           0.0     0     0
-   oscatbufr      uv          null      uv                   0.0     0     0
-   prepbufr       mta_cld     null      mta_cld              1.0     0     0
-   prepbufr       gos_ctp     null      gos_ctp              1.0     0     0
-   refInGSI       rad_ref     null      rad_ref              1.0     0     0
-   lghtInGSI      lghtn       null      lghtn                1.0     0     0
-   larcInGSI      larccld     null      larccld              1.0     0     0
 ::
  &SUPEROB_RADAR
    del_azimuth=5.,del_elev=.25,del_range=5000.,del_time=.5,elev_angle_max=5.,minnum=50,range_max=100000.,
@@ -530,19 +453,7 @@ fi
 
 
 ###export nmmb_nems_obs=${COMINnam}/nam.${PDYrun}
-
-#cltthinkdb if [ ${l4cloud:-YES} != "YES" ]; then  #regular  run
-if [ ${l4cloud:-FALSE} != "YES" ]; then  #regular  run
- export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
- rap_suffix=""
- rap_prefix="rap"
-else
- export nmmb_nems_obs=${cloudobs}/rap_p.${PDYa}
- COMINrap_user="XXXX"   # avoid unknown use through use of COMINrap_user 
- rap_suffix=".nr"
- rap_prefix="rap_p"
-fi
-
+export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
 
 export nmmb_nems_bias=${COMINbias}
 
@@ -560,36 +471,81 @@ if [ ${USE_SELECT:-NO} != "YES" ]; then  #regular  run
 export g1617_rad_obs=/gpfs/dell2/emc/obsproc/noscrub/Steve.Stegall/DUMPDIR/GOES_CSR_baseline.v2/com/prod/rap/rap.${PDYa}
 #cltorg export nmmb_nems_obs=${COMINpararap}/rap.${PDYa}
 #clt for non-wcoss export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
-
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.prepbufr.tm00${rap_suffix}  ./prepbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.prepbufr.acft_profiles.tm00${rap_suffix} prepbufr_profl
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.satwnd.tm00.bufr_d${rap_suffix} ./satwndbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.1bhrs3.tm00.bufr_d${rap_suffix} ./hirs3bufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.1bhrs4.tm00.bufr_d${rap_suffix} ./hirs4bufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.mtiasi.tm00.bufr_d${rap_suffix} ./iasibufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.1bamua.tm00.bufr_d${rap_suffix} ./amsuabufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.esamua.tm00.bufr_d${rap_suffix} ./amsuabufrears
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.1bamub.tm00.bufr_d${rap_suffix} ./amsubbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.1bmhs.tm00.bufr_d${rap_suffix}  ./mhsbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.goesnd.tm00.bufr_d${rap_suffix} ./gsnd1bufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.airsev.tm00.bufr_d${rap_suffix} ./airsbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.cris.tm00.bufr_d${rap_suffix} ./crisbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.atms.tm00.bufr_d${rap_suffix} ./atmsbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.sevcsr.tm00.bufr_d${rap_suffix} ./seviribufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.radwnd.tm00.bufr_d${rap_suffix} ./radarbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.nexrad.tm00.bufr_d${rap_suffix} ./l2rwbufr
-$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.crisf4.tm00.bufr_d${rap_suffix} ./crisfsbufr
-$ncp $g1617_rad_obs/${rap_prefix}.t${cya}z.gsrcsr.tm00.bufr_d${rap_suffix} ./abibufr
-#$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.gsrcsr.tm00.bufr_d${rap_suffix} ./abibufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
+$ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs3.tm00.bufr_d ./hirs3bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs4.tm00.bufr_d ./hirs4bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.mtiasi.tm00.bufr_d ./iasibufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamua.tm00.bufr_d ./amsuabufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.esamua.tm00.bufr_d ./amsuabufrears
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamub.tm00.bufr_d ./amsubbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bmhs.tm00.bufr_d  ./mhsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.goesnd.tm00.bufr_d ./gsnd1bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.airsev.tm00.bufr_d ./airsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.cris.tm00.bufr_d ./crisbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.atms.tm00.bufr_d ./atmsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.sevcsr.tm00.bufr_d ./seviribufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.radwnd.tm00.bufr_d ./radarbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.nexrad.tm00.bufr_d ./l2rwbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.crisf4.tm00.bufr_d ./crisfsbufr
+$ncp $g1617_rad_obs/rap.t${cya}z.gsrcsr.tm00.bufr_d ./abibufr
+#$ncp $nmmb_nems_obs/rap.t${cya}z.gsrcsr.tm00.bufr_d ./abibufr
 #new directbroadcast
-#$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.escrsf.tm00.bufr_d${rap_suffix} ./crisfsbufrears
-#$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.crsfdb.tm00.bufr_d${rap_suffix} ./crisfsbufr_db
-#$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.atmsdb.tm00.bufr_d${rap_suffix} ./atmsbufr_db
-#$ncp $nmmb_nems_obs/${rap_prefix}.t${cya}z.iasidb.tm00.bufr_d${rap_suffix} ./iasibufr_db
+#$ncp $nmmb_nems_obs/rap.t${cya}z.escrsf.tm00.bufr_d ./crisfsbufrears
+#$ncp $nmmb_nems_obs/rap.t${cya}z.crsfdb.tm00.bufr_d ./crisfsbufr_db
+#$ncp $nmmb_nems_obs/rap.t${cya}z.atmsdb.tm00.bufr_d ./atmsbufr_db
+#$ncp $nmmb_nems_obs/rap.t${cya}z.iasidb.tm00.bufr_d ./iasibufr_db
+
 ls -1 prepbufr
 err0=$?
 
 #No paraRAP obs, get ops RAP data
+if [ $err0 -ne 0 ] ; then
+export nmmb_nems_obs=${COMINrap}/rap.${PDYa}
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.tm00  ./prepbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.prepbufr.acft_profiles.tm00 prepbufr_profl
+$ncp $nmmb_nems_obs/rap.t${cya}z.satwnd.tm00.bufr_d ./satwndbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs3.tm00.bufr_d ./hirs3bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bhrs4.tm00.bufr_d ./hirs4bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.mtiasi.tm00.bufr_d ./iasibufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamua.tm00.bufr_d ./amsuabufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.esamua.tm00.bufr_d ./amsuabufrears
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bamub.tm00.bufr_d ./amsubbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.1bmhs.tm00.bufr_d  ./mhsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.goesnd.tm00.bufr_d ./gsnd1bufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.airsev.tm00.bufr_d ./airsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.cris.tm00.bufr_d ./crisbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.atms.tm00.bufr_d ./atmsbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.sevcsr.tm00.bufr_d ./seviribufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.radwnd.tm00.bufr_d ./radarbufr
+$ncp $nmmb_nems_obs/rap.t${cya}z.nexrad.tm00.bufr_d ./l2rwbufr
+fi
+
+ls -1 prepbufr
+err1=$?
+
+#No RAP obs, get NAM data
+if [ $err1 -ne 0 ] ; then
+export nmmb_nems_obs=${COMINnam}/nam.${PDYrun}
+$ncp $nmmb_nems_obs/nam.t${cya}z.prepbufr.${tmmark}  ./prepbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.prepbufr.acft_profiles.${tmmark} prepbufr_profl
+$ncp $nmmb_nems_obs/nam.t${cya}z.satwnd.${tmmark}.bufr_d ./satwndbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bhrs3.${tmmark}.bufr_d ./hirs3bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bhrs4.${tmmark}.bufr_d ./hirs4bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.mtiasi.${tmmark}.bufr_d ./iasibufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bamua.${tmmark}.bufr_d ./amsuabufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.esamua.${tmmark}.bufr_d ./amsuabufrears
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bamub.${tmmark}.bufr_d ./amsubbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.1bmhs.${tmmark}.bufr_d  ./mhsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.goesnd.${tmmark}.bufr_d ./gsnd1bufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.airsev.${tmmark}.bufr_d ./airsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.cris.${tmmark}.bufr_d ./crisbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.atms.${tmmark}.bufr_d ./atmsbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.sevcsr.${tmmark}.bufr_d ./seviribufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.radwnd.${tmmark}.bufr_d ./radarbufr
+$ncp $nmmb_nems_obs/nam.t${cya}z.nexrad.${tmmark}.bufr_d ./l2rwbufr
+fi
 
 
 fi #USE_SELECT
@@ -741,6 +697,7 @@ ${APRUNC} ./regional_gsi.x < gsiparm.anl > $pgmout 2> stderr
 #cltgsitest=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-GSI-RegDA_DZ_update/ProdGSI/exec/global_gsi.x
 #${APRUNC} $gsitest < gsiparm.anl > $pgmout 2> stderr
 export err=$?;err_chk
+
 if [ $err -ne 0 ]; then
  exit 999
 fi
@@ -935,4 +892,5 @@ if [ -f fv3_enspread_regll.nc ]; then
     cp fv3_enspread_regll.nc  $ANLdir/${ctrlstr+_${ctrlstr}_}fv3_enspread_regll.nc 
 fi
  cp $pgmout $ANLdir/gsiout_$pgmout
+
 exit

@@ -192,7 +192,6 @@ export RUN=${RES}_nest_$CDATE
 #ctlorg mv $OUTDIR/gfs*nc $INPdir/.
 #cltorg mv $OUTDIR/sfc*nc $INPdir/.
  mv $OUTDIR/*gfs*nc  $ensmemINPdir
-echo "tothink" 
 if [ $CONVERT_SFC = ".false." ] ; then
 #clt  cp $INPdir/*sfc*nc   $ensmemINPdir/ #clt using intial sfc of the control runs
 cp $INPdir/sfc_data.tile7.nc  $ensmemINPdir/sfc_data.tile7.nc

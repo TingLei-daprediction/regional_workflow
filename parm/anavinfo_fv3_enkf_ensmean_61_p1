@@ -2,43 +2,43 @@ met_guess::
 !var     level    crtm_use    desc              orig_name
   ps        1      -1         surface_pressure     ps
   z         1      -1         geopotential_height  phis
-  u        61       2         zonal_wind           u
-  v        61       2         meridional_wind      v
-  tv       61       2         virtual_temperature  t 
-  q        61       2         specific_humidity    sphum
-  oz       61       2         ozone                o3mr 
-  delp     61      -1         fv3 del pressure     delp    
+  u        60       2         zonal_wind           u
+  v        60       2         meridional_wind      v
+  tv       60       2         virtual_temperature  t 
+  q        60       2         specific_humidity    sphum
+  oz       60       2         ozone                o3mr 
+  delp     60      -1         fv3 del pressure     delp    
 ::
 
 state_derivatives::
 !var  level  src
  ps   1      met_guess
- u    61     met_guess
- v    61     met_guess
- tv   61     met_guess
- q    61     met_guess
- oz   61     met_guess
+ u    60     met_guess
+ v    60     met_guess
+ tv   60     met_guess
+ q    60     met_guess
+ oz   60     met_guess
  prse 65     met_guess
 ::
 
 state_tendencies::
 !var  levels  source
- u    61      met_guess
- v    61      met_guess
- tv   61      met_guess
- q    61      met_guess
- oz   61      met_guess
+ u    60      met_guess
+ v    60      met_guess
+ tv   60      met_guess
+ q    60      met_guess
+ oz   60      met_guess
  prse 65      met_guess
 ::
 
 state_vector::
 !var     level  itracer source     funcof
- u        61      0     met_guess    u
- v        61      0     met_guess    v
- tv       61      0     met_guess    tv
- tsen     61      0     met_guess    tv,q
- q        61      1     met_guess    q
- oz       61      1     met_guess    oz
+ u        60      0     met_guess    u
+ v        60      0     met_guess    v
+ tv       60      0     met_guess    tv
+ tsen     60      0     met_guess    tv,q
+ q        60      1     met_guess    q
+ oz       60      1     met_guess    oz
  prse     65      0     met_guess    prse
  ps        1      0     met_guess    ps   
  sst       1      0     met_guess    sst
@@ -46,19 +46,19 @@ state_vector::
 
 control_vector_enkf::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- u       61      0       0.5         -1.0     state    u,v
- v       61      0       0.5         -1.0     state    u,v
- w       61      0       0.5         -1.0     state    w 
- dz      61      0       0.5         -1.0     state    dz 
- tsen    61      0       0.5         -1.0     state    tsen 
+ u       60      0       0.5         -1.0     state    u,v
+ v       60      0       0.5         -1.0     state    u,v
+ w       60      0       0.5         -1.0     state    w 
+ dz      60      0       0.5         -1.0     state    dz 
+ tsen    60      0       0.5         -1.0     state    tsen 
 ::
 control_vector::
 !var     level  itracer as/tsfc_sdv  an_amp0   source  funcof
- sf       61      0       0.5         -1.0     state    u,v
- vp       61      0       0.5         -1.0     state    u,v
+ sf       60      0       0.5         -1.0     state    u,v
+ vp       60      0       0.5         -1.0     state    u,v
  ps        1      0       0.50        -1.0     state    prse
- t        61      0       0.70        -1.0     state    tv
- q        61      1       0.40        -1.0     state    q
+ t        60      0       0.70        -1.0     state    tv
+ q        60      1       0.40        -1.0     state    q
  sst       1      0       1.00        -1.0     state    sst
  stl       1      0       1.00        -1.0     motley   sst
  sti       1      0       1.00        -1.0     motley   sst

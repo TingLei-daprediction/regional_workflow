@@ -151,11 +151,11 @@ mv gfs*bndy.nc $OUTDIR/gfs_bndy.tile7.${hour_name:-000}.nc
 
 
 if [ $REGIONAL = 1 ] ; then  
-  if [ $l_coldstart_anal = TRUE ] ; then  
+  if [ ${l_coldstart_anal:-FALSE} = TRUE ] ; then  
     ncks -A -v phis $Fix_temp/${CASE+"${CASE}_"}fv3_dynvars out.atm.tile7.nc
   fi
 mv out.atm.tile7.nc $OUTDIR/gfs_data.tile7.nc
-mv gfs_ctrl.nc $OUTDIR/.
+mv  gfs_ctrl.nc $OUTDIR/.
 if [ ${CONVERT_SFC:-.true.} != .false. ] ; then
 mv out.sfc.tile7.nc $OUTDIR/sfc_data.tile7.nc
 fi

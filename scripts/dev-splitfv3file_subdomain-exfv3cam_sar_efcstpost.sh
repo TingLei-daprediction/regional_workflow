@@ -1,5 +1,8 @@
 set -x
 
+ fv3_io_layout_nx=2
+ fv3_io_layout_ny=2
+
 ###############################################################################
 ####  UNIX Script Documentation Block
 #                      .                                             .
@@ -73,77 +76,65 @@ mkdir -p $EnsAnMeanDir
 cd $DATA
 if [ $ldo_enscalc_option -ne 2  ] ; then
    if [ $ldo_enscalc_option -eq 0  ] ; then
-            cp $EnsMeanDir/nck*list.txt  .
-            user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-            user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
    ensmeanchar="ensmean"  #cltthinkto
-            cp   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_dyntracer fv3sar_tile1_${ensmeanchar}_dynvartracer  
+   EnsMeanDir=$NWGES_ens/${tmmark}/"mem001"
+        ii=0
+        for j in $(seq 1 $fv3_io_layout_ny); do 
+         for i in $(seq 1 $fv3_io_layout_nx);do 
+            strsubindex="."$(printf %04i $ii)
+#            cp   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_dynvars$strsubindex fv3sar_tile1_${ensmeanchar}_dynvars$strsubindex
+            cp   $EnsMeanDir/${PDY}.${CYC}0000.fv_core.res.tile1.nc$strsubindex fv3sar_tile1_${ensmeanchar}_dynvars$strsubindex
+            cp   $EnsMeanDir/${PDY}.${CYC}0000.fv_tracer.res.tile1.nc$strsubindex fv3sar_tile1_${ensmeanchar}_tracer$strsubindex  
+	     let ii=ii+1
+         done
+       done
    elif  [ $ldo_enscalc_option -eq 1 ] ; then 
    memchar="mem001"  #cltthinkto
    ensmeanchar="ensmean"  #cltthinkto
    #clt to use mem001 stuff as the ensmean stuff
+       
             export FcstOutDir=$NWGES_ens/${tmmark}/$memchar
-            cp ${FcstOutDir}/${PDY}.${CYC}0000.${memstr}fv_tracer.res.tile1.nc fv3sar_tile1_${ensmeanchar}_tracer
-            cp ${FcstOutDir}/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc fv3sar_tile1_${ensmeanchar}_dynvars 
+        ii=0
+        for j in $(seq 1 $fv3_io_layout_ny); do 
+         for i in $(seq 1 $fv3_io_layout_nx);do 
+            strsubindex="."$(printf %04i $ii)
+            cp ${FcstOutDir}/${PDY}.${CYC}0000.${memstr}fv_tracer.res.tile1.nc$strsubindex fv3sar_tile1_${ensmeanchar}_tracer$strsubindex
+            cp ${FcstOutDir}/${PDY}.${CYC}0000.${memstr}fv_core.res.tile1.nc$strsubindex fv3sar_tile1_${ensmeanchar}_dynvars$strsubindex
+	let ii=ii+1
+         done 
+       done
 
-   #cltNote:  for newer nco pacakge , should add --trd option
-   #cltorg          ncks --trd -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
-   #cltoeg         ncks  -m fv3sar_tile1_${ensmeanchar}_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
-   #clttothink
-            ncvarlst_noaxis_time_new fv3sar_tile1_${ensmeanchar}_dynvars >  nck_dynvar_list.txt 
-    
-   #clt          ncks --trd -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
-   #clt         ncks  -m fv3sar_tile1_${ensmeanchar}_tracer | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_tracer_list.txt
-            ncvarlst_noaxis_time_new  fv3sar_tile1_${ensmeanchar}_tracer > nck_tracer_list.txt
-            user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-            user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
-            cp nck*txt  $EnsMeanDir
-
-
-            ncrename -d yaxis_1,yaxis_2 -v  yaxis_1,yaxis_2  fv3sar_tile1_${ensmeanchar}_tracer
-        echo "nckstime for mean"
-        time    ncks -A -v ${user_nck_tracer_list} fv3sar_tile1_${ensmeanchar}_tracer fv3sar_tile1_${ensmeanchar}_dynvars #cltthinkto some twits should be done on dimension names and to be split later 
-            cp fv3sar_tile1_${ensmeanchar}_dynvars fv3sar_tile1_${ensmeanchar}_dynvartracer
-       fi  # =0 or 1
+   fi  # =0 or 1
 
        
        for imem in $(seq 1 $nens); do
-        ( 
+        ii=0
+        for j in $(seq 1 $fv3_io_layout_ny); do 
+         for i in $(seq 1 $fv3_io_layout_nx);do 
+            strsubindex="."$(printf %04i $ii)
+         
             memchar="mem"$(printf %03i $imem)
-            export FcstOutDir=$NWGES_ens/${tmmark}/$memchar
+            export FcstOutDir=$NWGES_ens/${tmmark}"/"$memchar
+             cp ${FcstOutDir}/${PDY}.${memstr}*.fv_core.res.nc fv3sar_tile1_akbk.nc #clt fv3_akbk
             if [ $imem -eq 1  ] ; then
-                cp ${FcstOutDir}/${PDY}.${memstr}*.fv_core.res.nc fv3sar_tile1_akbk.nc #clt fv3_akbk
-   #   This file contains horizontal grid information
-                cp ${FcstOutDir}/grid_spec.nc fv3sar_tile1_grid_spec.nc
-                cp ${FcstOutDir}/${PDY}.*0000.sfc_data.nc fv3_sfcdata
+                cp ${FcstOutDir}/grid_spec.nc$strsubindex fv3sar_tile1_grid_spec.nc$strsubindex
             fi
-            cp ${FcstOutDir}/${PDY}.${CYC}0000.fv_core.res.tile1.nc fv3sar_tile1_${memchar}_dynvars 
-            cp ${FcstOutDir}/${PDY}.${CYC}0000.fv_tracer.res.tile1.nc fv3sar_tile1_${memchar}_tracer
-                    ncrename -d yaxis_1,yaxis_2 -v yaxis_1,yaxis_2 fv3sar_tile1_${memchar}_tracer
-       echo "nckstime for mem "$memchar 
-       time     ncks -A -v $user_nck_tracer_list fv3sar_tile1_${memchar}_tracer fv3sar_tile1_${memchar}_dynvars 
-                mv fv3sar_tile1_${memchar}_dynvars fv3sar_tile1_${memchar}_dynvartracer
-       ) &
+            cp ${FcstOutDir}/${PDY}.${CYC}0000.fv_core.res.tile1.nc$strsubindex fv3sar_tile1_${memchar}_dynvars$strsubindex 
+            cp ${FcstOutDir}/${PDY}.${CYC}0000.fv_tracer.res.tile1.nc$strsubindex fv3sar_tile1_${memchar}_tracer$strsubindex
+	     let ii=ii+1
+       done
+       done
       done
-      wait
 else
 #for recenter  
          cp  $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.nc fv3sar_tile1_akbk.nc 
          cp $ANLdir/${ctrlstr+_${ctrlstr}_}coupler.res  coupler.res
          cp ${ANLdir}/${ctrlstr+_${ctrlstr}_}fv3_grid_spec.nc fv3sar_tile1_grid_spec.nc
-         cp $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc fv3_dynvars
-         cp $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc fv3_tracer
+         cp $ANLdir/${ctrlstr+_${ctrlstr}_}fv_core.res.tile1.nc fv3sar_tile1_mem001_dynvars
+         cp $ANLdir/${ctrlstr+_${ctrlstr}_}fv_tracer.res.tile1.nc fv3sar_tile1_mem001_tracer
 
-#clt for older versions ncks or other env on hera         ncks  -m fv3_dynvars | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -f tmp.txt> nck_dynvar_list.txt
-         ncvarlst_noaxis_time_new fv3_tracer > nck_tracer_list.txt
-         ncvarlst_noaxis_time_new fv3_dynvars > nck_dynvar_list.txt
-         
-         user_nck_dynvar_list=`cat nck_dynvar_list.txt|paste -sd "," -  | tr -d '[:space:]'`
-         user_nck_tracer_list=`cat nck_tracer_list.txt |paste -sd "," -  | tr -d '[:space:]'` 
-         ncrename -d yaxis_1,yaxis_2 -v yaxis_1,yaxis_2 fv3_tracer
-         ncks -A -v ${user_nck_tracer_list} fv3_tracer  fv3_dynvars 
-         mv fv3_dynvars fv3sar_tile1_mem001_dynvartracer 
-         cp  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_dyntracer fv3sar_tile1_ensmean_dynvartracer 
+         cp  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_dynvars fv3sar_tile1_ensmean_dynvars
+         cp  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_tracer fv3sar_tile1_ensmean_tracer 
          let "nens0 = $nens "
          let "nens = $nens + 1"
          
@@ -154,7 +145,8 @@ else
              meminchar="mem"$(printf %03i $memin)
          export EnsAnlDir=$NWGES_ens/enkf_anl${tmmark}/$memchar
 #         export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memchar
-         cp $EnsAnlDir/${PDY}.${CYC}0000.anl_dynvartracer_${memchar}_fv_core.res.tile1.nc fv3sar_tile1_${meminchar}_dynvartracer
+         cp $EnsAnlDir/${PDY}.${CYC}0000.anl_dynvars_${memchar}_fv_core.res.tile1.nc fv3sar_tile1_${meminchar}_dynvars
+         cp $EnsAnlDir/${PDY}.${CYC}0000.anl_tracer_${memchar}_fv_core.res.tile1.nc fv3sar_tile1_${meminchar}_tracer
           ) &
          done
         wait
@@ -287,13 +279,13 @@ use_gfs_nemsio=.true.,
 	reducedgrid=.true.,readin_localization=.false.,
 	use_gfs_nemsio=.true.,imp_physics=99,lupp=.false.,
 	univaroz=.false.,adp_anglebc=.true.,angord=4,use_edges=.false.,emiss_bc=.true.,
+    fv3_native=.true.,paranc=.true.,
 	lobsdiag_forenkf=.false.,
-    fv3_native=.true.,
 	write_spread_diag=.false.,
 	netcdf_diag=${netcdf_diag:-.false.},
 	$NAM_ENKF
 	/
-clt ldo_enscalc_option=${ldo_enscalc_option},
+#cltorg	ldo_enscalc_option=${ldo_enscalc_option},
 	&satobs_enkf
 	sattypes_rad(1) = 'amsua_n15',     dsis(1) = 'amsua_n15',
 	sattypes_rad(2) = 'amsua_n18',     dsis(2) = 'amsua_n18',
@@ -373,7 +365,8 @@ clt ldo_enscalc_option=${ldo_enscalc_option},
 	$OZOBS_ENKF
 	/
 	&nam_fv3
-	fv3fixpath="XXX",nx_res=$NX_RES,ny_res=$NY_RES,ntiles=1,
+	fv3fixpath="XXX",nx_res=$NX_RES,ny_res=$NY_RES,ntiles=1,l_fv3reg_filecombined=.false.,
+     fv3_io_layout_nx=${fv3_io_layout_nx},fv3_io_layout_ny=${fv3_io_layout_ny}
 	/
 EOFnml
 
@@ -391,6 +384,7 @@ EOFnml
 	echo before ulimit 
 	ulimit -a
 	ulimit -v unlimited
+    ulimit -s unlimited
 	echo after  ulimit 
 	ulimit -a
 
@@ -400,12 +394,12 @@ EOFnml
 	echo pwd is `pwd`
 	cd $DATA
 	ENKFEXEC=${ENKFEXEC:-$HOMEgsi/exec/global_enkf}
-    ENKFEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-daprediction-github-GSI/GSI/build/bin/enkf_fv3reg_DBG.x
-    ENKFEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-github-gsifork-master/GSI/build//bin/enkf_fv3reg_DBG.x
 	export pgm=`basename $ENKFEXEC`
 #cltthinkdeb	. prep_step
 
 #cltthinkdeb	startmsg
+    ENKFEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-daprediction-github-GSI/GSI/build/bin/enkf_fv3reg_DBG.x
+    ENKFEXEC=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-daprediction-github-GSI/GSI/build/src/enkf/enkf.x
 	cp $ENKFEXEC $DATA/enkf.x
 #cltorg mpirun -l -n  240  $DATA/enkf.x < enkf.nml 1>stdout 2>stderr
 	if [ $ldo_enscalc_option -ne 0  ] ; then
@@ -423,6 +417,7 @@ EOFnml
 #cltthinkdeb    srun --label --ntasks=6 --ntasks-per-node=3 $DATA/enkf.x<enkf.nml 1>stdout 2>stderr
 fi
 rc=$?
+exit
 
 export ERR=$rc
 export err=$ERR
@@ -441,55 +436,44 @@ if [ $ldo_enscalc_option -eq 0 ] ; then
              memstr=$memchar
              export EnsAnlDir=$NWGES_ens/enkf_anl${tmmark}/$memchar
              mkdir -p $EnsAnlDir
-             cp fv3sar_tile1_${memstr}_dynvartracer $EnsAnlDir/${PDY}.${CYC}0000.anl_dynvartracer_${memstr}_fv_core.res.tile1.nc  
+             cp fv3sar_tile1_${memstr}_dynvars $EnsAnlDir/${PDY}.${CYC}0000.anl_dynvars_${memstr}_fv_core.res.tile1.nc  
+             cp fv3sar_tile1_${memstr}_tracer $EnsAnlDir/${PDY}.${CYC}0000.anl_tracer_${memstr}_fv_core.res.tile1.nc  
          ) &
          done
         wait
 elif  [ $ldo_enscalc_option -eq 1 ] ; then 
          memstr="ensmean"
-         ncks -A -v $user_nck_dynvar_list fv3sar_tile1_mem001_dynvartracer fv3sar_tile1_${memstr}_dynvars
-#clttothink 
-         ncks -A -v $user_nck_tracer_list  fv3sar_tile1_mem001_dynvartracer fv3sar_tile1_${memstr}_tracer #cltthinkto split using nck and accordingly change something
-#!cltorg         ncks -x -O  -v $user_nck_tracer_list  fv3sar_tile1_mem001_dynvartracer fv3sar_tile1_${memstr}_dynvar #cltthinkto split using nck and accordingly change something
-#!cltorg         ncks -x -O -v $user_nck_dynvar_list  fv3sar_tile1_mem001_dynvartracer fv3sar_tile1_${memstr}_tracer #cltthinkto split using nck and accordingly change something
-#!cltorgtothink         ncrename -d yaxis_2,yaxis_1 -v yaxis_2,yaxis_1  fv3sar_tile1_${memstr}_tracer 
-         cp fv3sar_tile1_${memstr}_dynvars  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_${memstr}_fv_core.res.tile1.nc  
-         cp fv3sar_tile1_${memstr}_tracer   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_${memstr}_fv_tracer.res.tile1.nc 
-         cp fv3sar_tile1_mem001_dynvartracer   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_${memstr}_fv_dyntracer # used by recenter 
+         cp fv3sar_tile1_mem001_dynvars  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_${memstr}_fv_core.res.tile1.nc  
+         cp fv3sar_tile1_mem001_tracer   $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_${memstr}_fv_tracer.res.tile1.nc 
 
 else
-        cp $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_core.res.tile1.nc tmp_dynvar.nc
-        ncks -x  -O -v $user_nck_tracer_list  fv3sar_tile1_mem001_dynvartracer tmp_dynvar.nc
-        cp tmp_dynvar.nc  $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_dynvar
         ln -sf $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_dynvar $EnsAnMeanDir/fv_core.res.tile1.nc
         cp  $EnsMeanDir/${PDY}.${CYC}0000.${ensfiletype:-bg}_ensmean_fv_tracer.res.tile1.nc tmp_tracer.nc 
         ncks -A -v  $user_nck_tracer_list fv3sar_tile1_mem001_dynvartracer  tmp_tracer.nc
 #cltorg        ncrename -d yaxis_2,yaxis_1 -v yaxis_2,yaxis_1 tmp_tracer.nc 
-        cp tmp_tracer.nc  $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_tracer 
+        cp  fv3sar_tile1_mem001_dynvars   $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_dynvars
+        cp  fv3sar_tile1_mem001_tracer   $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_tracer 
+        ln -sf $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_dynvars $EnsAnMeanDir/fv_core.res.tile1.nc
         ln -sf  $EnsAnMeanDir/${PDY}.${CYC}0000.anl_ensmean_tracer $EnsAnMeanDir/fv_tracer.res.tile1.nc
         cp $ANLdir/{*grid_spec.nc,*sfc_data.nc,*coupler.res,gfs_ctrl.nc,fv_core.res.nc,*bndy*} $EnsAnMeanDir
-        for imem in $(seq 2 $nens); do
-         
+for imem in $(seq 2 $nens); do
+         (
              memstr="mem"$(printf %03i $imem)
          let "memout = $imem - 1"
              memoutchar="mem"$(printf %03i $memout)
          export EnsRecDir=$NWGES_ens/enkf_rec${tmmark}/$memoutchar
          mkdir -p $EnsRecDir
-         export bg_FcstOutDir=$NWGES_ens/${tmmark}/$memchar
          FileDynvar=${PDY}.${CYC}0000.fv_core.res.tile1.nc
          FileTracer=${PDY}.${CYC}0000.fv_tracer.res.tile1.nc
          FileUpdated=fv3sar_tile1_${memstr}_dynvartracer
          FileUpdatedOut=fv3sar_tile1_${memstr}_dynvars
-         cp $bg_FcstOutDir/$FileTracer ./${memoutchar}_fv_tracer.res.tile1.nc
-         cp $bg_FcstOutDir/$FileDynvar ./${memoutchar}_fv_dynvar.res.tile1.nc 
+         (
          
          
-         ncks -A -v $user_nck_dynvar_list $FileUpdated  ${memoutchar}_fv_dynvar.res.tile1.nc
-         cp  ${memoutchar}_fv_dynvar.res.tile1.nc  $EnsRecDir/fv_core.res.tile1.nc
-         ncks -A -v  $user_nck_tracer_list $FileUpdated ${memoutchar}_fv_tracer.res.tile1.nc 
-         ncks --no_abc -O -x -v yaxis_2  ${memoutchar}_fv_tracer.res.tile1.nc tmp_${memoutchar}_tracer.nc 
-         cp  tmp_${memoutchar}_tracer.nc  $EnsRecDir/fv_tracer.res.tile1.nc
+         cp  fv3sar_tile1_${memstr}_dynvars  $EnsRecDir/fv_core.res.tile1.nc
+         cp  fv3sar_tile1_${memstr}_tracer  $EnsRecDir/fv_tracer.res.tile1.nc
          cp $ANLdir/{*grid_spec.nc,*sfc_data.nc,*coupler.res,gfs_ctrl.nc,fv_core.res.nc}  $EnsRecDir 
+         )& 
          done
          wait
 fi

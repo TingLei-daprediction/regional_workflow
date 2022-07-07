@@ -126,7 +126,16 @@ mkdir -p $NWGES
 
 #mkdir -p $COMOUT/gfsanl.tm12
 #cltorg export INPdir=$COMOUT/gfsanl.tm12
-export INPdir=${COMOUT}/gfsanl.${dom:+${dom}.}${tmmark}
+#cltorg xport INPdir=${COMOUT}/gfsanl.${dom:+${dom}.}${tmmark}
+if [ $tmmark = tm12 -o $tmmark = tm06  ] ; then	# SAR-DA
+  if [ ${l_coldstart_anal:-TRUE}  = TRUE  ] ; then	# SAR-DA
+    export INPdir=$COMOUT/gfsguess.$tmmark
+  else
+    export INPdir=$COMOUT/gfsanl.$tmmark
+  fi
+elif [ $tmmark = tm00 ] ; then	# SAR without DA
+  export INPdir=$COMOUT/anl.${dom:+${dom}.}$tmmark
+fi
 export ensINPdir=$GESROOT/${RUN}/EXP${envir}/ens${RUN}.${PDY}/${cyc}/$tmmark
 mkdir -p $ensINPdir
 #

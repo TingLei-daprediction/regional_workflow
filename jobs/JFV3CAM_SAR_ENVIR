@@ -69,6 +69,7 @@ export COMINgdas=${COMINgdas:-/scratch1/NCEPDEV/rstprod/com/gfs/prod}
 #clt    export COMINgfs=${COMINgfs:-/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-global-data}
    export COMINrap=${COMINrap:-/scratch1/NCEPDEV/rstprod/com/rap/prod}
    export COMINrap_user=${COMINrap2:-/scratch2/NCEPDEV/stmp1/Ting.Lei/dr-obs}
+   export cloudobs=/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-rajendra/dr-aws
 #clt   export COMINrap=${COMINrap:-/scratch1/NCEPDEV/stmp2/Ting.Lei/dr-obs/}
    export COMINrtma=/scratch4/NCEPDEV/rstprod/com/rtma2p5/prod
    # bias correction files from prev cycle
@@ -105,6 +106,8 @@ export COMINpararap=${COMINrap:-/gpfs/hps/nco/ops/com/rap/para}
 
 export GESROOT_HOLD=${HOMEfv3}/dr-hold
 export Fix_temp=${Fix_temp:-/gpfs/dell6/emc/modeling/noscrub/Ting.Lei/dr-newESG-regional-workflow/regional_workflow/dr-Fix_temp-ESG}
+export METPLUS_CONF=${METPLUS_CONF:-${HOMfv3}/dr-metplus-config/parm/metplus}
+export MET_CONF=${METPLUS_CONF:-${HOMfv3}/dr-metplus-config/parm/met}
 elif [ ${machine} = "orion" ]
 then
 
@@ -156,10 +159,12 @@ export envir_getges=${envir_getges:-prod}
 
 export jlogfile=${STMP}/jlogfile.$envir.${RUN}.jlog
 export LEVS=${LEVS:-61}
-if [ $CRES = 3375 ]
+if [ $CRES = 3357 ]
 then
-export NPX=1921
-export NPY=1297
+export NPX=1749
+export NPY=1039
+export NX_RES=1748
+export NY_RES=1038
 elif [ $CRES = 775 ]
 then
 export NPX=397
@@ -167,10 +172,8 @@ export NPY=233
 export NX_RES=396
 export NY_RES=232
 else
-export NPX=1921
-export NPY=1297
-export NX_RES=1920
-export NX_RES=1296
+echo "to set setup exit"
+exit
 
 fi
 L_LBC_UPDATE=${L_LBC_UPDATE:-FALSE}

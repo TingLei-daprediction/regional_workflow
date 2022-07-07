@@ -180,7 +180,7 @@ fi
 export jedi_iodash=${jediiodash:-${HOMEfv3}/scripts/dev-exfv3cam_sar_jedi_ioda.sh}
 #cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
 $jedi_iodash
-export err=$?;err_chk
+#clt export err=$?;err_chk
 #cat $pgmout
 #cat stderr
 

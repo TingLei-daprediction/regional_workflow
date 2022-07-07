@@ -72,18 +72,17 @@ export COMIN_GES_ENS=${NWGES_ens}/$tmmark
 mkdir -p $NWGES
 if [ ${l_coldstart_anal:-FLASE} != TRUE ]; then
   export GUESSdir=$COMOUT/guess.${tmmark}
-  export ANLdir=$COMOUT/anl.${tmmark}
+  export JEDI_ANLdir=$COMOUT/jedi_anl.${tmmark}
 else
   export fv3sar_bg_opt=1
   export GUESSdir=$COMOUT/gfsguess.$tmmark
-  export ANLdir=$COMOUT/gfsanl.$tmmark
-  cp `ls $GUESSdir/* |grep -v gfs_data.tile7.nc ` $ANLdir
+  export JEDI_ANLdir=$COMOUT/gfs_jedi_anl.$tmmark
   
 fi
 
 mkdir -p $GUESSdir
 
-mkdir -p $ANLdir
+mkdir -p $JEDI_ANLdir
 
 ##############################################
 # Specify Execution Areas
@@ -176,10 +175,9 @@ fi
 
 #run script
 #cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
-#cltorg export gsianlsh=${gsianlsh:-${HOMEfv3}/scripts/dev-exfv3cam_sar_gsianl.sh}
-export gsianlsh=${gsianlsh:-${HOMEfv3}/scripts/dev-nc_diag-exfv3cam_sar_gsianl.sh}
+export jediconvertstatsh=${jedianlsh:-${HOMEfv3}/scripts/dev-jedi_convertstat-post.sh}
 #cltorg ${SCRIPTdir}/exfv3sar_gsianl.sh
-$gsianlsh
+$jediconvertstatsh
 export err=$?;err_chk
 #cat $pgmout
 #cat stderr

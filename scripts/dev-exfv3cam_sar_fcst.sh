@@ -24,7 +24,6 @@ ulimit -s unlimited
 ulimit -a
 
 mkdir -p INPUT RESTART
-tothink
 if [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE ] ; then
 FcstInDir=${FcstInDir:-${COMOUT}/gfsanl.${tmmark}}
 else
@@ -239,8 +238,10 @@ elif [ $tmmark = tm12 ] || [ $tmmark = tm06 -a ${l_coldstart_anal:-FALSE} = TRUE
       if [ $MPSUITE = thompson ] ; then
          CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn_lam3km"}
          cp ${PARMfv3}/thompson/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
-         cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml.tmp
+#         CCPP_SUITE="FV3_RRFS_v1beta"
+
             
+         cp ${PARMfv3}/thompson/input_sar_firstguess.nml input.nml.tmp
          cp ${PARMfv3}/thompson/diag_table.tmp .
          cp ${PARMfv3}/thompson/field_table .
          cp $PARMfv3/thompson/CCN_ACTIVATE.BIN                          CCN_ACTIVATE.BIN
@@ -280,6 +281,7 @@ else
 #clt for bblake  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
 #for bblake   cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
   if [ $MPSUITE = thompson ] ; then
+#cltfor subdomain     cp ${PARMfv3}/thompson/input_sar_da_hourly.nml_subdomain input.nml.tmp
     cp ${PARMfv3}/thompson/input_sar_da_hourly.nml input.nml.tmp
   fi
   if [ $MPSUITE = gfdlmp ] ; then
@@ -360,6 +362,21 @@ fi
    sed -i  -e "/npz .*=/ s/=.*/= $((LEVS-1))/"  input.nml
    sed -i  -e "/levp .*=/ s/=.*/= ${LEVS}/"  input.nml
 
+ if [ ${l_stochastic_pert:-FALSE} = TRUE ] ; then
+   number=$(echo mem009 |tr -dc '0-9'|cut -c2-3 )  #following setup by Jili 
+   number2=${PDYfcst}${CYCfcst}${number}
+   iseed_shum=${number2}2
+   iseed_skeb=${number2}3
+   iseed_sppt=${number2}1
+   sed -i  -e "/do_sppt .*=/ s/=.*/= .true. /"  input.nml
+   sed -i  -e "/do_shum .*=/ s/=.*/= .true. /"  input.nml
+   sed -i  -e "/do_skeb .*=/ s/=.*/= .true. /"  input.nml
+   sed -i  -e "/iseed_sppt .*=/ s/=.*/=${iseed_sppt}   /"  input.nml
+   sed -i  -e "/iseed_skeb .*=/ s/=.*/=${iseed_skeb}   /"  input.nml
+   sed -i  -e "/iseed_shum .*=/ s/=.*/=${iseed_shum}   /"  input.nml
+
+
+ fi
 
 
 
@@ -394,7 +411,6 @@ else
   RESTART_INTERVAL=1
   NRST=01
 fi
-
 cat > temp << !
 ${yr}${mn}${dy}.${cyc}Z.${CASE}.32bit.non-hydro
 $yr $mn $dy $hr 0 0
@@ -449,7 +465,13 @@ export pgm=regional_forecast.x
 
 #clt . prep_step
 
+tothink
+if [ ${newfcst_exec:-NONE} = NONE  ]; then
 ${APRUNC}  /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-GFSV16-unified-workflow/ufs-weather-model/tests/fv3_32bit.exe >$pgmout 2>err
+else
+${APRUNC}  $newfcst_exec >$pgmout 2>err
+
+fi
 export err=$? #cltthinkdeb ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
@@ -463,8 +485,8 @@ fi
 
 FcstOutDir=${FcstOutDir:-$GUESSdir}
 if [ $tmmark != tm00 ] ; then
-  cp grid_spec.nc $FcstOutDir/.
-  cp grid_spec.nc RESTART
+  cp grid_spec.nc* $FcstOutDir/.
+!clt  cp grid_spec.nc RESTART
   cd RESTART
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}coupler.res
 #cltorg   mv ${PDYfcst}.${CYCfcst}0000.fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
@@ -475,16 +497,23 @@ if [ $tmmark != tm00 ] ; then
 
   mv coupler.res $FcstOutDir/${PDYfcst}.${CYCfcst}0000.coupler.res
   mv fv_core.res.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.nc
-  mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
-  mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
-  cp sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
-  cp fv_srf_wnd.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_srf_wnd.res.tile1.nc
+ 
+  strtmp="$FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}"
+#cltorg  mv fv_core.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_core.res.tile1.nc
+  ls fv_core.res.tile1.nc* |xargs -I % sh -c "mv % ${strtmp}%" 
+#  mv fv_tracer.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_tracer.res.tile1.nc
+  ls  fv_tracer.res.tile1.nc* | xargs -I % sh -c "mv % ${strtmp}%"
+#  cp sfc_data.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}sfc_data.nc
+  ls  sfc_data.nc* | xargs -I % sh -c "mv % ${strtmp}%" 
+#  cp fv_srf_wnd.res.tile1.nc $FcstOutDir/${PDYfcst}.${CYCfcst}0000.${memstr+"_${memstr}_"}fv_srf_wnd.res.tile1.nc
+  ls  fv_srf_wnd.res.tile1.nc* | xargs -I % sh -c "mv % ${strtmp}%" 
 
 
 # These are not used in GSI but are needed to warmstart FV3
 # so they go directly into ANLdir
 #cltorg  mv ${PDYfcst}.${CYCfcst}0000.phy_data.nc $FcstOutDir/phy_data.nc
-  mv phy_data.nc $FcstOutDir/phy_data.nc
+#  mv phy_data.nc $FcstOutDir/phy_data.nc
+  ls phy_data.nc $FcstOutDir/phy_data.nc* | xargs -I % sh -c "mv % ${strtmp}%"
 
 if [[ ! $FcstOutDir =~ mem ]];then  #for control run
   mv fv_srf_wnd.res.tile1.nc $ANLdir/${PDYfcst}.${CYCfcst}0000.fv_srf_wnd.res.tile1.nc

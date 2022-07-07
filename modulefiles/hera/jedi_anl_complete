@@ -1,3 +1,4 @@
 MOD_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-source ${MOD_DIR}/jedi_anl
+#cltorg for new jedi verion source ${MOD_DIR}/jedi_anl_Jnew
+ source ${MOD_DIR}/jedi_anl
 module load prod_util/1.1.0

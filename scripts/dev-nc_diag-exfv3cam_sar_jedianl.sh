@@ -17,7 +17,7 @@
 #clt
 
 set -x
-export CATEXEC=$EXECfv3/nc_diag_cat_serial.x
+export PYUFOCONCATE=${UFOCONCATE:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-GFSV16-regional-workflow/regional_workflow/jedi-tools/concat-ufo.py}
 
 export NLN=${NLN:-"/bin/ln -sf"}
 
@@ -26,11 +26,18 @@ export OOPS_DEBUG=1
 export OOPS_TRACE=1
 
 
-export jedi_template_workdir=${jedi_template_workdir:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1/fv3-bundle/build/fv3-jedi/test/work-C775}
+#cltexport jedi_template_workdir=${jedi_template_workdir:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1/fv3-bundle/build/fv3-jedi/test/work-C775}
+jedi_exp_output_string=${jedi_exp_output_string:-Ens3dvar-fv3_lam-C775}
+export jedi_template_workdir=${jedi_template_workdir:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew/fv3-bundle/build/fv3-jedi/test/work-C775}
 export ioda_converted_obs=${COMINrap_user}/ioda.${PDYa}
-export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/dev-wf-C775-3densvar.yaml}
-export JEDI_DataFix=${JEDI_DataFix:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1/fv3-bundle/build/fv3-jedi/test/work-C775/DataFix}
-export JEDI_DataInput=${JEDI_DataInput:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1/fv3-bundle/build/fv3-jedi/test/work-C775/Data/INPUT}
+#clt export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/dev-wf-C775-3densvar.yaml}
+#export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/dev-wf-C775-3dhybrid.yaml}
+#cltorg export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/Jnewloc1000km-wf-C775-3dhybrid.yaml}
+#export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/newloc300km-wf-C775-3dhybrid.yaml}
+export jedi_yaml=${jedi_yaml:-$jedi_template_workdir/newloc200km-wf-C775-3densvar.yaml}
+export jedi_inc_yaml=${jedi_inc_yaml:-$jedi_template_workdir/C775-jedi-inc.yaml}
+export JEDI_DataFix=${JEDI_DataFix:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew/fv3-bundle/build/fv3-jedi/test/work-C775/DataFix}
+export JEDI_DataInput=${JEDI_DataInput:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew/fv3-bundle/build/fv3-jedi/test//work-C775/Data/INPUT}
 
 ln -sf $JEDI_DataFix   DataFix
 mkdir -p Data/
@@ -40,7 +47,19 @@ cp $JEDI_DataInput/* Data/INPUT/
 ln -sf $ioda_converted_obs/obs Data/obs
 mkdir -p Data/hofx
 mkdir -p Data/analysis
+mkdir -p Data/increment
+mkdir -p Data/difffields
 cp $jedi_yaml   jedi.yaml
+cp $jedi_inc_yaml   jedi_inc.yaml
+
+    str_datetime=$vlddate
+    PDY0=`echo $vlddate | cut -c 1-4`
+    MON0=`echo $vlddate | cut -c 5-6`
+    DAY0=`echo $vlddate | cut -c 7-8`
+    HR0=`echo $vlddate | cut -c 9-10`
+    str_datetime0=${PDY0}-${MON0}-${DAY0}T${HR0}":00:00Z"
+    str_datetime_left="datetime"
+    sed -i  -e "/$str_datetime_left.*\:/ s/\:.*/\: ${str_datetime0}/" jedi.yaml
 
 	window_bgn=`$NDATE -1 $vlddate`
     PDYb=`echo $window_bgn | cut -c 1-4`
@@ -52,9 +71,25 @@ cp $jedi_yaml   jedi.yaml
     echo "thinkdeb str_window_bgn is "$str_window_bgn
 
     sed -i  -e "/$str_window_bgn_left.*\:/ s/\:.*/\: ${str_window_bgn}/" jedi.yaml
-    
     sed -i  -e "s/XTIMESTRX/${PDY}.${CYC}0000/" jedi.yaml  
     sed -i  -e "s/XOBTIMESTRX/${PDY}${CYC}/" jedi.yaml  
+    sed -i  -e "s/XX_exp_output_string_XX/${jedi_exp_output_string}/" jedi.yaml  
+    cp jedi.yaml jedi_temp.yaml
+    for obsfile in `grep -E "obsfile.*Data\/obs" jedi.yaml | sed 's/^.*://'`; do
+     if [[ ! -f $obsfile ]]; then     
+      echo "the $obsfile doesn t exsit , need remove itsn name in the yaml"
+#clt https://stackoverflow.com/questions/33301963/sed-awk-remove-a-multiline-block-if-it-contains-multiple-patterns
+      obsfile0=$(basename $obsfile)
+ sed -n "/obs space/{ :loop; N; s/\n$/&/; t break; b loop; :break; s/$obsfile0/&/; t dropit; b keep; :dropit; d }; :keep; p" jedi_temp.yaml>jedi_temp1.yaml
+      cp jedi_temp1.yaml jedi_temp.yaml
+     fi
+    done
+    mv jedi_temp.yaml jedi.yaml
+    
+
+
+    sed -i  -e "/$str_datetime_left.*\:/ s/\:.*/\: ${str_datetime0}/" jedi_inc.yaml
+    sed -i  -e "s/XTIMESTRX/${PDY}.${CYC}0000/" jedi_inc.yaml  
 
 
 offset=`echo $tmmark | cut -c 3-4`
@@ -75,7 +110,12 @@ else
 fi
 
 
-jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1_deb/fv3-bundle/build/bin/fv3jedi_var.x}
+#jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1/fv3-bundle/build/bin/fv3jedi_var.x}
+#cltorg jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-new1_deb/fv3-bundle/build/bin/fv3jedi_var.x}
+#jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew1/fv3-bundle/build/bin/fv3jedi_var.x}
+jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew1/fv3-bundle/build_normal/bin/fv3jedi_var.x}
+#jediexec=${jediexec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-internal-dev/fv3-bundle/build/bin/fv3jedi_var.x}
+jedi_inc_exec=${jedi_inc_exec:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-fork-jedi-internal-devnew/fv3-bundle/build/bin/fv3jedi_diffstates.x}
 # Set runtime and save directories
 export endianness=Big_Endian
 
@@ -279,28 +319,66 @@ else
 	ln -sf gfs_data.tile7.nc fv3_tracer.nc
 fi
 cd $DATA
+    ln -sf DataFix/INPUT INPUT #for newer version
 
-module list
 export pgm=`basename $jediexec`
-. prep_step
+#cltorg . prep_step
 
-startmsg
+#cltorg startmsg
 ###mpirun -l -n 240 $jediexec < gsiparm.anl > $pgmout 2> stderr
 #mpirun -l -n 240 gsi.x < gsiparm.anl > $pgmout 2> stderr
 #clt${APRUNC} $jediexec  jedi.yaml stdout  
-srun -l -n 80   $jediexec  jedi.yaml stdout  
+#clt srun -l   -n 80   valgrind --track-origins=yes -s  $jediexec  jedi.yaml analysis.stdout  
+export I_MPI_DEBUG=10
+#clt srun -l   -n 80   --exclusive    $jediexec  jedi.yaml analysis.stdout  
+srun -l   -n 80       $jediexec  jedi.yaml analysis.stdout  
 #cltgsitest=/gpfs/hps3/emc/meso/save/Ting.Lei/dr-CAM-new/dr-GSI-RegDA_DZ_update/ProdGSI/exec/global_gsi.x
 #${APRUNC} $gsitest < gsiparm.anl > $pgmout 2> stderr
-export err=$?;err_chk
+export err=$?  #cltorg ;err_chk
 if [ $err -ne 0 ]; then
  exit 999
 fi
-echo "XXXXbegin"
+cd Data/analysis 
+ln -sf ${jedi_exp_output_string}.coupler.res ${PDY}.${CYC}0000.coupler.res
+ln -sf ${jedi_exp_output_string}.fv_core.res.nc ${PDY}.${CYC}0000.fv_core.res.nc
+ln -sf ${jedi_exp_output_string}.fv_tracer.res.nc ${PDY}.${CYC}0000.fv_tracer.res.nc
+ln -sf ../bkg/fv3_sfcdata.nc  ${PDY}.${CYC}0000.sfc_data.nc
+ln -sf ../bkg/fv3_srf_wnd.nc  ${PDY}.${CYC}0000.fv_srf_wnd.res.nc
 
+
+cd $DATA
+srun -l -n 80   $jedi_inc_exec  jedi_inc.yaml diff.stdout  
+echo "XXXXbegin20"
+
+#the following module loading only works for bash, so change to bash and then change back
 # If requested, create obsinput tarball from obs_input.* files
+#temporay solution
+#cat << EOF > temp.sh
+#!/bin/bash 
+#readlink /proc/$$/exe
+#module use /scratch1/NCEPDEV/da/python/hpc-stack/miniconda3/modulefiles/stack/
+#module load hpc
+#module load miniconda3
+#module load iodaconv
+#module list
+#chsh -s /usr/bin/ksh93
+#readlink /proc/$$/exe
+#EOF
+#chmod +x temp.sh
+#source ./temp.sh
+source /scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-GFSV16-regional-workflow/regional_workflow/modulefiles/hera/ioda-module_complete.sh
 
-	cp Data/analysis/*.nc $JEDI_ANLdir/    
 
+	ls  Data/analysis/*.nc     
+	cp Data/analysis/${PDY}.${CYC}0000*.* $JEDI_ANLdir/    
+    cd Data/hofx
+    filestrings=$(for f in *.nc4; do printf "%s\n" "${f%_*.nc4}"; done   | sort -u)
+    echo $filestrings
+    exit
+    for filestring in $filestrings; do
+    python $PYUFOCONCATE -i $filestring -o ${filestring}.nc4 
+    cp ${filestring}.nc4  $JEDI_ANLdir/
+    done 
 
 	export err=$?;err_chk
 

@@ -8,7 +8,7 @@ set -x
 . $USHfv3/run_commands_forecast.sh
  
 export DATA=${DATA:-${STMP}/tmpnwprd-${CDATE}/${envir}/${job}_${cyc}}
-#cltthinkdeb rm -fr $DATA
+rm -fr $DATA
 mkdir -p $DATA
 cd $DATA
 
@@ -110,6 +110,9 @@ fi
 
 #run script
 ${HOMEfv3}/scripts/dev-exfv3cam_sar_efcstpost.sh
+#${HOMEfv3}/scripts/dev-splitfv3file-exfv3cam_sar_efcstpost.sh #dev-exfv3cam_sar_efcstpost.sh
+ #${HOMEfv3}/scripts/dev-splitfv3file_subdomain-exfv3cam_sar_efcstpost.sh #scripts/dev-exfv3cam_sar_efcstpost.sh
+ #${HOMEfv3}/scripts/compare-splitfv3file_subdomain-exfv3cam_sar_efcstpost.sh #scripts/dev-exfv3cam_sar_efcstpost.sh
 
 cat $pgmout
 cat stderr

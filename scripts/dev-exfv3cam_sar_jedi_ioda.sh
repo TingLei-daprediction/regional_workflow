@@ -23,7 +23,8 @@ set -x
 #clt module load nccmp # for ctests
   echo "The script  begins to run"
   echo $PDYa
-  IODACDir=${IODACdir:-/scratch2/NCEPDEV/fv3-cam/save/Shun.Liu/gsi/GSI_forJEDI/ush/JEDI/ioda-converters/build/bin}
+#cltorg  IODACDir=${IODACdir:-/scratch2/NCEPDEV/fv3-cam/save/Shun.Liu/gsi/GSI_forJEDI/ush/JEDI/ioda-converters/build/bin}
+  IODACDir=${IODACdir:-/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-ioda/ioda-bundle/build/bin}
   IODAdir=${IODAdir:-/scratch2/NCEPDEV/stmp3/Ting.Lei/RRFS_IODA/IODA/$PDYa}
   mkdir -p $IODAdir
   DIAGdir=${stmp:-/scratch2/NCEPDEV/stmp3/Ting.Lei}//RRFS_IODA/DIAG/diag.${PDYa}_${cyc}/${cyc}.${tmmark}}
@@ -40,7 +41,7 @@ set -x
 # cp $DIAGdir/diag_conv*ges* $GSIDIAG
   cd $GSIDIAG
    cp $CNVSTAT .
-   tar xvf $( basename $CNVSTAT )
+   tar xvf $( basename $CNVSTAT ) *ges* 
    rm -f  $( basename $CNVSTAT )
    gunzip *.gz
    rm -f ./*.gz
@@ -77,11 +78,10 @@ module list
 ulimit -v unlimited
 which python
 #clt export HDF5_USE_FILE_LOCKING=FALSE
-python ${IODACDir}/proc_gsi_ncdiag.py -n 1 -o $OutDir/obs -g $OutDir/geoval $OutDir/GSI_diags
-
+python ${IODACDir}/proc_gsi_ncdiag.py  -o $OutDir/obs -g $OutDir/geoval $OutDir/GSI_diags
 # subset obs
-python  ${IODACDir}/subset_files.py -n 1 -m $OutDir/obs -g $OutDir/geoval
-python  ${IODACDir}/subset_files.py -n 1 -s $OutDir/obs -g $OutDir/geoval
+#clt python  ${IODACDir}/subset_files.py -n 1 -m $OutDir/obs -g $OutDir/geoval
+#clt python  ${IODACDir}/subset_files.py -n 1 -s $OutDir/obs -g $OutDir/geoval
      export ioda_converted_obs=${COMINrap_user}/ioda.${PDYa}
      mkdir -p $ioda_converted_obs
 cp -r  $rundir/* $ioda_converted_obs
